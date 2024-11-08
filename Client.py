@@ -1,49 +1,75 @@
 import socket
+import json
 
-class ClientUDP:
-    def __init__(self, server_ip, server_port, udp_port, tcp_port):
-        self.server_ip = server_ip
-        self.server_port = server_port
-        self.name = input("Enter your name: ").strip()  # Ensure name has no extra spaces
-        self.udp_port = udp_port
-        self.tcp_port = tcp_port
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+class ClientUDP_TCP:
+    def __init__(self):
+        # Set up client socket for UDP
+        self.client_udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.server_ip = input("Enter server IP address: ")
+        self.server_udp_port = int(input("Enter server UDP port: "))
+        self.server_tcp_port = int(input("Enter server TCP port: "))
+        
+        # UDP port for client to bind locally
+        self.client_udp_socket.bind(('0.0.0.0', 0))  
+        self.client_ip = self.get_client_ip()
+        self.client_udp_port = self.client_udp_socket.getsockname()[1]
+        self.client_tcp_port = int(input("Enter client TCP port: "))
+
+        # Prompt for first and last name separately
+        first_name = input("Enter your first name: ")
+        last_name = input("Enter your last name: ")
+        self.name = f"{first_name} {last_name}"  # Combine to form full name
+
+    def get_client_ip(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:
+            s.connect((self.server_ip, 1))
+            return s.getsockname()[0]
+        finally:
+            s.close()
+
+    def send_udp_message(self, message):
+        self.client_udp_socket.sendto(message.encode(), (self.server_ip, self.server_udp_port))
+        response, _ = self.client_udp_socket.recvfrom(1024)
+        print("Server response:", response.decode())
+
+    def send_tcp_message(self, message):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as tcp_socket:
+            tcp_socket.connect((self.server_ip, self.server_tcp_port))
+            tcp_socket.send(message.encode())
+            response = tcp_socket.recv(1024).decode()
+            print("Server TCP response:", response)
 
     def register(self):
-        rq_number = "1"  # Request number
-        # Construct the registration message with consistent quotes around the name
-        register_message = f'REGISTER {rq_number} "{self.name}" {self.server_ip} {self.udp_port} {self.tcp_port}'
-        print(f"Sending register message: {register_message}")
-        self.sock.sendto(register_message.encode(), (self.server_ip, self.server_port))
-        response, _ = self.sock.recvfrom(1024)
-        print("Server response:", response.decode())
+        message = f'REGISTER "{self.name}" {self.client_ip} {self.client_udp_port} {self.client_tcp_port}'
+        self.send_udp_message(message)
 
     def deregister(self):
-        rq_number = "2"  # Request number
-        # Construct the de-registration message with consistent quotes around the name
-        deregister_message = f'DE-REGISTER {rq_number} "{self.name}"'
-        print(f"Sending de-register message: {deregister_message}")
-        self.sock.sendto(deregister_message.encode(), (self.server_ip, self.server_port))
-        response, _ = self.sock.recvfrom(1024)
-        print("Server response:", response.decode())
+        confirmation = input("Are you sure you want to deregister? (yes/no): ")
+        if confirmation.lower() == "yes":
+            message = f'DE-REGISTER "{self.name}"'
+            self.send_udp_message(message)
+
+    def send_tcp_request(self):
+        message = input("Enter message to send via TCP: ")
+        self.send_tcp_message(message)
 
     def close(self):
-        # Close the UDP socket
-        self.sock.close()
+        self.client_udp_socket.close()
 
-# To run the client
 if __name__ == "__main__":
-    client = ClientUDP(server_ip="127.0.0.1", server_port=5000, udp_port="5001", tcp_port="5002")
-    
-    # Register the client
-    client.register()
-
-    # Ask user if they want to deregister
-    choice = input("Do you want to de-register? (yes/no): ").strip().lower()
-    
-    if choice == 'yes':
-        # De-register the client
-        client.deregister()
-    
-    # Close the socket connection
-    client.close()
+    client = ClientUDP_TCP()
+    while True:
+        action = input("Choose action: 'register', 'deregister', 'tcp', 'exit': ").strip().lower()
+        if action == "register":
+            client.register()
+        elif action == "deregister":
+            client.deregister()
+        elif action == "tcp":
+            client.send_tcp_request()
+        elif action == "exit":
+            print("Exiting client.")
+            client.close()
+            break
+        else:
+            print("Invalid action. Try again.")

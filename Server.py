@@ -1,75 +1,117 @@
 import socket
+import threading
+import json
+import os
+import shlex
 
-class ServerUDP:
-    def __init__(self, udp_port=5000, max_clients=10):
-        self.udp_port = udp_port
-        self.max_clients = max_clients
-        self.clients = {}  # Dictionary to store registered clients with their details
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.sock.bind(('', udp_port))
-        print(f"Server started at UDP port {self.udp_port}.")
-
-    def handle_registration(self, data, address):
-        # Parse the registration message
-        message_parts = data.split(maxsplit=2)
-        rq_number = message_parts[1]
+class ServerUDP_TCP:
+    def __init__(self, udp_port=3000, tcp_port=3001):
+        # UDP Socket Setup
+        self.udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.udp_socket.bind(('0.0.0.0', udp_port))
+        print(f"Server UDP listening on port {udp_port}")
         
-        # Extract the name and remaining client info
-        name_and_ports = message_parts[2].split('"')
-        if len(name_and_ports) < 2:
-            self.sock.sendto(f"REGISTER-DENIED {rq_number} Malformed registration".encode(), address)
-            return
-        
-        name = name_and_ports[1].strip()
-        client_info = name_and_ports[2].strip().split()
+        # TCP Socket Setup
+        self.tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.tcp_socket.bind(('0.0.0.0', tcp_port))
+        self.tcp_socket.listen(5)
+        print(f"Server TCP listening on port {tcp_port}")
 
-        if len(client_info) < 3:
-            self.sock.sendto(f"REGISTER-DENIED {rq_number} Malformed registration".encode(), address)
-            return
+        # Load or Initialize Registrations
+        self.registration_data = self.load_registrations()
 
-        client_ip = client_info[0]
-        udp_socket = client_info[1]
-        tcp_socket = client_info[2]
+    def load_registrations(self):
+        if os.path.exists('registrations.json'):
+            with open('registrations.json', 'r') as file:
+                return json.load(file)
+        return {}
 
-        if name in self.clients:
-            self.sock.sendto(f"REGISTER-DENIED {rq_number} Name already in use".encode(), address)
-        elif len(self.clients) >= self.max_clients:
-            self.sock.sendto(f"REGISTER-DENIED {rq_number} Server full".encode(), address)
+    def save_registrations(self):
+        with open('registrations.json', 'w') as file:
+            json.dump(self.registration_data, file, indent=4)
+
+    def handle_registration(self, params, client_address):
+        try:
+            # Unpack the parameters into expected variables
+            name = params[0]  # Full name in quotes, e.g., "John Doe"
+            client_ip = params[1]
+            client_udp_port = int(params[2])
+            client_tcp_port = int(params[3])
+
+            # Check if the name is already registered
+            if name in self.registration_data:
+                response = f"REGISTER-DENIED {name} is already registered."
+                print(f"Registration denied for {name}. Already registered.")
+            else:
+                # Store registration details
+                self.registration_data[name] = {
+                    'ip': client_ip,
+                    'udp_port': client_udp_port,
+                    'tcp_port': client_tcp_port
+                }
+                self.save_registrations()
+                response = f"REGISTERED {name}"
+                print(f"{name} registered successfully.")
+            self.udp_socket.sendto(response.encode(), client_address)
+        except (ValueError, IndexError) as e:
+            print("Error: Invalid registration parameters.", e)
+            self.udp_socket.sendto("REGISTER-DENIED Invalid parameters".encode(), client_address)
+
+    def handle_deregistration(self, params, client_address):
+        name = params[0]  # Full name in quotes, e.g., "John Doe"
+        if name in self.registration_data:
+            del self.registration_data[name]
+            self.save_registrations()
+            response = f"DE-REGISTERED {name}"
+            print(f"{name} de-registered successfully.")
         else:
-            self.clients[name] = {'ip': client_ip, 'udp_socket': udp_socket, 'tcp_socket': tcp_socket}
-            self.sock.sendto(f"REGISTERED {rq_number}".encode(), address)
-            print(f"Client '{name}' registered successfully.")
+            response = f"DE-REGISTER-DENIED {name} is not registered."
+            print(f"De-registration denied for {name}. Not found.")
+        self.udp_socket.sendto(response.encode(), client_address)
 
-    def handle_deregistration(self, data, address):
-        # Debug print to show all clients before de-registration attempt
-        print("Current registered clients:", self.clients)
+    def handle_udp_client(self, data, client_address):
+        print(f"Received UDP message from {client_address}: {data.decode()}")
+        message = data.decode()
+        command, *params = message.split(maxsplit=1)
 
-        # Parse the de-registration message (DE-REGISTER RQ# "Name")
-        parts = data.split(maxsplit=2)
-        rq_number = parts[1]
-        name_with_quotes = parts[2]
-        
-        # Remove quotes and extra whitespace from the name
-        name = name_with_quotes.strip('"').strip()
-        
-        if name in self.clients:
-            del self.clients[name]
-            print(f"Client '{name}' de-registered successfully.")
-            self.sock.sendto(f"DE-REGISTERED {rq_number}".encode(), address)
+        # Ensure params is split correctly to handle quoted name with spaces
+        if command == "REGISTER" and params:
+            # Using shlex.split to handle quoted names with spaces
+            params = shlex.split(params[0])
+            self.handle_registration(params, client_address)
+        elif command == "DE-REGISTER" and params:
+            params = shlex.split(params[0])
+            self.handle_deregistration(params, client_address)
         else:
-            print(f"De-registration failed: '{name}' not found in clients list.")
-            self.sock.sendto(f"DE-REGISTER-DENIED {rq_number} Name not found".encode(), address)
+            response = "Invalid command"
+            print(f"Invalid command received: {message}")
+            self.udp_socket.sendto(response.encode(), client_address)
+
+    def handle_tcp_client(self, client_socket):
+        data = client_socket.recv(1024).decode()
+        print(f"Received TCP message: {data}")
+        response = "TCP response received"
+        client_socket.send(response.encode())
+        client_socket.close()
 
     def run(self):
-        while True:
-            data, address = self.sock.recvfrom(1024)
-            data = data.decode()
-            if data.startswith("REGISTER"):
-                self.handle_registration(data, address)
-            elif data.startswith("DE-REGISTER"):
-                self.handle_deregistration(data, address)
+        print("Server running...")
+        udp_thread = threading.Thread(target=self.listen_udp)
+        tcp_thread = threading.Thread(target=self.listen_tcp)
+        udp_thread.start()
+        tcp_thread.start()
 
-# To run the server
+    def listen_udp(self):
+        while True:
+            data, client_address = self.udp_socket.recvfrom(1024)
+            threading.Thread(target=self.handle_udp_client, args=(data, client_address)).start()
+
+    def listen_tcp(self):
+        while True:
+            client_socket, client_address = self.tcp_socket.accept()
+            threading.Thread(target=self.handle_tcp_client, args=(client_socket,)).start()
+
 if __name__ == "__main__":
-    server = ServerUDP()
+    server = ServerUDP_TCP(udp_port=3000, tcp_port=3001)
     server.run()
+    
