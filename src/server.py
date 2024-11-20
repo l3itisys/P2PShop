@@ -88,7 +88,7 @@ class ServerUDP_TCP:
                 self.tcp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
             except AttributeError:
                 pass
-            self.tcp_socket.bind(('', self.tcp_port))
+            self.tcp_socket.bind(('0.0.0.0', self.tcp_port))
             self.tcp_socket.listen(5)
             print(f"Server TCP listening on port {self.tcp_port}")
 
@@ -145,6 +145,8 @@ class ServerUDP_TCP:
         """Handle client registration requests"""
         try:
             name = msg.params["name"]
+            response = None
+            
             with self.registration_lock:
                 if name in self.registration_data:
                     response = self.message_handler.create_message(
@@ -166,9 +168,12 @@ class ServerUDP_TCP:
                     )
                     logging.info(f"User {name} registered successfully")
 
-            # Send response outside the lock
-            self.udp_socket.sendto(response.encode(), client_address)
-            logging.info(f"Sent registration response to {name}: {response}")
+            if response:
+                # Send response with explicit address tuple
+                addr = (client_address[0], client_address[1])
+                encoded_response = response.encode()
+                self.udp_socket.sendto(encoded_response, addr)
+                logging.info(f"Sent registration response to {name} at {addr}: {response}")
 
         except Exception as e:
             logging.error(f"Registration error: {e}")
@@ -178,7 +183,8 @@ class ServerUDP_TCP:
                     msg.rq_number,
                     message=f"Registration failed: {str(e)}"
                 )
-                self.udp_socket.sendto(error_response.encode(), client_address)
+                addr = (client_address[0], client_address[1])
+                self.udp_socket.sendto(error_response.encode(), addr)
             except Exception as send_error:
                 logging.error(f"Error sending registration error response: {send_error}")
 
