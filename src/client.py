@@ -182,11 +182,12 @@ class ClientUDP_TCP:
 
             response = self.send_udp_message(message)
             if response:
-                if response.startswith(MessageType.REGISTERED.value):
+                msg = self.message_handler.parse_message(response)
+                if msg and msg.command == MessageType.REGISTERED:
                     self.registered = True
                     print("Successfully registered!")
-                elif response.startswith(MessageType.REGISTER_DENIED.value):
-                    print(f"Registration denied: {response}")
+                elif msg and msg.command == MessageType.REGISTER_DENIED:
+                    print(f"Registration denied: {msg.params.get('reason', 'Unknown reason')}")
                 else:
                     print(f"Unexpected registration response: {response}")
 
