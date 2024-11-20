@@ -1,0 +1,31 @@
+{
+    "Snow White": {
+        "ip": "172.30.59.147",
+        "udp_port": 56244,
+        "tcp_port": 5000
+    },
+    "Emily Smith": {
+        "ip": "172.30.59.147",
+        "udp_port": 65086,
+        "tcp_port": 5002
+    },
+    "John Smith": {
+        "ip": "172.30.29.193",
+        "udp_port": 57440,
+        "tcp_port": 4999
+    },
+    "Kate Smith": {
+        "ip": "172.30.29.193",
+        "udp_port": 53099,
+        "tcp_port": 4998
+    },
+    "Emilia Johnson": {
+        "ip": "192.168.2.78",
+        "udp_port": 63452
+    },
+    "Nayla Smith": {
+        "ip": "192.168.2.78",
+        "udp_port": 53580,
+        "tcp_port": 6001
+    }
+}
