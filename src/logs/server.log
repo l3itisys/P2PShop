@@ -1,0 +1,32 @@
+2024-11-20 10:47:03,681 - ERROR - Failed to initialize server: [Errno 98] Address already in use
+2024-11-20 10:56:28,413 - INFO - Server cleaned up
+2024-11-20 10:56:28,413 - INFO - Server started - UDP port: 3000, TCP port: 3001
+2024-11-20 10:56:28,413 - INFO - Server running...
+2024-11-20 10:58:32,496 - INFO - Server cleaned up
+2024-11-20 10:58:32,496 - INFO - Server cleaned up
+2024-11-20 11:08:31,993 - INFO - Server cleaned up
+2024-11-20 11:08:31,993 - INFO - Server started - UDP port: 3000, TCP port: 3001
+2024-11-20 11:08:31,993 - INFO - Server running...
+2024-11-20 11:08:51,255 - INFO - Received UDP message from ('127.0.0.1', 39521): test
+2024-11-20 11:09:11,694 - INFO - Received UDP message from ('127.0.0.1', 44856): REGISTER 3946 "John Doe" 127.0.0.1 44856 5000
+2024-11-20 11:09:11,695 - INFO - Registrations saved successfully
+2024-11-20 11:09:11,696 - INFO - John Doe registered successfully
+2024-11-20 11:10:25,420 - INFO - Received UDP message from ('127.0.0.1', 41330): test
+2024-11-20 11:10:52,212 - INFO - Received UDP message from ('127.0.0.1', 43631): REGISTER 9494 "John Doe Doe" 127.0.0.1 43631 5001
+2024-11-20 11:10:52,213 - INFO - Registrations saved successfully
+2024-11-20 11:10:52,214 - INFO - John Doe Doe registered successfully
+2024-11-20 11:11:15,387 - INFO - Received UDP message from ('127.0.0.1', 52805): test
+2024-11-20 11:11:26,185 - INFO - Received UDP message from ('127.0.0.1', 41940): REGISTER 3172 "John Doe" 127.0.0.1 41940 5001
+2024-11-20 11:11:26,185 - WARNING - Registration denied for John Doe. Already registered.
+2024-11-20 11:11:44,301 - INFO - Received UDP message from ('127.0.0.1', 44856): DE-REGISTER 4883 "John Doe"
+2024-11-20 11:11:44,302 - INFO - Registrations saved successfully
+2024-11-20 11:11:44,302 - INFO - John Doe de-registered successfully
+2024-11-20 11:12:09,275 - INFO - Received TCP message: hello server
+2024-11-20 11:12:38,612 - INFO - Received UDP message from ('127.0.0.1', 51263): test
+2024-11-20 11:13:06,655 - INFO - Received UDP message from ('127.0.0.1', 57556): REGISTER 3781 "ll ll" 127.0.0.1 57556 1024
+2024-11-20 11:13:06,662 - INFO - Registrations saved successfully
+2024-11-20 11:13:06,663 - INFO - ll ll registered successfully
+2024-11-20 11:13:34,244 - INFO - Received UDP message from None:
+2024-11-20 11:13:34,245 - ERROR - Error handling UDP client: sendto(): AF_INET address must be tuple, not NoneType
+2024-11-20 11:13:34,245 - INFO - Server cleaned up
+2024-11-20 11:13:34,245 - INFO - Server cleaned up

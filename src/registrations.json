@@ -27,5 +27,15 @@
         "ip": "192.168.2.78",
         "udp_port": 53580,
         "tcp_port": 6001
+    },
+    "John Doe Doe": {
+        "ip": "127.0.0.1",
+        "udp_port": 43631,
+        "tcp_port": 5001
+    },
+    "ll ll": {
+        "ip": "127.0.0.1",
+        "udp_port": 57556,
+        "tcp_port": 1024
     }
 }
