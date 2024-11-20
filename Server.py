@@ -6,18 +6,15 @@ import shlex
 
 class ServerUDP_TCP:
     def __init__(self, udp_port=3000, tcp_port=3001):
-        # UDP Socket Setup
         self.udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.udp_socket.bind(('0.0.0.0', udp_port))
         print(f"Server UDP listening on port {udp_port}")
         
-        # TCP Socket Setup
         self.tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.tcp_socket.bind(('0.0.0.0', tcp_port))
         self.tcp_socket.listen(5)
         print(f"Server TCP listening on port {tcp_port}")
 
-        # Load or Initialize Registrations
         self.registration_data = self.load_registrations()
 
     def load_registrations(self):
@@ -30,58 +27,57 @@ class ServerUDP_TCP:
         with open('registrations.json', 'w') as file:
             json.dump(self.registration_data, file, indent=4)
 
-    def handle_registration(self, params, client_address):
+    def handle_registration(self, rq, params, client_address):
         try:
-            # Unpack the parameters into expected variables
-            name = params[0]  # Full name in quotes, e.g., "John Doe"
+            name = params[0]
             client_ip = params[1]
             client_udp_port = int(params[2])
             client_tcp_port = int(params[3])
 
-            # Check if the name is already registered
             if name in self.registration_data:
-                response = f"REGISTER-DENIED {name} is already registered."
+                response = f"REGISTER-DENIED {rq} {name} is already registered."
                 print(f"Registration denied for {name}. Already registered.")
             else:
-                # Store registration details
                 self.registration_data[name] = {
                     'ip': client_ip,
                     'udp_port': client_udp_port,
                     'tcp_port': client_tcp_port
                 }
                 self.save_registrations()
-                response = f"REGISTERED {name}"
+                response = f"REGISTERED {rq}"
                 print(f"{name} registered successfully.")
             self.udp_socket.sendto(response.encode(), client_address)
         except (ValueError, IndexError) as e:
             print("Error: Invalid registration parameters.", e)
-            self.udp_socket.sendto("REGISTER-DENIED Invalid parameters".encode(), client_address)
+            self.udp_socket.sendto(f"REGISTER-DENIED {rq} Invalid parameters".encode(), client_address)
 
-    def handle_deregistration(self, params, client_address):
-        name = params[0]  # Full name in quotes, e.g., "John Doe"
+    def handle_deregistration(self, rq, params, client_address):
+        name = params[0]
         if name in self.registration_data:
             del self.registration_data[name]
             self.save_registrations()
-            response = f"DE-REGISTERED {name}"
+            response = f"DE-REGISTERED {rq} {name}"
             print(f"{name} de-registered successfully.")
         else:
-            response = f"DE-REGISTER-DENIED {name} is not registered."
+            response = f"DE-REGISTER-DENIED {rq} {name} is not registered."
             print(f"De-registration denied for {name}. Not found.")
         self.udp_socket.sendto(response.encode(), client_address)
 
     def handle_udp_client(self, data, client_address):
         print(f"Received UDP message from {client_address}: {data.decode()}")
         message = data.decode()
-        command, *params = message.split(maxsplit=1)
+        parts = message.split(maxsplit=2)
+        if len(parts) < 2:
+            self.udp_socket.sendto("Invalid command".encode(), client_address)
+            return
+        
+        command, rq, *params = parts
+        params = shlex.split(params[0]) if params else []
 
-        # Ensure params is split correctly to handle quoted name with spaces
         if command == "REGISTER" and params:
-            # Using shlex.split to handle quoted names with spaces
-            params = shlex.split(params[0])
-            self.handle_registration(params, client_address)
+            self.handle_registration(rq, params, client_address)
         elif command == "DE-REGISTER" and params:
-            params = shlex.split(params[0])
-            self.handle_deregistration(params, client_address)
+            self.handle_deregistration(rq, params, client_address)
         else:
             response = "Invalid command"
             print(f"Invalid command received: {message}")
@@ -114,4 +110,3 @@ class ServerUDP_TCP:
 if __name__ == "__main__":
     server = ServerUDP_TCP(udp_port=3000, tcp_port=3001)
     server.run()
-    
