@@ -79,6 +79,7 @@ class ServerUDP_TCP:
             except AttributeError:
                 pass
             self.udp_socket.bind(('0.0.0.0', self.udp_port))
+            self.udp_socket.settimeout(1)  # Add timeout to prevent blocking
             print(f"Server UDP listening on port {self.udp_port}")
 
             # Setup TCP socket
@@ -169,11 +170,20 @@ class ServerUDP_TCP:
                     logging.info(f"User {name} registered successfully")
 
             if response:
-                # Send response with explicit address tuple
-                addr = (client_address[0], client_address[1])
-                encoded_response = response.encode()
-                self.udp_socket.sendto(encoded_response, addr)
-                logging.info(f"Sent registration response to {name} at {addr}: {response}")
+                try:
+                    # Send response with explicit address tuple
+                    addr = (client_address[0], client_address[1])
+                    encoded_response = response.encode()
+                    bytes_sent = self.udp_socket.sendto(encoded_response, addr)
+                    logging.info(f"Sent {bytes_sent} bytes registration response to {name} at {addr}: {response}")
+                    
+                    # Verify the response was fully sent
+                    if bytes_sent != len(encoded_response):
+                        raise RuntimeError(f"Only sent {bytes_sent} of {len(encoded_response)} bytes")
+                        
+                except Exception as send_error:
+                    logging.error(f"Failed to send registration response: {send_error}")
+                    raise
 
         except Exception as e:
             logging.error(f"Registration error: {e}")
