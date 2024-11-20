@@ -9,7 +9,7 @@ import threading
 from dataclasses import dataclass, field
 from typing import Dict, Optional
 from datetime import datetime
-from message_handler import MessageHandler, MessageType
+from message_handler import MessageHandler, MessageType, Message
 
 @dataclass
 class ItemForSale:
