@@ -1,0 +1,53 @@
+2024-11-20 10:56:57,305 - INFO - Client initialized - UDP port: 38093, TCP port: 3001
+2024-11-20 10:57:12,413 - INFO - Attempting registration with message: REGISTER 8512 "lety mm" 172.30.103.66 38093 3001
+2024-11-20 10:57:12,413 - INFO - Sending UDP message (attempt 1): REGISTER 8512 "lety mm" 172.30.103.66 38093 3001
+2024-11-20 10:57:17,418 - WARNING - Timeout, retrying in 1 seconds...
+2024-11-20 10:57:18,418 - INFO - Sending UDP message (attempt 2): REGISTER 8512 "lety mm" 172.30.103.66 38093 3001
+2024-11-20 10:57:23,424 - WARNING - Timeout, retrying in 1 seconds...
+2024-11-20 10:57:24,424 - INFO - Sending UDP message (attempt 3): REGISTER 8512 "lety mm" 172.30.103.66 38093 3001
+2024-11-20 10:57:29,429 - ERROR - Server not responding after multiple attempts
+2024-11-20 10:57:35,883 - INFO - Attempting registration with message: REGISTER 1649 "lety mm" 172.30.103.66 38093 3001
+2024-11-20 10:57:35,883 - INFO - Sending UDP message (attempt 1): REGISTER 1649 "lety mm" 172.30.103.66 38093 3001
+2024-11-20 10:57:40,888 - WARNING - Timeout, retrying in 1 seconds...
+2024-11-20 10:57:41,888 - INFO - Sending UDP message (attempt 2): REGISTER 1649 "lety mm" 172.30.103.66 38093 3001
+2024-11-20 10:57:46,894 - WARNING - Timeout, retrying in 1 seconds...
+2024-11-20 10:57:47,894 - INFO - Sending UDP message (attempt 3): REGISTER 1649 "lety mm" 172.30.103.66 38093 3001
+2024-11-20 10:57:52,900 - ERROR - Server not responding after multiple attempts
+2024-11-20 10:58:05,430 - INFO - Attempting deregistration with message: DE-REGISTER 2526 "lety mm"
+2024-11-20 10:58:05,430 - INFO - Sending UDP message (attempt 1): DE-REGISTER 2526 "lety mm"
+2024-11-20 10:58:10,435 - WARNING - Timeout, retrying in 1 seconds...
+2024-11-20 10:58:11,435 - INFO - Sending UDP message (attempt 2): DE-REGISTER 2526 "lety mm"
+2024-11-20 10:58:16,441 - WARNING - Timeout, retrying in 1 seconds...
+2024-11-20 10:58:17,441 - INFO - Sending UDP message (attempt 3): DE-REGISTER 2526 "lety mm"
+2024-11-20 10:58:22,447 - ERROR - Server not responding after multiple attempts
+2024-11-20 10:58:26,428 - INFO - Client cleaned up successfully
+2024-11-20 10:58:26,429 - INFO - Client cleaned up successfully
+2024-11-20 11:09:07,137 - INFO - Client initialized - UDP port: 44856, TCP port: 5000
+2024-11-20 11:09:11,692 - INFO - Attempting registration with message: REGISTER 3946 "John Doe" 127.0.0.1 44856 5000
+2024-11-20 11:09:11,693 - INFO - Sending UDP message (attempt 1): REGISTER 3946 "John Doe" 127.0.0.1 44856 5000
+2024-11-20 11:09:11,696 - INFO - Server response: REGISTERED 3946
+2024-11-20 11:10:42,469 - INFO - Client initialized - UDP port: 43631, TCP port: 5001
+2024-11-20 11:10:52,210 - INFO - Attempting registration with message: REGISTER 9494 "John Doe Doe" 127.0.0.1 43631 5001
+2024-11-20 11:10:52,211 - INFO - Sending UDP message (attempt 1): REGISTER 9494 "John Doe Doe" 127.0.0.1 43631 5001
+2024-11-20 11:10:52,214 - INFO - Server response: REGISTERED 9494
+2024-11-20 11:11:09,495 - INFO - Client cleaned up successfully
+2024-11-20 11:11:09,496 - INFO - Client cleaned up successfully
+2024-11-20 11:11:23,638 - INFO - Client initialized - UDP port: 41940, TCP port: 5001
+2024-11-20 11:11:26,184 - INFO - Attempting registration with message: REGISTER 3172 "John Doe" 127.0.0.1 41940 5001
+2024-11-20 11:11:26,184 - INFO - Sending UDP message (attempt 1): REGISTER 3172 "John Doe" 127.0.0.1 41940 5001
+2024-11-20 11:11:26,186 - INFO - Server response: REGISTER-DENIED 3172 John Doe is already registered
+2024-11-20 11:11:44,299 - INFO - Attempting deregistration with message: DE-REGISTER 4883 "John Doe"
+2024-11-20 11:11:44,300 - INFO - Sending UDP message (attempt 1): DE-REGISTER 4883 "John Doe"
+2024-11-20 11:11:44,302 - INFO - Server response: DE-REGISTERED 4883 John Doe
+2024-11-20 11:12:09,274 - INFO - Sending TCP message: hello server
+2024-11-20 11:12:09,275 - INFO - Server TCP response: TCP response received
+2024-11-20 11:12:21,793 - INFO - Client cleaned up successfully
+2024-11-20 11:12:21,793 - INFO - Client cleaned up successfully
+2024-11-20 11:13:00,999 - INFO - Client initialized - UDP port: 57556, TCP port: 1024
+2024-11-20 11:13:06,654 - INFO - Attempting registration with message: REGISTER 3781 "ll ll" 127.0.0.1 57556 1024
+2024-11-20 11:13:06,654 - INFO - Sending UDP message (attempt 1): REGISTER 3781 "ll ll" 127.0.0.1 57556 1024
+2024-11-20 11:13:06,664 - INFO - Server response: REGISTERED 3781
+2024-11-20 11:13:15,522 - INFO - Client cleaned up successfully
+2024-11-20 11:13:15,522 - INFO - Client cleaned up successfully
+2024-11-20 11:13:23,332 - INFO - Client cleaned up successfully
+2024-11-20 11:13:23,333 - INFO - Client cleaned up successfully
