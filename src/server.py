@@ -78,7 +78,7 @@ class ServerUDP_TCP:
                 self.udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
             except AttributeError:
                 pass
-            self.udp_socket.bind(('', self.udp_port))
+            self.udp_socket.bind(('0.0.0.0', self.udp_port))
             print(f"Server UDP listening on port {self.udp_port}")
 
             # Setup TCP socket
@@ -574,6 +574,7 @@ class ServerUDP_TCP:
             # Close UDP socket
             if hasattr(self, 'udp_socket'):
                 try:
+                    self.udp_socket.shutdown(socket.SHUT_RDWR)
                     self.udp_socket.close()
                 except:
                     pass
@@ -581,6 +582,7 @@ class ServerUDP_TCP:
             # Close TCP socket
             if hasattr(self, 'tcp_socket'):
                 try:
+                    self.tcp_socket.shutdown(socket.SHUT_RDWR)
                     self.tcp_socket.close()
                 except:
                     pass
@@ -602,7 +604,8 @@ class ServerUDP_TCP:
         """Handle termination signals"""
         print("\nSignal received. Shutting down server...")
         self.cleanup()
-        sys.exit(0)
+        # Force exit after cleanup
+        os._exit(0)
 
     def run(self):
         """Main server loop"""
