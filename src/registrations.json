@@ -37,5 +37,20 @@
         "ip": "127.0.0.1",
         "udp_port": 57556,
         "tcp_port": 1024
+    },
+    "hi there": {
+        "ip": "127.0.0.1",
+        "udp_port": 54853,
+        "tcp_port": 5666
+    },
+    "seller1 sel": {
+        "ip": "127.0.0.1",
+        "udp_port": 34957,
+        "tcp_port": 4556
+    },
+    "buyer buy": {
+        "ip": "127.0.0.1",
+        "udp_port": 41684,
+        "tcp_port": 4554
     }
 }

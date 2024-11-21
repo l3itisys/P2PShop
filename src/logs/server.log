@@ -1,32 +1,147 @@
-2024-11-20 10:47:03,681 - ERROR - Failed to initialize server: [Errno 98] Address already in use
-2024-11-20 10:56:28,413 - INFO - Server cleaned up
-2024-11-20 10:56:28,413 - INFO - Server started - UDP port: 3000, TCP port: 3001
-2024-11-20 10:56:28,413 - INFO - Server running...
-2024-11-20 10:58:32,496 - INFO - Server cleaned up
-2024-11-20 10:58:32,496 - INFO - Server cleaned up
-2024-11-20 11:08:31,993 - INFO - Server cleaned up
-2024-11-20 11:08:31,993 - INFO - Server started - UDP port: 3000, TCP port: 3001
-2024-11-20 11:08:31,993 - INFO - Server running...
-2024-11-20 11:08:51,255 - INFO - Received UDP message from ('127.0.0.1', 39521): test
-2024-11-20 11:09:11,694 - INFO - Received UDP message from ('127.0.0.1', 44856): REGISTER 3946 "John Doe" 127.0.0.1 44856 5000
-2024-11-20 11:09:11,695 - INFO - Registrations saved successfully
-2024-11-20 11:09:11,696 - INFO - John Doe registered successfully
-2024-11-20 11:10:25,420 - INFO - Received UDP message from ('127.0.0.1', 41330): test
-2024-11-20 11:10:52,212 - INFO - Received UDP message from ('127.0.0.1', 43631): REGISTER 9494 "John Doe Doe" 127.0.0.1 43631 5001
-2024-11-20 11:10:52,213 - INFO - Registrations saved successfully
-2024-11-20 11:10:52,214 - INFO - John Doe Doe registered successfully
-2024-11-20 11:11:15,387 - INFO - Received UDP message from ('127.0.0.1', 52805): test
-2024-11-20 11:11:26,185 - INFO - Received UDP message from ('127.0.0.1', 41940): REGISTER 3172 "John Doe" 127.0.0.1 41940 5001
-2024-11-20 11:11:26,185 - WARNING - Registration denied for John Doe. Already registered.
-2024-11-20 11:11:44,301 - INFO - Received UDP message from ('127.0.0.1', 44856): DE-REGISTER 4883 "John Doe"
-2024-11-20 11:11:44,302 - INFO - Registrations saved successfully
-2024-11-20 11:11:44,302 - INFO - John Doe de-registered successfully
-2024-11-20 11:12:09,275 - INFO - Received TCP message: hello server
-2024-11-20 11:12:38,612 - INFO - Received UDP message from ('127.0.0.1', 51263): test
-2024-11-20 11:13:06,655 - INFO - Received UDP message from ('127.0.0.1', 57556): REGISTER 3781 "ll ll" 127.0.0.1 57556 1024
-2024-11-20 11:13:06,662 - INFO - Registrations saved successfully
-2024-11-20 11:13:06,663 - INFO - ll ll registered successfully
-2024-11-20 11:13:34,244 - INFO - Received UDP message from None:
-2024-11-20 11:13:34,245 - ERROR - Error handling UDP client: sendto(): AF_INET address must be tuple, not NoneType
-2024-11-20 11:13:34,245 - INFO - Server cleaned up
-2024-11-20 11:13:34,245 - INFO - Server cleaned up
+
+2024-11-20 17:08:00,862 - INFO - Server started - UDP port: 3000, TCP port: 3001
+2024-11-20 17:08:00,863 - INFO - Server running...
+2024-11-20 17:08:10,225 - INFO - Received UDP message from ('127.0.0.1', 39728): test
+2024-11-20 17:08:26,450 - INFO - Received UDP message from ('127.0.0.1', 41131): REGISTER 5745 "hi there" 127.0.0.1 41131 4678
+2024-11-20 17:08:26,450 - DEBUG - Parsed message parts: ['REGISTER', '5745', 'hi there', '127.0.0.1', '41131', '4678']
+2024-11-20 17:08:26,451 - DEBUG - Registration message params: {'name': 'hi there', 'ip': '127.0.0.1', 'udp_port': 41131, 'tcp_port': 4678}
+2024-11-20 17:08:28,451 - INFO - Received UDP message from ('127.0.0.1', 41131): REGISTER 5745 "hi there" 127.0.0.1 41131 4678
+2024-11-20 17:08:28,452 - DEBUG - Parsed message parts: ['REGISTER', '5745', 'hi there', '127.0.0.1', '41131', '4678']
+2024-11-20 17:08:28,452 - DEBUG - Registration message params: {'name': 'hi there', 'ip': '127.0.0.1', 'udp_port': 41131, 'tcp_port': 4678}
+2024-11-20 17:08:30,453 - INFO - Received UDP message from ('127.0.0.1', 41131): REGISTER 5745 "hi there" 127.0.0.1 41131 4678
+2024-11-20 17:08:30,454 - DEBUG - Parsed message parts: ['REGISTER', '5745', 'hi there', '127.0.0.1', '41131', '4678']
+2024-11-20 17:08:30,454 - DEBUG - Registration message params: {'name': 'hi there', 'ip': '127.0.0.1', 'udp_port': 41131, 'tcp_port': 4678}
+2024-11-20 17:09:09,689 - INFO - Received UDP message from ('127.0.0.1', 41131): REGISTER 5770 "hi there" 127.0.0.1 41131 4678
+2024-11-20 17:09:09,689 - DEBUG - Parsed message parts: ['REGISTER', '5770', 'hi there', '127.0.0.1', '41131', '4678']
+2024-11-20 17:09:09,689 - DEBUG - Registration message params: {'name': 'hi there', 'ip': '127.0.0.1', 'udp_port': 41131, 'tcp_port': 4678}
+2024-11-20 17:09:11,691 - INFO - Received UDP message from ('127.0.0.1', 41131): REGISTER 5770 "hi there" 127.0.0.1 41131 4678
+2024-11-20 17:09:11,691 - DEBUG - Parsed message parts: ['REGISTER', '5770', 'hi there', '127.0.0.1', '41131', '4678']
+2024-11-20 17:09:11,692 - DEBUG - Registration message params: {'name': 'hi there', 'ip': '127.0.0.1', 'udp_port': 41131, 'tcp_port': 4678}
+2024-11-20 17:09:13,693 - INFO - Received UDP message from ('127.0.0.1', 41131): REGISTER 5770 "hi there" 127.0.0.1 41131 4678
+2024-11-20 17:09:13,694 - DEBUG - Parsed message parts: ['REGISTER', '5770', 'hi there', '127.0.0.1', '41131', '4678']
+2024-11-20 17:09:13,694 - DEBUG - Registration message params: {'name': 'hi there', 'ip': '127.0.0.1', 'udp_port': 41131, 'tcp_port': 4678}
+2024-11-20 17:09:42,512 - INFO - Shutting down server...
+2024-11-20 17:17:46,328 - INFO - Server started - UDP port: 3000, TCP port: 3001
+2024-11-20 17:17:46,330 - INFO - Server running...
+2024-11-20 17:17:56,430 - INFO - Received UDP message from ('127.0.0.1', 50555): test
+2024-11-20 17:18:06,802 - INFO - Received UDP message from ('127.0.0.1', 54853): REGISTER 1696 "hi there" 127.0.0.1 54853 5666
+2024-11-20 17:18:06,803 - DEBUG - Parsed message parts: ['REGISTER', '1696', 'hi there', '127.0.0.1', '54853', '5666']
+2024-11-20 17:18:06,803 - INFO - Processing message type: MessageType.REGISTER
+2024-11-20 17:18:06,804 - DEBUG - Registration message params: {'name': 'hi there', 'ip': '127.0.0.1', 'udp_port': 54853, 'tcp_port': 5666}
+2024-11-20 17:18:06,805 - INFO - Registrations saved successfully
+2024-11-20 17:18:06,805 - INFO - User hi there registered successfully
+2024-11-20 17:18:06,805 - INFO - Sent registration response to hi there at ('127.0.0.1', 54853)
+2024-11-20 17:18:43,791 - INFO - Received UDP message from ('127.0.0.1', 54853): LOOKING_FOR 2365 "hi there" "computer" 900.0
+2024-11-20 17:18:43,791 - DEBUG - Parsed message parts: ['LOOKING_FOR', '2365', 'hi there', 'computer', '900.0']
+2024-11-20 17:18:43,791 - INFO - Processing message type: MessageType.LOOKING_FOR
+2024-11-20 17:18:43,792 - INFO - Search broadcast sent to Snow White
+2024-11-20 17:18:43,792 - INFO - Search broadcast sent to Emily Smith
+2024-11-20 17:18:43,792 - INFO - Search broadcast sent to John Smith
+2024-11-20 17:18:43,793 - INFO - Search broadcast sent to Kate Smith
+2024-11-20 17:18:43,793 - INFO - Search broadcast sent to Emilia Johnson
+2024-11-20 17:18:43,793 - INFO - Search broadcast sent to Nayla Smith
+2024-11-20 17:18:43,793 - INFO - Search broadcast sent to John Doe Doe
+2024-11-20 17:18:43,794 - INFO - Search broadcast sent to ll ll
+2024-11-20 17:18:43,795 - INFO - Search initiated by hi there for computer
+2024-11-20 17:18:45,792 - INFO - Received UDP message from ('127.0.0.1', 54853): LOOKING_FOR 2365 "hi there" "computer" 900.0
+2024-11-20 17:18:45,793 - DEBUG - Parsed message parts: ['LOOKING_FOR', '2365', 'hi there', 'computer', '900.0']
+2024-11-20 17:18:45,793 - INFO - Processing message type: MessageType.LOOKING_FOR
+2024-11-20 17:18:45,793 - INFO - Search broadcast sent to Snow White
+2024-11-20 17:18:45,794 - INFO - Search broadcast sent to Emily Smith
+2024-11-20 17:18:45,794 - INFO - Search broadcast sent to John Smith
+2024-11-20 17:18:45,794 - INFO - Search broadcast sent to Kate Smith
+2024-11-20 17:18:45,794 - INFO - Search broadcast sent to Emilia Johnson
+2024-11-20 17:18:45,795 - INFO - Search broadcast sent to Nayla Smith
+2024-11-20 17:18:45,795 - INFO - Search broadcast sent to John Doe Doe
+2024-11-20 17:18:45,795 - INFO - Search broadcast sent to ll ll
+2024-11-20 17:18:45,796 - INFO - Search initiated by hi there for computer
+2024-11-20 17:18:47,793 - INFO - Received UDP message from ('127.0.0.1', 54853): LOOKING_FOR 2365 "hi there" "computer" 900.0
+2024-11-20 17:18:47,794 - DEBUG - Parsed message parts: ['LOOKING_FOR', '2365', 'hi there', 'computer', '900.0']
+2024-11-20 17:18:47,794 - INFO - Processing message type: MessageType.LOOKING_FOR
+2024-11-20 17:18:47,794 - INFO - Search broadcast sent to Snow White
+2024-11-20 17:18:47,795 - INFO - Search broadcast sent to Emily Smith
+2024-11-20 17:18:47,795 - INFO - Search broadcast sent to John Smith
+2024-11-20 17:18:47,795 - INFO - Search broadcast sent to Kate Smith
+2024-11-20 17:18:47,795 - INFO - Search broadcast sent to Emilia Johnson
+2024-11-20 17:18:47,795 - INFO - Search broadcast sent to Nayla Smith
+2024-11-20 17:18:47,796 - INFO - Search broadcast sent to John Doe Doe
+2024-11-20 17:18:47,796 - INFO - Search broadcast sent to ll ll
+2024-11-20 17:18:47,797 - INFO - Search initiated by hi there for computer
+2024-11-20 17:19:37,377 - INFO - Received UDP message from ('127.0.0.1', 54853): LOOKING_FOR 6605 "hi there" "computer" 88.0
+2024-11-20 17:19:37,378 - DEBUG - Parsed message parts: ['LOOKING_FOR', '6605', 'hi there', 'computer', '88.0']
+2024-11-20 17:19:37,378 - INFO - Processing message type: MessageType.LOOKING_FOR
+2024-11-20 17:19:37,379 - INFO - Search broadcast sent to Snow White
+2024-11-20 17:19:37,379 - INFO - Search broadcast sent to Emily Smith
+2024-11-20 17:19:37,379 - INFO - Search broadcast sent to John Smith
+2024-11-20 17:19:37,379 - INFO - Search broadcast sent to Kate Smith
+2024-11-20 17:19:37,380 - INFO - Search broadcast sent to Emilia Johnson
+2024-11-20 17:19:37,380 - INFO - Search broadcast sent to Nayla Smith
+2024-11-20 17:19:37,380 - INFO - Search broadcast sent to John Doe Doe
+2024-11-20 17:19:37,380 - INFO - Search broadcast sent to ll ll
+2024-11-20 17:19:37,381 - INFO - Search initiated by hi there for computer
+2024-11-20 17:19:39,380 - INFO - Received UDP message from ('127.0.0.1', 54853): LOOKING_FOR 6605 "hi there" "computer" 88.0
+2024-11-20 17:19:39,381 - DEBUG - Parsed message parts: ['LOOKING_FOR', '6605', 'hi there', 'computer', '88.0']
+2024-11-20 17:19:39,381 - INFO - Processing message type: MessageType.LOOKING_FOR
+2024-11-20 17:19:39,381 - INFO - Search broadcast sent to Snow White
+2024-11-20 17:19:39,381 - INFO - Search broadcast sent to Emily Smith
+2024-11-20 17:19:39,382 - INFO - Search broadcast sent to John Smith
+2024-11-20 17:19:39,382 - INFO - Search broadcast sent to Kate Smith
+2024-11-20 17:19:39,382 - INFO - Search broadcast sent to Emilia Johnson
+2024-11-20 17:19:39,382 - INFO - Search broadcast sent to Nayla Smith
+2024-11-20 17:19:39,383 - INFO - Search broadcast sent to John Doe Doe
+2024-11-20 17:19:39,383 - INFO - Search broadcast sent to ll ll
+2024-11-20 17:19:39,384 - INFO - Search initiated by hi there for computer
+2024-11-20 17:19:41,381 - INFO - Received UDP message from ('127.0.0.1', 54853): LOOKING_FOR 6605 "hi there" "computer" 88.0
+2024-11-20 17:19:41,382 - DEBUG - Parsed message parts: ['LOOKING_FOR', '6605', 'hi there', 'computer', '88.0']
+2024-11-20 17:19:41,382 - INFO - Processing message type: MessageType.LOOKING_FOR
+2024-11-20 17:19:41,382 - INFO - Search broadcast sent to Snow White
+2024-11-20 17:19:41,383 - INFO - Search broadcast sent to Emily Smith
+2024-11-20 17:19:41,383 - INFO - Search broadcast sent to John Smith
+2024-11-20 17:19:41,383 - INFO - Search broadcast sent to Kate Smith
+2024-11-20 17:19:41,383 - INFO - Search broadcast sent to Emilia Johnson
+2024-11-20 17:19:41,383 - INFO - Search broadcast sent to Nayla Smith
+2024-11-20 17:19:41,384 - INFO - Search broadcast sent to John Doe Doe
+2024-11-20 17:19:41,384 - INFO - Search broadcast sent to ll ll
+2024-11-20 17:19:41,385 - INFO - Search initiated by hi there for computer
+2024-11-20 17:19:54,870 - INFO - Shutting down server...
+2024-11-20 17:19:54,872 - INFO - Registrations saved successfully
+2024-11-20 17:19:55,872 - INFO - Server cleaned up successfully
+2024-11-21 10:17:50,251 - INFO - Server started - UDP port: 3000, TCP port: 3001
+2024-11-21 10:17:50,252 - INFO - Server running...
+2024-11-21 10:18:01,265 - INFO - Received UDP message from ('127.0.0.1', 54662): test
+2024-11-21 10:18:31,371 - INFO - Received UDP message from ('127.0.0.1', 34957): REGISTER 8184 "seller1 sel" 127.0.0.1 34957 4556
+2024-11-21 10:18:31,371 - DEBUG - Parsed message parts: ['REGISTER', '8184', 'seller1 sel', '127.0.0.1', '34957', '4556']
+2024-11-21 10:18:31,371 - INFO - Processing message type: MessageType.REGISTER
+2024-11-21 10:18:31,372 - DEBUG - Registration message params: {'name': 'seller1 sel', 'ip': '127.0.0.1', 'udp_port': 34957, 'tcp_port': 4556}
+2024-11-21 10:18:31,374 - INFO - Registrations saved successfully
+2024-11-21 10:18:31,375 - INFO - User seller1 sel registered successfully
+2024-11-21 10:18:31,377 - INFO - Sent registration response to seller1 sel at ('127.0.0.1', 34957)
+2024-11-21 10:19:33,349 - INFO - Received UDP message from ('127.0.0.1', 58240): test
+2024-11-21 10:21:18,211 - INFO - Received UDP message from ('127.0.0.1', 41684): REGISTER 1152 "buyer buy" 127.0.0.1 41684 4554
+2024-11-21 10:21:18,212 - DEBUG - Parsed message parts: ['REGISTER', '1152', 'buyer buy', '127.0.0.1', '41684', '4554']
+2024-11-21 10:21:18,212 - INFO - Processing message type: MessageType.REGISTER
+2024-11-21 10:21:18,212 - DEBUG - Registration message params: {'name': 'buyer buy', 'ip': '127.0.0.1', 'udp_port': 41684, 'tcp_port': 4554}
+2024-11-21 10:21:18,218 - INFO - Registrations saved successfully
+2024-11-21 10:21:18,219 - INFO - User buyer buy registered successfully
+2024-11-21 10:21:18,219 - INFO - Sent registration response to buyer buy at ('127.0.0.1', 41684)
+2024-11-21 10:21:45,252 - INFO - Received UDP message from ('127.0.0.1', 41684): LOOKING_FOR 9791 "buyer buy" "computer" 900.0
+2024-11-21 10:21:45,252 - DEBUG - Parsed message parts: ['LOOKING_FOR', '9791', 'buyer buy', 'computer', '900.0']
+2024-11-21 10:21:45,253 - INFO - Processing message type: MessageType.LOOKING_FOR
+2024-11-21 10:21:45,253 - INFO - Search broadcast sent to Snow White
+2024-11-21 10:21:45,253 - INFO - Search broadcast sent to Emily Smith
+2024-11-21 10:21:45,253 - INFO - Search broadcast sent to John Smith
+2024-11-21 10:21:45,253 - INFO - Search broadcast sent to Kate Smith
+2024-11-21 10:21:45,253 - INFO - Search broadcast sent to Emilia Johnson
+2024-11-21 10:21:45,253 - INFO - Search broadcast sent to Nayla Smith
+2024-11-21 10:21:45,253 - INFO - Search broadcast sent to John Doe Doe
+2024-11-21 10:21:45,254 - INFO - Search broadcast sent to ll ll
+2024-11-21 10:21:45,254 - INFO - Search broadcast sent to hi there
+2024-11-21 10:21:45,254 - INFO - Search broadcast sent to seller1 sel
+2024-11-21 10:21:45,255 - INFO - Search initiated by buyer buy for computer
+2024-11-21 10:21:45,256 - INFO - Received UDP message from ('127.0.0.1', 34957): OFFER 9791 "seller1 sel" "computer" 788.0
+2024-11-21 10:21:45,256 - DEBUG - Parsed message parts: ['OFFER', '9791', 'seller1 sel', 'computer', '788.0']
+2024-11-21 10:21:45,257 - INFO - Processing message type: MessageType.OFFER
+2024-11-21 10:21:45,258 - INFO - Offer received from seller1 sel for search 9791
+2024-11-21 10:24:47,415 - INFO - Shutting down server...
+2024-11-21 10:24:47,416 - INFO - Registrations saved successfully
+2024-11-21 10:24:48,416 - INFO - Server cleaned up successfully

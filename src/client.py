@@ -337,10 +337,13 @@ class ClientUDP_TCP:
         """Send UDP message to server with retry mechanism"""
         for attempt in range(max_retries):
             try:
+                print(f"Sending message to server (attempt {attempt + 1}): {message}") #debug
                 logging.info(f"Sending UDP message (attempt {attempt + 1}): {message}")
                 self.client_udp_socket.sendto(message.encode(), (self.server_ip, self.server_udp_port))
+                print(f"Waiting for response from server...") #debug
                 response, _ = self.client_udp_socket.recvfrom(1024)
                 response_text = response.decode()
+                print(f"Received response from server: {response_text}") #debug
                 logging.info(f"Server response: {response_text}")
                 return response_text
 

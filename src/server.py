@@ -8,9 +8,10 @@ import signal
 import sys
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
-from threading import Lock
-from datetime import datetime, timedelta
+from threading import RLock  # Reentrant Lock to prevent deadlocks
+from datetime import datetime
 from message_handler import MessageHandler, MessageType, Message
+
 
 @dataclass
 class SearchData:
@@ -24,6 +25,7 @@ class SearchData:
     timer: Optional[threading.Timer] = None
     timestamp: datetime = field(default_factory=datetime.now)
 
+
 @dataclass
 class ItemReservation:
     """Data class to track item reservations"""
@@ -32,6 +34,7 @@ class ItemReservation:
     item_name: str
     price: float
     timestamp: datetime = field(default_factory=datetime.now)
+
 
 class ServerUDP_TCP:
     def __init__(self, udp_port=3000, tcp_port=3001):
@@ -42,9 +45,9 @@ class ServerUDP_TCP:
         self.running = True
 
         # Data structures with locks for thread safety
-        self.registration_lock = Lock()
-        self.search_lock = Lock()
-        self.reservation_lock = Lock()
+        self.registration_lock = RLock()  # Reentrant Lock
+        self.search_lock = RLock()
+        self.reservation_lock = RLock()
 
         self.active_searches: Dict[str, SearchData] = {}
         self.reservations: Dict[str, ItemReservation] = {}
@@ -64,9 +67,15 @@ class ServerUDP_TCP:
 
         logging.basicConfig(
             filename=log_file,
-            level=logging.INFO,
+            level=logging.DEBUG,  # Set to DEBUG level for detailed logs
             format='%(asctime)s - %(levelname)s - %(message)s'
         )
+        # Also output logs to console
+        console = logging.StreamHandler()
+        console.setLevel(logging.DEBUG)
+        formatter = logging.Formatter('%(message)s')
+        console.setFormatter(formatter)
+        logging.getLogger('').addHandler(console)
 
     def setup_sockets(self):
         """Initialize server sockets"""
@@ -74,22 +83,12 @@ class ServerUDP_TCP:
             # Setup UDP socket
             self.udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             self.udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            try:
-                self.udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
-            except AttributeError:
-                pass
-            self.udp_socket.bind(('0.0.0.0', self.udp_port))
-            self.udp_socket.settimeout(5)  # Longer timeout for better reliability
-            print(f"Server UDP listening on port {self.udp_port}")
+            self.udp_socket.bind(('', self.udp_port))
 
             # Setup TCP socket
             self.tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.tcp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            try:
-                self.tcp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
-            except AttributeError:
-                pass
-            self.tcp_socket.bind(('0.0.0.0', self.tcp_port))
+            self.tcp_socket.bind(('', self.tcp_port))
             self.tcp_socket.listen(5)
             print(f"Server TCP listening on port {self.tcp_port}")
 
@@ -134,10 +133,10 @@ class ServerUDP_TCP:
     def save_registrations(self):
         """Save registered users to persistent storage"""
         try:
-            with self.registration_lock:
-                registration_file = os.path.join(os.path.dirname(__file__), 'registrations.json')
-                with open(registration_file, 'w') as file:
-                    json.dump(self.registration_data, file, indent=4)
+            # No need to acquire lock here as it's called within a lock
+            registration_file = os.path.join(os.path.dirname(__file__), 'registrations.json')
+            with open(registration_file, 'w') as file:
+                json.dump(self.registration_data, file, indent=4)
             logging.info("Registrations saved successfully")
         except Exception as e:
             logging.error(f"Error saving registrations: {e}")
@@ -145,9 +144,14 @@ class ServerUDP_TCP:
     def handle_registration(self, msg: Message, client_address: tuple):
         """Handle client registration requests"""
         try:
+            print(f"Processing registration request from {client_address}")
+            logging.debug(f"Registration message params: {msg.params}")
             name = msg.params["name"]
+            ip = msg.params["ip"]
+            udp_port = msg.params["udp_port"]
+            tcp_port = msg.params["tcp_port"]
             response = None
-            
+
             with self.registration_lock:
                 if name in self.registration_data:
                     response = self.message_handler.create_message(
@@ -155,31 +159,34 @@ class ServerUDP_TCP:
                         msg.rq_number,
                         reason=f"User {name} is already registered"
                     )
+                    print(f"Registration denied for {name}: already registered")
                     logging.warning(f"Registration denied for {name}: already registered")
                 else:
                     self.registration_data[name] = {
-                        'ip': msg.params["ip"],
-                        'udp_port': msg.params["udp_port"],
-                        'tcp_port': msg.params["tcp_port"]
+                        'ip': ip,
+                        'udp_port': udp_port,
+                        'tcp_port': tcp_port
                     }
                     self.save_registrations()
                     response = self.message_handler.create_message(
                         MessageType.REGISTERED,
-                        msg.rq_number,
-                        name=name
+                        msg.rq_number
                     )
+                    print(f"User {name} registered successfully")
                     logging.info(f"User {name} registered successfully")
 
             if response:
                 try:
-                    encoded_response = response.encode()
-                    self.udp_socket.sendto(encoded_response, client_address)
-                    logging.info(f"Sent registration response to {name} at {client_address}: {response}")
+                    print(f"Sending response to {client_address}: {response}")
+                    self.udp_socket.sendto(response.encode(), client_address)
+                    logging.info(f"Sent registration response to {name} at {client_address}")
                 except Exception as send_error:
+                    print(f"Failed to send registration response: {send_error}")
                     logging.error(f"Failed to send registration response: {send_error}")
                     raise
 
         except Exception as e:
+            print(f"Registration error: {e}")
             logging.error(f"Registration error: {e}")
             try:
                 error_response = self.message_handler.create_message(
@@ -187,8 +194,7 @@ class ServerUDP_TCP:
                     msg.rq_number,
                     message=f"Registration failed: {str(e)}"
                 )
-                addr = (client_address[0], client_address[1])
-                self.udp_socket.sendto(error_response.encode(), addr)
+                self.udp_socket.sendto(error_response.encode(), client_address)
             except Exception as send_error:
                 logging.error(f"Error sending registration error response: {send_error}")
 
@@ -230,15 +236,13 @@ class ServerUDP_TCP:
 
     def listen_udp(self):
         """Listen for UDP messages"""
+        print("Starting UDP listener...")
         while self.running:
             try:
                 data, client_address = self.udp_socket.recvfrom(1024)
+                print(f"Received UDP message from {client_address}")
                 threading.Thread(target=self.handle_udp_client,
-                               args=(data, client_address)).start()
-            except socket.error:
-                if self.running:
-                    logging.error("UDP socket error, restarting UDP listener")
-                    time.sleep(1)
+                                 args=(data, client_address)).start()
             except Exception as e:
                 if self.running:
                     logging.error(f"UDP listening error: {e}")
@@ -250,7 +254,7 @@ class ServerUDP_TCP:
             try:
                 client_socket, client_address = self.tcp_socket.accept()
                 threading.Thread(target=self.handle_tcp_client,
-                               args=(client_socket,)).start()
+                                 args=(client_socket,)).start()
             except socket.timeout:
                 continue
             except Exception as e:
@@ -412,6 +416,7 @@ class ServerUDP_TCP:
             )
             seller_address = (seller_data["ip"], seller_data["udp_port"])
             self.udp_socket.sendto(negotiate_msg.encode(), seller_address)
+            logging.info(f"Negotiation initiated with {offer['seller']} for search {search_id}")
 
         except Exception as e:
             logging.error(f"Error initiating negotiation: {e}")
@@ -439,12 +444,15 @@ class ServerUDP_TCP:
 
         except Exception as e:
             logging.error(f"Error handling search timeout: {e}")
+
     def handle_tcp_client(self, client_socket):
         """Handle TCP client connections"""
         try:
             client_socket.settimeout(5)
             data = client_socket.recv(1024).decode()
             logging.info(f"Received TCP message: {data}")
+            # Process TCP communication here (e.g., INFORM_Req, INFORM_Res)
+            # For the purpose of this implementation, we'll close the connection
             response = "TCP message received"
             client_socket.send(response.encode())
         except Exception as e:
@@ -459,14 +467,17 @@ class ServerUDP_TCP:
         """Handle UDP client messages"""
         try:
             message = data.decode()
+            print(f"Handling UDP message from {client_address}: {message}")
             logging.info(f"Received UDP message from {client_address}: {message}")
 
             if message == "test":
+                print(f"Sending 'ok' response to {client_address}")
                 self.udp_socket.sendto(b"ok", client_address)
                 return
 
             msg = self.message_handler.parse_message(message)
             if not msg:
+                print("Invalid message format")
                 error_response = self.message_handler.create_message(
                     MessageType.ERROR,
                     "0000",
@@ -474,6 +485,9 @@ class ServerUDP_TCP:
                 )
                 self.udp_socket.sendto(error_response.encode(), client_address)
                 return
+
+            print(f"Processing message type: {msg.command}")
+            logging.info(f"Processing message type: {msg.command}")
 
             # Handle different message types
             if msg.command == MessageType.REGISTER:
@@ -488,6 +502,7 @@ class ServerUDP_TCP:
                 self.handle_accept(msg, client_address)
             elif msg.command == MessageType.REFUSE:
                 self.handle_refuse(msg, client_address)
+            # Handle other message types as per the protocol
             else:
                 error_response = self.message_handler.create_message(
                     MessageType.ERROR,
@@ -495,8 +510,10 @@ class ServerUDP_TCP:
                     message=f"Unknown command: {msg.command.value}"
                 )
                 self.udp_socket.sendto(error_response.encode(), client_address)
+                logging.warning(f"Unknown command received: {msg.command.value}")
 
         except Exception as e:
+            print(f"Error handling UDP client: {e}")
             logging.error(f"Error handling UDP client: {e}")
             try:
                 error_response = self.message_handler.create_message(
@@ -512,32 +529,36 @@ class ServerUDP_TCP:
         """Handle seller's acceptance of negotiated price"""
         try:
             with self.search_lock:
-                for search_id, search_data in self.active_searches.items():
-                    if search_data.item_name == msg.params["item_name"]:
-                        # Create reservation
-                        with self.reservation_lock:
-                            reservation = ItemReservation(
-                                seller=msg.params["name"],
-                                buyer=search_data.buyer,
-                                item_name=msg.params["item_name"],
-                                price=msg.params["price"]
-                            )
-                            self.reservations[search_id] = reservation
+                search_id = msg.rq_number
+                if search_id in self.active_searches:
+                    search_data = self.active_searches[search_id]
 
-                        # Notify buyer
-                        found_msg = self.message_handler.create_message(
-                            MessageType.FOUND,
-                            search_id,
+                    # Create reservation
+                    with self.reservation_lock:
+                        reservation = ItemReservation(
+                            seller=msg.params["name"],
+                            buyer=search_data.buyer,
                             item_name=msg.params["item_name"],
                             price=msg.params["price"]
                         )
-                        self.udp_socket.sendto(found_msg.encode(), search_data.client_address)
+                        self.reservations[search_id] = reservation
 
-                        # Cancel search timer and cleanup
-                        if search_data.timer:
-                            search_data.timer.cancel()
-                        del self.active_searches[search_id]
-                        break
+                    # Notify buyer
+                    found_msg = self.message_handler.create_message(
+                        MessageType.FOUND,
+                        search_id,
+                        item_name=msg.params["item_name"],
+                        price=msg.params["price"]
+                    )
+                    self.udp_socket.sendto(found_msg.encode(), search_data.client_address)
+                    logging.info(f"Found message sent to buyer {search_data.buyer} for search {search_id}")
+
+                    # Cancel search timer and cleanup
+                    if search_data.timer:
+                        search_data.timer.cancel()
+                    del self.active_searches[search_id]
+                else:
+                    logging.warning(f"Accept received for unknown search ID: {search_id}")
 
         except Exception as e:
             logging.error(f"Error handling accept: {e}")
@@ -546,22 +567,26 @@ class ServerUDP_TCP:
         """Handle seller's refusal of negotiated price"""
         try:
             with self.search_lock:
-                for search_id, search_data in self.active_searches.items():
-                    if search_data.item_name == msg.params["item_name"]:
-                        # Notify buyer
-                        not_found_msg = self.message_handler.create_message(
-                            MessageType.NOT_FOUND,
-                            search_id,
-                            item_name=msg.params["item_name"],
-                            max_price=search_data.max_price
-                        )
-                        self.udp_socket.sendto(not_found_msg.encode(), search_data.client_address)
+                search_id = msg.rq_number
+                if search_id in self.active_searches:
+                    search_data = self.active_searches[search_id]
 
-                        # Cleanup search
-                        if search_data.timer:
-                            search_data.timer.cancel()
-                        del self.active_searches[search_id]
-                        break
+                    # Notify buyer
+                    not_found_msg = self.message_handler.create_message(
+                        MessageType.NOT_FOUND,
+                        search_id,
+                        item_name=msg.params["item_name"],
+                        max_price=search_data.max_price
+                    )
+                    self.udp_socket.sendto(not_found_msg.encode(), search_data.client_address)
+                    logging.info(f"Not found message sent to buyer {search_data.buyer} for search {search_id}")
+
+                    # Cleanup search
+                    if search_data.timer:
+                        search_data.timer.cancel()
+                    del self.active_searches[search_id]
+                else:
+                    logging.warning(f"Refuse received for unknown search ID: {search_id}")
 
         except Exception as e:
             logging.error(f"Error handling refuse: {e}")
@@ -573,7 +598,8 @@ class ServerUDP_TCP:
             logging.info("Shutting down server...")
 
             # Save registration data
-            self.save_registrations()
+            with self.registration_lock:
+                self.save_registrations()
 
             # Cancel all search timers
             with self.search_lock:
@@ -584,7 +610,6 @@ class ServerUDP_TCP:
             # Close UDP socket
             if hasattr(self, 'udp_socket'):
                 try:
-                    self.udp_socket.shutdown(socket.SHUT_RDWR)
                     self.udp_socket.close()
                 except:
                     pass
@@ -592,7 +617,6 @@ class ServerUDP_TCP:
             # Close TCP socket
             if hasattr(self, 'tcp_socket'):
                 try:
-                    self.tcp_socket.shutdown(socket.SHUT_RDWR)
                     self.tcp_socket.close()
                 except:
                     pass
@@ -635,6 +659,7 @@ class ServerUDP_TCP:
         finally:
             self.cleanup()
 
+
 def main():
     """Main entry point for server"""
     try:
@@ -644,6 +669,7 @@ def main():
         print(f"Failed to start server: {e}")
         logging.error(f"Failed to start server: {e}")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()
