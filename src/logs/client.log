@@ -55,3 +55,34 @@
 2024-11-21 10:24:31,665 - INFO - Client cleaned up successfully
 2024-11-21 10:24:42,608 - INFO - Client cleaned up successfully
 2024-11-21 10:24:42,608 - INFO - Client cleaned up successfully
+2024-11-25 11:13:13,193 - INFO - Client initialized - UDP port: 63251, TCP port: 4999
+2024-11-25 11:13:40,920 - INFO - Attempting registration with message: REGISTER 1916 "John Smith" 127.0.0.1 63251 4999
+2024-11-25 11:13:40,922 - INFO - Sending UDP message (attempt 1): REGISTER 1916 "John Smith" 127.0.0.1 63251 4999
+2024-11-25 11:13:40,945 - INFO - Server response: REGISTER-DENIED 1916 User John Smith is already registered
+2024-11-25 11:14:49,806 - INFO - Attempting registration with message: REGISTER 2195 "John Smith" 127.0.0.1 63251 4999
+2024-11-25 11:14:49,807 - INFO - Sending UDP message (attempt 1): REGISTER 2195 "John Smith" 127.0.0.1 63251 4999
+2024-11-25 11:14:49,811 - INFO - Server response: REGISTER-DENIED 2195 User John Smith is already registered
+2024-11-25 11:15:04,963 - INFO - Client cleaned up successfully
+2024-11-25 11:15:04,963 - INFO - Client cleaned up successfully
+2024-11-25 11:15:58,972 - INFO - Client initialized - UDP port: 56573, TCP port: 3878
+2024-11-25 11:16:02,572 - INFO - Attempting registration with message: REGISTER 8990 "Tina Gomez" 127.0.0.1 56573 3878
+2024-11-25 11:16:02,573 - INFO - Sending UDP message (attempt 1): REGISTER 8990 "Tina Gomez" 127.0.0.1 56573 3878
+2024-11-25 11:16:02,587 - INFO - Server response: REGISTERED 8990
+2024-11-25 11:16:56,663 - INFO - Added item for sale: book at price 50.0
+2024-11-25 11:18:05,805 - INFO - Client initialized - UDP port: 64169, TCP port: 4978
+2024-11-25 11:18:12,666 - INFO - Attempting registration with message: REGISTER 1102 "Test Buyer" 127.0.0.1 64169 4978
+2024-11-25 11:18:12,666 - INFO - Sending UDP message (attempt 1): REGISTER 1102 "Test Buyer" 127.0.0.1 64169 4978
+2024-11-25 11:18:12,678 - INFO - Server response: REGISTERED 1102
+2024-11-25 11:18:20,112 - INFO - Sending UDP message (attempt 1): LOOKING_FOR 7505 "Test Buyer" "book" 50.0
+2024-11-25 11:18:20,127 - INFO - Received message: SEARCH 7505 "book"
+2024-11-25 11:18:20,129 - INFO - Sending UDP message (attempt 1): OFFER 7505 "Tina Gomez" "book" 50.0
+2024-11-25 11:18:20,161 - INFO - Received message: FOUND 7505 "book" 50.0
+2024-11-25 11:18:20,162 - INFO - Server response: RESERVE 7505 "book" 50.0
+2024-11-25 11:18:20,162 - INFO - Sent offer for book
+2024-11-25 11:18:21,130 - WARNING - Timeout, retrying in 1 seconds...
+2024-11-25 11:18:22,131 - INFO - Sending UDP message (attempt 2): LOOKING_FOR 7505 "Test Buyer" "book" 50.0
+2024-11-25 11:18:22,149 - INFO - Received message: SEARCH 7505 "book"
+2024-11-25 11:18:22,151 - INFO - Sending UDP message (attempt 1): OFFER 7505 "Tina Gomez" "book" 50.0
+2024-11-25 11:18:22,156 - INFO - Server response: RESERVE 7505 "book" 50.0
+2024-11-25 11:18:22,156 - INFO - Server response: FOUND 7505 "book" 50.0
+2024-11-25 11:18:22,157 - INFO - Search response received: FOUND 7505 "book" 50.0

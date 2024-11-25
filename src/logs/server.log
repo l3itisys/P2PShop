@@ -145,3 +145,84 @@
 2024-11-21 10:24:47,415 - INFO - Shutting down server...
 2024-11-21 10:24:47,416 - INFO - Registrations saved successfully
 2024-11-21 10:24:48,416 - INFO - Server cleaned up successfully
+2024-11-25 11:09:16,063 - INFO - Server started - UDP port: 3000, TCP port: 3001
+2024-11-25 11:09:16,065 - INFO - Server running...
+2024-11-25 11:11:09,826 - INFO - Received UDP message from ('127.0.0.1', 63250): test
+2024-11-25 11:13:40,924 - INFO - Received UDP message from ('127.0.0.1', 63251): REGISTER 1916 "John Smith" 127.0.0.1 63251 4999
+2024-11-25 11:13:40,936 - DEBUG - Parsed message parts: ['REGISTER', '1916', 'John Smith', '127.0.0.1', '63251', '4999']
+2024-11-25 11:13:40,940 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 11:13:40,941 - DEBUG - Registration message params: {'name': 'John Smith', 'ip': '127.0.0.1', 'udp_port': 63251, 'tcp_port': 4999}
+2024-11-25 11:13:40,943 - WARNING - Registration denied for John Smith: already registered
+2024-11-25 11:13:40,945 - INFO - Sent registration response to John Smith at ('127.0.0.1', 63251)
+2024-11-25 11:14:49,809 - INFO - Received UDP message from ('127.0.0.1', 63251): REGISTER 2195 "John Smith" 127.0.0.1 63251 4999
+2024-11-25 11:14:49,810 - DEBUG - Parsed message parts: ['REGISTER', '2195', 'John Smith', '127.0.0.1', '63251', '4999']
+2024-11-25 11:14:49,810 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 11:14:49,810 - DEBUG - Registration message params: {'name': 'John Smith', 'ip': '127.0.0.1', 'udp_port': 63251, 'tcp_port': 4999}
+2024-11-25 11:14:49,810 - WARNING - Registration denied for John Smith: already registered
+2024-11-25 11:14:49,811 - INFO - Sent registration response to John Smith at ('127.0.0.1', 63251)
+2024-11-25 11:15:34,381 - INFO - Received UDP message from ('127.0.0.1', 56572): test
+2024-11-25 11:16:02,574 - INFO - Received UDP message from ('127.0.0.1', 56573): REGISTER 8990 "Tina Gomez" 127.0.0.1 56573 3878
+2024-11-25 11:16:02,575 - DEBUG - Parsed message parts: ['REGISTER', '8990', 'Tina Gomez', '127.0.0.1', '56573', '3878']
+2024-11-25 11:16:02,576 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 11:16:02,576 - DEBUG - Registration message params: {'name': 'Tina Gomez', 'ip': '127.0.0.1', 'udp_port': 56573, 'tcp_port': 3878}
+2024-11-25 11:16:02,586 - INFO - Registrations saved successfully
+2024-11-25 11:16:02,587 - INFO - User Tina Gomez registered successfully
+2024-11-25 11:16:02,587 - INFO - Sent registration response to Tina Gomez at ('127.0.0.1', 56573)
+2024-11-25 11:17:30,143 - INFO - Received UDP message from ('127.0.0.1', 64168): test
+2024-11-25 11:18:12,668 - INFO - Received UDP message from ('127.0.0.1', 64169): REGISTER 1102 "Test Buyer" 127.0.0.1 64169 4978
+2024-11-25 11:18:12,669 - DEBUG - Parsed message parts: ['REGISTER', '1102', 'Test Buyer', '127.0.0.1', '64169', '4978']
+2024-11-25 11:18:12,670 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 11:18:12,672 - DEBUG - Registration message params: {'name': 'Test Buyer', 'ip': '127.0.0.1', 'udp_port': 64169, 'tcp_port': 4978}
+2024-11-25 11:18:12,676 - INFO - Registrations saved successfully
+2024-11-25 11:18:12,677 - INFO - User Test Buyer registered successfully
+2024-11-25 11:18:12,678 - INFO - Sent registration response to Test Buyer at ('127.0.0.1', 64169)
+2024-11-25 11:18:20,114 - INFO - Received UDP message from ('127.0.0.1', 64169): LOOKING_FOR 7505 "Test Buyer" "book" 50.0
+2024-11-25 11:18:20,114 - DEBUG - Parsed message parts: ['LOOKING_FOR', '7505', 'Test Buyer', 'book', '50.0']
+2024-11-25 11:18:20,115 - INFO - Processing message type: MessageType.LOOKING_FOR
+2024-11-25 11:18:20,118 - INFO - Search broadcast sent to Snow White
+2024-11-25 11:18:20,119 - INFO - Search broadcast sent to Emily Smith
+2024-11-25 11:18:20,119 - INFO - Search broadcast sent to John Smith
+2024-11-25 11:18:20,119 - INFO - Search broadcast sent to Kate Smith
+2024-11-25 11:18:20,120 - INFO - Search broadcast sent to Emilia Johnson
+2024-11-25 11:18:20,120 - INFO - Search broadcast sent to Nayla Smith
+2024-11-25 11:18:20,120 - INFO - Search broadcast sent to John Doe Doe
+2024-11-25 11:18:20,124 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 11:18:20,124 - INFO - Search broadcast sent to ll ll
+2024-11-25 11:18:20,125 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 11:18:20,125 - INFO - Search broadcast sent to hi there
+2024-11-25 11:18:20,125 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 11:18:20,125 - INFO - Search broadcast sent to seller1 sel
+2024-11-25 11:18:20,126 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 11:18:20,126 - INFO - Search broadcast sent to buyer buy
+2024-11-25 11:18:20,126 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 11:18:20,127 - INFO - Search broadcast sent to Tina Gomez
+2024-11-25 11:18:20,134 - INFO - Search initiated by Test Buyer for book
+2024-11-25 11:18:20,134 - INFO - Received UDP message from ('127.0.0.1', 56573): OFFER 7505 "Tina Gomez" "book" 50.0
+2024-11-25 11:18:20,135 - DEBUG - Parsed message parts: ['OFFER', '7505', 'Tina Gomez', 'book', '50.0']
+2024-11-25 11:18:20,136 - INFO - Processing message type: MessageType.OFFER
+2024-11-25 11:18:20,161 - INFO - Offer received from Tina Gomez for search 7505
+2024-11-25 11:18:22,133 - INFO - Received UDP message from ('127.0.0.1', 64169): LOOKING_FOR 7505 "Test Buyer" "book" 50.0
+2024-11-25 11:18:22,134 - DEBUG - Parsed message parts: ['LOOKING_FOR', '7505', 'Test Buyer', 'book', '50.0']
+2024-11-25 11:18:22,136 - INFO - Processing message type: MessageType.LOOKING_FOR
+2024-11-25 11:18:22,137 - INFO - Search broadcast sent to Snow White
+2024-11-25 11:18:22,138 - INFO - Search broadcast sent to Emily Smith
+2024-11-25 11:18:22,138 - INFO - Search broadcast sent to John Smith
+2024-11-25 11:18:22,139 - INFO - Search broadcast sent to Kate Smith
+2024-11-25 11:18:22,140 - INFO - Search broadcast sent to Emilia Johnson
+2024-11-25 11:18:22,140 - INFO - Search broadcast sent to Nayla Smith
+2024-11-25 11:18:22,141 - INFO - Search broadcast sent to John Doe Doe
+2024-11-25 11:18:22,141 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 11:18:22,141 - INFO - Search broadcast sent to ll ll
+2024-11-25 11:18:22,143 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 11:18:22,143 - INFO - Search broadcast sent to hi there
+2024-11-25 11:18:22,144 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 11:18:22,145 - INFO - Search broadcast sent to seller1 sel
+2024-11-25 11:18:22,145 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 11:18:22,148 - INFO - Search broadcast sent to buyer buy
+2024-11-25 11:18:22,149 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 11:18:22,149 - INFO - Search broadcast sent to Tina Gomez
+2024-11-25 11:18:22,152 - INFO - Search initiated by Test Buyer for book
+2024-11-25 11:18:22,153 - INFO - Received UDP message from ('127.0.0.1', 56573): OFFER 7505 "Tina Gomez" "book" 50.0
+2024-11-25 11:18:22,154 - DEBUG - Parsed message parts: ['OFFER', '7505', 'Tina Gomez', 'book', '50.0']
+2024-11-25 11:18:22,155 - INFO - Processing message type: MessageType.OFFER
+2024-11-25 11:18:22,156 - INFO - Offer received from Tina Gomez for search 7505

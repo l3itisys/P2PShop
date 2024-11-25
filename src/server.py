@@ -445,6 +445,7 @@ class ServerUDP_TCP:
         except Exception as e:
             logging.error(f"Error handling search timeout: {e}")
 
+
     def handle_tcp_client(self, client_socket):
         """Handle TCP client connections"""
         try:

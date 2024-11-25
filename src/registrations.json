@@ -52,5 +52,15 @@
         "ip": "127.0.0.1",
         "udp_port": 41684,
         "tcp_port": 4554
+    },
+    "Tina Gomez": {
+        "ip": "127.0.0.1",
+        "udp_port": 56573,
+        "tcp_port": 3878
+    },
+    "Test Buyer": {
+        "ip": "127.0.0.1",
+        "udp_port": 64169,
+        "tcp_port": 4978
     }
 }

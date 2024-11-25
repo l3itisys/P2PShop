@@ -472,15 +472,85 @@ class ClientUDP_TCP:
         except Exception as e:
             logging.error(f"Error handling reserve request: {e}")
 
-    def handle_found_notification(self, msg: Message):
+    def handle_found_notification(self, msg: Message): #yasmine added if/else
         """Handle found notifications from server"""
         try:
             item_name = msg.params["item_name"]
             price = msg.params["price"]
             print(f"\nItem found: {item_name} at price ${price:.2f}")
-            print("You can proceed with the purchase through TCP connection.")
+            if input("Would you like to purchase this item? (yes/no): ").lower() == 'yes':
+                self.initiate_purchase(msg.rq_number, item_name, price)
+            else:
+                self.send_cancel_message(msg.rq_number, item_name, price)
         except Exception as e:
             logging.error(f"Error handling found notification: {e}")
+
+    def initiate_purchase(self, rq_number: str, item_name: str, price: float): #yasmine added init.purch
+        """Start purchase process"""
+        try:
+           # Send BUY message via UDP
+           buy_msg = self.message_handler.create_message(
+               MessageType.BUY,
+               rq_number,
+               item_name=item_name,
+               price=price
+           )
+           self.send_udp_message(buy_msg)
+
+           # Wait for TCP connection from server
+           tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+           tcp_socket.bind(('', self.client_tcp_port))
+           tcp_socket.listen(1)
+           tcp_socket.settimeout(30)
+        
+           conn, addr = tcp_socket.accept()
+           self.handle_tcp_transaction(conn)
+           tcp_socket.close() 
+        except Exception as e:
+            logging.error(f"Purchase initiation error: {e}")
+            print("Failed to initiate purchase")
+
+    def handle_tcp_transaction(self, conn: socket.socket): #yasmine added tcp trans
+        """Handle TCP purchase transaction"""
+        try:
+           # Receive INFORM_Req
+           data = conn.recv(1024).decode()
+           msg = self.message_handler.parse_message(data)
+
+           if msg.command != MessageType.INFORM_REQ:
+            raise Exception("Expected INFORM_Req message")
+           
+           # Get user details
+           cc_number = input("Enter credit card number: ").strip()
+           cc_exp = input("Enter expiration date (MM/YY): ").strip()
+           address = input("Enter shipping address: ").strip()
+        
+           # Send INFORM_Res
+           response = self.message_handler.create_message(
+               MessageType.INFORM_RES,
+               msg.rq_number,
+               name=self.name,
+               cc_number=cc_number,
+               cc_exp_date=cc_exp,
+               address=address
+            )
+           conn.send(response.encode())
+           
+           # Wait for final response
+           data = conn.recv(1024).decode()
+           msg = self.message_handler.parse_message(data)
+           
+           if msg.command == MessageType.SHIPPING_INFO:
+               print("\nPurchase successful!")
+               print("The seller will ship your item soon.")
+           elif msg.command == MessageType.CANCEL:
+               print(f"\nPurchase cancelled: {msg.params.get('reason', 'Unknown error')}")   
+
+        except Exception as e:
+            logging.error(f"TCP transaction error: {e}")
+            print("Transaction failed")
+        finally:
+            conn.close()
 
     def handle_not_found_notification(self, msg: Message):
         """Handle not found notifications from server"""
