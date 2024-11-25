@@ -86,3 +86,42 @@
 2024-11-25 11:18:22,156 - INFO - Server response: RESERVE 7505 "book" 50.0
 2024-11-25 11:18:22,156 - INFO - Server response: FOUND 7505 "book" 50.0
 2024-11-25 11:18:22,157 - INFO - Search response received: FOUND 7505 "book" 50.0
+2024-11-25 17:02:25,131 - INFO - Client initialized - UDP port: 61365, TCP port: 5000
+2024-11-25 17:02:29,877 - INFO - Attempting registration with message: REGISTER 4984 "Alice Seller" 127.0.0.1 61365 5000
+2024-11-25 17:02:29,878 - INFO - Sending UDP message (attempt 1): REGISTER 4984 "Alice Seller" 127.0.0.1 61365 5000
+2024-11-25 17:02:29,883 - INFO - Received message: REGISTERED 4984
+2024-11-25 17:02:30,887 - WARNING - Timeout, retrying in 1 seconds...
+2024-11-25 17:02:31,888 - INFO - Sending UDP message (attempt 2): REGISTER 4984 "Alice Seller" 127.0.0.1 61365 5000
+2024-11-25 17:02:31,893 - INFO - Server response: REGISTER-DENIED 4984 User Alice Seller is already registered
+2024-11-25 17:03:34,451 - INFO - Attempting registration with message: REGISTER 4014 "Alice Seller" 127.0.0.1 61365 5000
+2024-11-25 17:03:34,451 - INFO - Sending UDP message (attempt 1): REGISTER 4014 "Alice Seller" 127.0.0.1 61365 5000
+2024-11-25 17:03:34,455 - INFO - Received message: REGISTER-DENIED 4014 User Alice Seller is already registered
+2024-11-25 17:03:35,467 - WARNING - Timeout, retrying in 1 seconds...
+2024-11-25 17:03:36,468 - INFO - Sending UDP message (attempt 2): REGISTER 4014 "Alice Seller" 127.0.0.1 61365 5000
+2024-11-25 17:03:36,474 - INFO - Server response: REGISTER-DENIED 4014 User Alice Seller is already registered
+2024-11-25 17:03:46,163 - INFO - Client cleaned up successfully
+2024-11-25 17:03:46,163 - INFO - Client cleaned up successfully
+2024-11-25 17:04:13,511 - INFO - Client initialized - UDP port: 51546, TCP port: 5000
+2024-11-25 17:04:18,101 - INFO - Attempting registration with message: REGISTER 9193 "Tom Seller" 127.0.0.1 51546 5000
+2024-11-25 17:04:18,102 - INFO - Sending UDP message (attempt 1): REGISTER 9193 "Tom Seller" 127.0.0.1 51546 5000
+2024-11-25 17:04:18,107 - INFO - Received message: REGISTERED 9193
+2024-11-25 17:04:19,095 - WARNING - Timeout, retrying in 1 seconds...
+2024-11-25 17:04:20,096 - INFO - Sending UDP message (attempt 2): REGISTER 9193 "Tom Seller" 127.0.0.1 51546 5000
+2024-11-25 17:04:20,101 - INFO - Received message: REGISTER-DENIED 9193 User Tom Seller is already registered
+2024-11-25 17:04:21,104 - WARNING - Timeout, retrying in 1 seconds...
+2024-11-25 17:04:22,105 - INFO - Sending UDP message (attempt 3): REGISTER 9193 "Tom Seller" 127.0.0.1 51546 5000
+2024-11-25 17:04:22,110 - INFO - Server response: REGISTER-DENIED 9193 User Tom Seller is already registered
+2024-11-25 17:05:30,953 - INFO - Attempting registration with message: REGISTER 5119 "Tom Seller" 127.0.0.1 51546 5000
+2024-11-25 17:05:30,954 - INFO - Sending UDP message (attempt 1): REGISTER 5119 "Tom Seller" 127.0.0.1 51546 5000
+2024-11-25 17:05:30,958 - INFO - Server response: REGISTER-DENIED 5119 User Tom Seller is already registered
+2024-11-25 17:05:50,193 - INFO - Client cleaned up successfully
+2024-11-25 17:05:50,193 - INFO - Client cleaned up successfully
+2024-11-25 17:06:07,855 - INFO - Client initialized - UDP port: 59105, TCP port: 3472
+2024-11-25 17:06:12,714 - INFO - Attempting registration with message: REGISTER 4315 "Tom Seller" 127.0.0.1 59105 3472
+2024-11-25 17:06:12,715 - INFO - Sending UDP message (attempt 1): REGISTER 4315 "Tom Seller" 127.0.0.1 59105 3472
+2024-11-25 17:06:12,719 - INFO - Server response: REGISTER-DENIED 4315 User Tom Seller is already registered
+2024-11-25 17:07:18,321 - INFO - Attempting registration with message: REGISTER 9079 "Tom Seller" 127.0.0.1 59105 3472
+2024-11-25 17:07:18,321 - INFO - Sending UDP message (attempt 1): REGISTER 9079 "Tom Seller" 127.0.0.1 59105 3472
+2024-11-25 17:07:18,326 - INFO - Server response: REGISTER-DENIED 9079 User Tom Seller is already registered
+2024-11-25 17:12:59,921 - INFO - Client cleaned up successfully
+2024-11-25 17:12:59,922 - INFO - Client cleaned up successfully

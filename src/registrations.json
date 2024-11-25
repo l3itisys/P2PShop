@@ -62,5 +62,10 @@
         "ip": "127.0.0.1",
         "udp_port": 64169,
         "tcp_port": 4978
+    },
+    "Alice Seller": {
+        "ip": "127.0.0.1",
+        "udp_port": 61365,
+        "tcp_port": 5000
     }
 }

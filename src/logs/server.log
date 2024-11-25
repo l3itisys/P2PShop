@@ -226,3 +226,70 @@
 2024-11-25 11:18:22,154 - DEBUG - Parsed message parts: ['OFFER', '7505', 'Tina Gomez', 'book', '50.0']
 2024-11-25 11:18:22,155 - INFO - Processing message type: MessageType.OFFER
 2024-11-25 11:18:22,156 - INFO - Offer received from Tina Gomez for search 7505
+2024-11-25 17:01:39,490 - INFO - Server started - UDP port: 3000, TCP port: 3001
+2024-11-25 17:01:39,493 - INFO - Server running...
+2024-11-25 17:02:11,590 - INFO - Received UDP message from ('127.0.0.1', 61364): test
+2024-11-25 17:02:29,879 - INFO - Received UDP message from ('127.0.0.1', 61365): REGISTER 4984 "Alice Seller" 127.0.0.1 61365 5000
+2024-11-25 17:02:29,879 - DEBUG - Parsed message parts: ['REGISTER', '4984', 'Alice Seller', '127.0.0.1', '61365', '5000']
+2024-11-25 17:02:29,880 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 17:02:29,880 - DEBUG - Registration message params: {'name': 'Alice Seller', 'ip': '127.0.0.1', 'udp_port': 61365, 'tcp_port': 5000}
+2024-11-25 17:02:29,882 - INFO - Registrations saved successfully
+2024-11-25 17:02:29,883 - INFO - User Alice Seller registered successfully
+2024-11-25 17:02:29,883 - INFO - Sent registration response to Alice Seller at ('127.0.0.1', 61365)
+2024-11-25 17:02:31,890 - INFO - Received UDP message from ('127.0.0.1', 61365): REGISTER 4984 "Alice Seller" 127.0.0.1 61365 5000
+2024-11-25 17:02:31,890 - DEBUG - Parsed message parts: ['REGISTER', '4984', 'Alice Seller', '127.0.0.1', '61365', '5000']
+2024-11-25 17:02:31,892 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 17:02:31,892 - DEBUG - Registration message params: {'name': 'Alice Seller', 'ip': '127.0.0.1', 'udp_port': 61365, 'tcp_port': 5000}
+2024-11-25 17:02:31,892 - WARNING - Registration denied for Alice Seller: already registered
+2024-11-25 17:02:31,893 - INFO - Sent registration response to Alice Seller at ('127.0.0.1', 61365)
+2024-11-25 17:03:34,452 - INFO - Received UDP message from ('127.0.0.1', 61365): REGISTER 4014 "Alice Seller" 127.0.0.1 61365 5000
+2024-11-25 17:03:34,453 - DEBUG - Parsed message parts: ['REGISTER', '4014', 'Alice Seller', '127.0.0.1', '61365', '5000']
+2024-11-25 17:03:34,453 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 17:03:34,454 - DEBUG - Registration message params: {'name': 'Alice Seller', 'ip': '127.0.0.1', 'udp_port': 61365, 'tcp_port': 5000}
+2024-11-25 17:03:34,455 - WARNING - Registration denied for Alice Seller: already registered
+2024-11-25 17:03:34,455 - INFO - Sent registration response to Alice Seller at ('127.0.0.1', 61365)
+2024-11-25 17:03:36,469 - INFO - Received UDP message from ('127.0.0.1', 61365): REGISTER 4014 "Alice Seller" 127.0.0.1 61365 5000
+2024-11-25 17:03:36,470 - DEBUG - Parsed message parts: ['REGISTER', '4014', 'Alice Seller', '127.0.0.1', '61365', '5000']
+2024-11-25 17:03:36,471 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 17:03:36,471 - DEBUG - Registration message params: {'name': 'Alice Seller', 'ip': '127.0.0.1', 'udp_port': 61365, 'tcp_port': 5000}
+2024-11-25 17:03:36,473 - WARNING - Registration denied for Alice Seller: already registered
+2024-11-25 17:03:36,473 - INFO - Sent registration response to Alice Seller at ('127.0.0.1', 61365)
+2024-11-25 17:03:55,983 - INFO - Received UDP message from ('127.0.0.1', 51545): test
+2024-11-25 17:04:18,103 - INFO - Received UDP message from ('127.0.0.1', 51546): REGISTER 9193 "Tom Seller" 127.0.0.1 51546 5000
+2024-11-25 17:04:18,103 - DEBUG - Parsed message parts: ['REGISTER', '9193', 'Tom Seller', '127.0.0.1', '51546', '5000']
+2024-11-25 17:04:18,104 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 17:04:18,105 - DEBUG - Registration message params: {'name': 'Tom Seller', 'ip': '127.0.0.1', 'udp_port': 51546, 'tcp_port': 5000}
+2024-11-25 17:04:18,106 - INFO - Registrations saved successfully
+2024-11-25 17:04:18,107 - INFO - User Tom Seller registered successfully
+2024-11-25 17:04:18,107 - INFO - Sent registration response to Tom Seller at ('127.0.0.1', 51546)
+2024-11-25 17:04:20,097 - INFO - Received UDP message from ('127.0.0.1', 51546): REGISTER 9193 "Tom Seller" 127.0.0.1 51546 5000
+2024-11-25 17:04:20,098 - DEBUG - Parsed message parts: ['REGISTER', '9193', 'Tom Seller', '127.0.0.1', '51546', '5000']
+2024-11-25 17:04:20,099 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 17:04:20,100 - DEBUG - Registration message params: {'name': 'Tom Seller', 'ip': '127.0.0.1', 'udp_port': 51546, 'tcp_port': 5000}
+2024-11-25 17:04:20,100 - WARNING - Registration denied for Tom Seller: already registered
+2024-11-25 17:04:20,101 - INFO - Sent registration response to Tom Seller at ('127.0.0.1', 51546)
+2024-11-25 17:04:22,106 - INFO - Received UDP message from ('127.0.0.1', 51546): REGISTER 9193 "Tom Seller" 127.0.0.1 51546 5000
+2024-11-25 17:04:22,107 - DEBUG - Parsed message parts: ['REGISTER', '9193', 'Tom Seller', '127.0.0.1', '51546', '5000']
+2024-11-25 17:04:22,108 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 17:04:22,108 - DEBUG - Registration message params: {'name': 'Tom Seller', 'ip': '127.0.0.1', 'udp_port': 51546, 'tcp_port': 5000}
+2024-11-25 17:04:22,109 - WARNING - Registration denied for Tom Seller: already registered
+2024-11-25 17:04:22,110 - INFO - Sent registration response to Tom Seller at ('127.0.0.1', 51546)
+2024-11-25 17:05:30,955 - INFO - Received UDP message from ('127.0.0.1', 51546): REGISTER 5119 "Tom Seller" 127.0.0.1 51546 5000
+2024-11-25 17:05:30,956 - DEBUG - Parsed message parts: ['REGISTER', '5119', 'Tom Seller', '127.0.0.1', '51546', '5000']
+2024-11-25 17:05:30,956 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 17:05:30,957 - DEBUG - Registration message params: {'name': 'Tom Seller', 'ip': '127.0.0.1', 'udp_port': 51546, 'tcp_port': 5000}
+2024-11-25 17:05:30,957 - WARNING - Registration denied for Tom Seller: already registered
+2024-11-25 17:05:30,958 - INFO - Sent registration response to Tom Seller at ('127.0.0.1', 51546)
+2024-11-25 17:05:57,124 - INFO - Received UDP message from ('127.0.0.1', 59104): test
+2024-11-25 17:06:12,716 - INFO - Received UDP message from ('127.0.0.1', 59105): REGISTER 4315 "Tom Seller" 127.0.0.1 59105 3472
+2024-11-25 17:06:12,717 - DEBUG - Parsed message parts: ['REGISTER', '4315', 'Tom Seller', '127.0.0.1', '59105', '3472']
+2024-11-25 17:06:12,718 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 17:06:12,718 - DEBUG - Registration message params: {'name': 'Tom Seller', 'ip': '127.0.0.1', 'udp_port': 59105, 'tcp_port': 3472}
+2024-11-25 17:06:12,719 - WARNING - Registration denied for Tom Seller: already registered
+2024-11-25 17:06:12,719 - INFO - Sent registration response to Tom Seller at ('127.0.0.1', 59105)
+2024-11-25 17:07:18,323 - INFO - Received UDP message from ('127.0.0.1', 59105): REGISTER 9079 "Tom Seller" 127.0.0.1 59105 3472
+2024-11-25 17:07:18,323 - DEBUG - Parsed message parts: ['REGISTER', '9079', 'Tom Seller', '127.0.0.1', '59105', '3472']
+2024-11-25 17:07:18,324 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 17:07:18,325 - DEBUG - Registration message params: {'name': 'Tom Seller', 'ip': '127.0.0.1', 'udp_port': 59105, 'tcp_port': 3472}
+2024-11-25 17:07:18,325 - WARNING - Registration denied for Tom Seller: already registered
+2024-11-25 17:07:18,326 - INFO - Sent registration response to Tom Seller at ('127.0.0.1', 59105)

@@ -444,7 +444,124 @@ class ServerUDP_TCP:
 
         except Exception as e:
             logging.error(f"Error handling search timeout: {e}")
+    
+    def handle_buy_message(self, msg: Message, client_address: tuple): #yasmine added buy message
+        """Process BUY message from buyer"""
+        try:
+            search_id = msg.rq_number
+            if search_id not in self.reservations:
+                return
+            
+            reservation = self.reservations[search_id]
+            
+            # Start TCP connections with both parties
+            buyer_thread = threading.Thread(
+                target=self.establish_tcp_connection,
+                args=("buyer", reservation.buyer, search_id)
+            )
+            seller_thread = threading.Thread(
+                target=self.establish_tcp_connection,
+                args=("seller", reservation.seller, search_id)
+            )
+            
+            buyer_thread.start()
+            seller_thread.start()
+        
+            buyer_thread.join(timeout=30)
+            seller_thread.join(timeout=30)
+        
+            if not hasattr(self, f'tcp_socket_{search_id}_buyer') or \
+               not hasattr(self, f'tcp_socket_{search_id}_seller'):
+               raise Exception("Failed to establish TCP connections")
+            
+            self.process_tcp_transaction(search_id)
+        except Exception as e:
+            logging.error(f"Error handling BUY message: {e}")
 
+    def establish_tcp_connection(self, role: str, user: str, search_id: str): #yasmine added tcp connection
+        """Establish TCP connection with user"""
+        try:
+            user_data = self.registration_data[user]
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.connect((user_data["ip"], user_data["tcp_port"]))
+            setattr(self, f'tcp_socket_{search_id}_{role}', sock)
+        except Exception as e:
+            logging.error(f"TCP connection error with {role}: {e}")
+
+    def process_tcp_transaction(self, search_id: str): #yasmine added tcp transaction
+        """Process the complete TCP transaction"""
+        try:
+            buyer_sock = getattr(self, f'tcp_socket_{search_id}_buyer')
+            seller_sock = getattr(self, f'tcp_socket_{search_id}_seller')
+            reservation = self.reservations[search_id]
+            
+            # Send INFORM_Req to both
+            inform_req = self.message_handler.create_message(
+                MessageType.INFORM_REQ,
+                search_id,
+                item_name=reservation.item_name,
+                price=reservation.price
+            )
+
+            buyer_sock.send(inform_req.encode())
+            seller_sock.send(inform_req.encode())
+            
+            # Get responses
+            buyer_data = self.message_handler.parse_message(buyer_sock.recv(1024).decode())
+            seller_data = self.message_handler.parse_message(seller_sock.recv(1024).decode())
+
+            if not all([buyer_data, seller_data]):
+               raise Exception("Invalid response from parties")
+               
+            # Process payment
+            success = self.process_payment(
+                buyer_data.params["cc_number"],
+                buyer_data.params["cc_exp_date"],
+                reservation.price
+            )
+
+            if success:
+                # Calculate seller's share (90%)
+                seller_amount = reservation.price * 0.9
+
+                # Send shipping info to seller
+                shipping_info = self.message_handler.create_message(
+                    MessageType.SHIPPING_INFO,
+                    search_id,
+                    name=buyer_data.params["name"],
+                    address=buyer_data.params["address"]
+                )
+                seller_sock.send(shipping_info.encode())
+
+                # Confirm to buyer
+                buyer_sock.send(shipping_info.encode())
+            else:
+                # Send cancellation
+                cancel_msg = self.message_handler.create_message(
+                    MessageType.CANCEL,
+                    search_id,
+                    reason="Payment processing failed"
+                )
+                buyer_sock.send(cancel_msg.encode())
+                seller_sock.send(cancel_msg.encode())
+
+
+        except Exception as e:
+            logging.error(f"TCP transaction error: {e}")
+            self.send_cancel_to_both(search_id, str(e))
+        finally:
+            self.cleanup_tcp_connections(search_id)
+
+    def cleanup_tcp_connections(self, search_id: str): #yasmine added cleanup
+        """Clean up TCP connections"""
+        for role in ['buyer', 'seller']:
+            sock_name = f'tcp_socket_{search_id}_{role}'
+            if hasattr(self, sock_name):
+                try:
+                    getattr(self, sock_name).close()
+                    delattr(self, sock_name)
+                except:
+                    pass
 
     def handle_tcp_client(self, client_socket):
         """Handle TCP client connections"""
@@ -503,6 +620,8 @@ class ServerUDP_TCP:
                 self.handle_accept(msg, client_address)
             elif msg.command == MessageType.REFUSE:
                 self.handle_refuse(msg, client_address)
+            elif msg.command == MessageType.BUY:
+               self.handle_buy_message(msg, client_address)
             # Handle other message types as per the protocol
             else:
                 error_response = self.message_handler.create_message(
