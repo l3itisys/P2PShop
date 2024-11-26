@@ -293,3 +293,657 @@
 2024-11-25 17:07:18,325 - DEBUG - Registration message params: {'name': 'Tom Seller', 'ip': '127.0.0.1', 'udp_port': 59105, 'tcp_port': 3472}
 2024-11-25 17:07:18,325 - WARNING - Registration denied for Tom Seller: already registered
 2024-11-25 17:07:18,326 - INFO - Sent registration response to Tom Seller at ('127.0.0.1', 59105)
+2024-11-25 17:13:36,525 - INFO - Server started - UDP port: 3000, TCP port: 3001
+2024-11-25 17:13:36,527 - INFO - Server running...
+2024-11-25 17:13:48,736 - INFO - Received UDP message from ('127.0.0.1', 49705): test
+2024-11-25 17:14:31,192 - INFO - Received UDP message from ('127.0.0.1', 49706): REGISTER 3847 "Yas Sell" 127.0.0.1 49706 2096
+2024-11-25 17:14:31,204 - DEBUG - Parsed message parts: ['REGISTER', '3847', 'Yas Sell', '127.0.0.1', '49706', '2096']
+2024-11-25 17:14:31,205 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 17:14:31,205 - DEBUG - Registration message params: {'name': 'Yas Sell', 'ip': '127.0.0.1', 'udp_port': 49706, 'tcp_port': 2096}
+2024-11-25 17:14:31,207 - INFO - Registrations saved successfully
+2024-11-25 17:14:31,208 - INFO - User Yas Sell registered successfully
+2024-11-25 17:14:31,209 - INFO - Sent registration response to Yas Sell at ('127.0.0.1', 49706)
+2024-11-25 17:14:33,204 - INFO - Received UDP message from ('127.0.0.1', 49706): REGISTER 3847 "Yas Sell" 127.0.0.1 49706 2096
+2024-11-25 17:14:33,205 - DEBUG - Parsed message parts: ['REGISTER', '3847', 'Yas Sell', '127.0.0.1', '49706', '2096']
+2024-11-25 17:14:33,205 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 17:14:33,206 - DEBUG - Registration message params: {'name': 'Yas Sell', 'ip': '127.0.0.1', 'udp_port': 49706, 'tcp_port': 2096}
+2024-11-25 17:14:33,207 - WARNING - Registration denied for Yas Sell: already registered
+2024-11-25 17:14:33,208 - INFO - Sent registration response to Yas Sell at ('127.0.0.1', 49706)
+2024-11-25 17:15:50,392 - INFO - Received UDP message from ('127.0.0.1', 51590): test
+2024-11-25 17:16:12,870 - INFO - Received UDP message from ('127.0.0.1', 51591): REGISTER 9381 "alice seller" 127.0.0.1 51591 5000
+2024-11-25 17:16:12,871 - DEBUG - Parsed message parts: ['REGISTER', '9381', 'alice seller', '127.0.0.1', '51591', '5000']
+2024-11-25 17:16:12,871 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 17:16:12,872 - DEBUG - Registration message params: {'name': 'alice seller', 'ip': '127.0.0.1', 'udp_port': 51591, 'tcp_port': 5000}
+2024-11-25 17:16:12,873 - INFO - Registrations saved successfully
+2024-11-25 17:16:12,874 - INFO - User alice seller registered successfully
+2024-11-25 17:16:12,875 - INFO - Sent registration response to alice seller at ('127.0.0.1', 51591)
+2024-11-25 17:17:07,209 - INFO - Received UDP message from ('127.0.0.1', 64643): test
+2024-11-25 17:17:25,973 - INFO - Received UDP message from ('127.0.0.1', 64644): REGISTER 4422 "bob buyer" 127.0.0.1 64644 5001
+2024-11-25 17:17:25,974 - DEBUG - Parsed message parts: ['REGISTER', '4422', 'bob buyer', '127.0.0.1', '64644', '5001']
+2024-11-25 17:17:25,975 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 17:17:25,975 - DEBUG - Registration message params: {'name': 'bob buyer', 'ip': '127.0.0.1', 'udp_port': 64644, 'tcp_port': 5001}
+2024-11-25 17:17:25,977 - INFO - Registrations saved successfully
+2024-11-25 17:17:25,978 - INFO - User bob buyer registered successfully
+2024-11-25 17:17:25,979 - INFO - Sent registration response to bob buyer at ('127.0.0.1', 64644)
+2024-11-25 17:17:58,036 - INFO - Received UDP message from ('127.0.0.1', 64644): LOOKING_FOR 3912 "bob buyer" "laptop" 2000.0
+2024-11-25 17:17:58,036 - DEBUG - Parsed message parts: ['LOOKING_FOR', '3912', 'bob buyer', 'laptop', '2000.0']
+2024-11-25 17:17:58,037 - INFO - Processing message type: MessageType.LOOKING_FOR
+2024-11-25 17:17:58,037 - INFO - Search broadcast sent to Snow White
+2024-11-25 17:17:58,038 - INFO - Search broadcast sent to Emily Smith
+2024-11-25 17:17:58,038 - INFO - Search broadcast sent to John Smith
+2024-11-25 17:17:58,039 - INFO - Search broadcast sent to Kate Smith
+2024-11-25 17:17:58,039 - INFO - Search broadcast sent to Emilia Johnson
+2024-11-25 17:17:58,040 - INFO - Search broadcast sent to Nayla Smith
+2024-11-25 17:17:58,040 - INFO - Search broadcast sent to John Doe Doe
+2024-11-25 17:17:58,041 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 17:17:58,042 - INFO - Search broadcast sent to ll ll
+2024-11-25 17:17:58,042 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 17:17:58,042 - INFO - Search broadcast sent to hi there
+2024-11-25 17:17:58,043 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 17:17:58,043 - INFO - Search broadcast sent to seller1 sel
+2024-11-25 17:17:58,043 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 17:17:58,043 - INFO - Search broadcast sent to buyer buy
+2024-11-25 17:17:58,044 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 17:17:58,044 - INFO - Search broadcast sent to Tina Gomez
+2024-11-25 17:17:58,044 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 17:17:58,044 - INFO - Search broadcast sent to Test Buyer
+2024-11-25 17:17:58,044 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 17:17:58,044 - INFO - Search broadcast sent to Alice Seller
+2024-11-25 17:17:58,045 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 17:17:58,045 - INFO - Search broadcast sent to Yas Sell
+2024-11-25 17:17:58,045 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 17:17:58,045 - INFO - Search broadcast sent to alice seller
+2024-11-25 17:17:58,047 - INFO - Search initiated by bob buyer for laptop
+2024-11-25 17:17:58,053 - INFO - Received UDP message from ('127.0.0.1', 51591): OFFER 3912 "alice seller" "laptop" 1500.0
+2024-11-25 17:17:58,053 - DEBUG - Parsed message parts: ['OFFER', '3912', 'alice seller', 'laptop', '1500.0']
+2024-11-25 17:17:58,054 - INFO - Processing message type: MessageType.OFFER
+2024-11-25 17:17:58,054 - INFO - Offer received from alice seller for search 3912
+2024-11-25 17:18:00,046 - INFO - Received UDP message from ('127.0.0.1', 64644): LOOKING_FOR 3912 "bob buyer" "laptop" 2000.0
+2024-11-25 17:18:00,046 - DEBUG - Parsed message parts: ['LOOKING_FOR', '3912', 'bob buyer', 'laptop', '2000.0']
+2024-11-25 17:18:00,047 - INFO - Processing message type: MessageType.LOOKING_FOR
+2024-11-25 17:18:00,047 - INFO - Search broadcast sent to Snow White
+2024-11-25 17:18:00,048 - INFO - Search broadcast sent to Emily Smith
+2024-11-25 17:18:00,048 - INFO - Search broadcast sent to John Smith
+2024-11-25 17:18:00,048 - INFO - Search broadcast sent to Kate Smith
+2024-11-25 17:18:00,049 - INFO - Search broadcast sent to Emilia Johnson
+2024-11-25 17:18:00,049 - INFO - Search broadcast sent to Nayla Smith
+2024-11-25 17:18:00,049 - INFO - Search broadcast sent to John Doe Doe
+2024-11-25 17:18:00,049 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 17:18:00,049 - INFO - Search broadcast sent to ll ll
+2024-11-25 17:18:00,050 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 17:18:00,050 - INFO - Search broadcast sent to hi there
+2024-11-25 17:18:00,050 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 17:18:00,050 - INFO - Search broadcast sent to seller1 sel
+2024-11-25 17:18:00,050 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 17:18:00,050 - INFO - Search broadcast sent to buyer buy
+2024-11-25 17:18:00,050 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 17:18:00,051 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 17:18:00,051 - INFO - Search broadcast sent to Tina Gomez
+2024-11-25 17:18:00,051 - INFO - Search broadcast sent to Test Buyer
+2024-11-25 17:18:00,051 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 17:18:00,053 - INFO - Search broadcast sent to Alice Seller
+2024-11-25 17:18:00,053 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 17:18:00,053 - INFO - Search broadcast sent to Yas Sell
+2024-11-25 17:18:00,053 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 17:18:00,053 - INFO - Search broadcast sent to alice seller
+2024-11-25 17:18:00,053 - INFO - Search initiated by bob buyer for laptop
+2024-11-25 17:18:00,054 - INFO - Received UDP message from ('127.0.0.1', 51591): OFFER 3912 "alice seller" "laptop" 1500.0
+2024-11-25 17:18:00,055 - DEBUG - Parsed message parts: ['OFFER', '3912', 'alice seller', 'laptop', '1500.0']
+2024-11-25 17:18:00,055 - INFO - Processing message type: MessageType.OFFER
+2024-11-25 17:18:00,056 - INFO - Offer received from alice seller for search 3912
+2024-11-25 18:28:43,918 - INFO - Received UDP message from ('127.0.0.1', 62814): test
+2024-11-25 18:29:04,654 - INFO - Received UDP message from ('127.0.0.1', 62815): REGISTER 6236 "troy buyer" 127.0.0.1 62815 4890
+2024-11-25 18:29:04,657 - DEBUG - Parsed message parts: ['REGISTER', '6236', 'troy buyer', '127.0.0.1', '62815', '4890']
+2024-11-25 18:29:04,660 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 18:29:04,661 - DEBUG - Registration message params: {'name': 'troy buyer', 'ip': '127.0.0.1', 'udp_port': 62815, 'tcp_port': 4890}
+2024-11-25 18:29:04,670 - INFO - Registrations saved successfully
+2024-11-25 18:29:04,670 - INFO - User troy buyer registered successfully
+2024-11-25 18:29:04,671 - INFO - Sent registration response to troy buyer at ('127.0.0.1', 62815)
+2024-11-25 18:29:13,949 - INFO - Received UDP message from ('127.0.0.1', 62815): LOOKING_FOR 6572 "troy buyer" "laptop" 2000.0
+2024-11-25 18:29:13,950 - DEBUG - Parsed message parts: ['LOOKING_FOR', '6572', 'troy buyer', 'laptop', '2000.0']
+2024-11-25 18:29:13,950 - INFO - Processing message type: MessageType.LOOKING_FOR
+2024-11-25 18:29:13,951 - INFO - Search broadcast sent to Snow White
+2024-11-25 18:29:13,952 - INFO - Search broadcast sent to Emily Smith
+2024-11-25 18:29:13,952 - INFO - Search broadcast sent to John Smith
+2024-11-25 18:29:13,952 - INFO - Search broadcast sent to Kate Smith
+2024-11-25 18:29:13,953 - INFO - Search broadcast sent to Emilia Johnson
+2024-11-25 18:29:13,953 - INFO - Search broadcast sent to Nayla Smith
+2024-11-25 18:29:13,954 - INFO - Search broadcast sent to John Doe Doe
+2024-11-25 18:29:13,955 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 18:29:13,956 - INFO - Search broadcast sent to ll ll
+2024-11-25 18:29:13,957 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 18:29:13,957 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 18:29:13,958 - INFO - Search broadcast sent to hi there
+2024-11-25 18:29:13,960 - INFO - Search broadcast sent to seller1 sel
+2024-11-25 18:29:13,960 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 18:29:13,960 - INFO - Search broadcast sent to buyer buy
+2024-11-25 18:29:13,960 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 18:29:13,961 - INFO - Search broadcast sent to Tina Gomez
+2024-11-25 18:29:13,961 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 18:29:13,961 - INFO - Search broadcast sent to Test Buyer
+2024-11-25 18:29:13,961 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 18:29:13,962 - INFO - Search broadcast sent to Alice Seller
+2024-11-25 18:29:13,962 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 18:29:13,962 - INFO - Search broadcast sent to Yas Sell
+2024-11-25 18:29:13,963 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 18:29:13,963 - INFO - Search broadcast sent to alice seller
+2024-11-25 18:29:13,964 - INFO - Search broadcast sent to bob buyer
+2024-11-25 18:29:13,964 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 18:29:13,965 - INFO - Search initiated by troy buyer for laptop
+2024-11-25 18:29:13,989 - INFO - Received UDP message from ('127.0.0.1', 51591): OFFER 6572 "alice seller" "laptop" 1500.0
+2024-11-25 18:29:13,989 - DEBUG - Parsed message parts: ['OFFER', '6572', 'alice seller', 'laptop', '1500.0']
+2024-11-25 18:29:13,990 - INFO - Processing message type: MessageType.OFFER
+2024-11-25 18:29:13,990 - INFO - Offer received from alice seller for search 6572
+2024-11-25 18:29:15,959 - INFO - Received UDP message from ('127.0.0.1', 62815): LOOKING_FOR 6572 "troy buyer" "laptop" 2000.0
+2024-11-25 18:29:15,960 - DEBUG - Parsed message parts: ['LOOKING_FOR', '6572', 'troy buyer', 'laptop', '2000.0']
+2024-11-25 18:29:15,961 - INFO - Processing message type: MessageType.LOOKING_FOR
+2024-11-25 18:29:15,961 - INFO - Search broadcast sent to Snow White
+2024-11-25 18:29:15,962 - INFO - Search broadcast sent to Emily Smith
+2024-11-25 18:29:15,962 - INFO - Search broadcast sent to John Smith
+2024-11-25 18:29:15,963 - INFO - Search broadcast sent to Kate Smith
+2024-11-25 18:29:15,963 - INFO - Search broadcast sent to Emilia Johnson
+2024-11-25 18:29:15,964 - INFO - Search broadcast sent to Nayla Smith
+2024-11-25 18:29:15,964 - INFO - Search broadcast sent to John Doe Doe
+2024-11-25 18:29:15,965 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 18:29:15,965 - INFO - Search broadcast sent to ll ll
+2024-11-25 18:29:15,965 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 18:29:15,965 - INFO - Search broadcast sent to hi there
+2024-11-25 18:29:15,965 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 18:29:15,966 - INFO - Search broadcast sent to seller1 sel
+2024-11-25 18:29:15,966 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 18:29:15,966 - INFO - Search broadcast sent to buyer buy
+2024-11-25 18:29:15,967 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 18:29:15,967 - INFO - Search broadcast sent to Tina Gomez
+2024-11-25 18:29:15,967 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 18:29:15,968 - INFO - Search broadcast sent to Test Buyer
+2024-11-25 18:29:15,969 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 18:29:15,969 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 18:29:15,971 - INFO - Search broadcast sent to Alice Seller
+2024-11-25 18:29:15,972 - INFO - Search broadcast sent to Yas Sell
+2024-11-25 18:29:15,972 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 18:29:15,972 - INFO - Search broadcast sent to alice seller
+2024-11-25 18:29:15,973 - INFO - Search broadcast sent to bob buyer
+2024-11-25 18:29:15,973 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 18:29:15,973 - INFO - Search initiated by troy buyer for laptop
+2024-11-25 18:29:15,975 - INFO - Received UDP message from ('127.0.0.1', 51591): OFFER 6572 "alice seller" "laptop" 1500.0
+2024-11-25 18:29:15,975 - DEBUG - Parsed message parts: ['OFFER', '6572', 'alice seller', 'laptop', '1500.0']
+2024-11-25 18:29:15,975 - INFO - Processing message type: MessageType.OFFER
+2024-11-25 18:29:15,976 - INFO - Offer received from alice seller for search 6572
+2024-11-25 22:17:01,997 - INFO - Received UDP message from ('127.0.0.1', 59785): test
+2024-11-25 22:17:15,524 - INFO - Received UDP message from ('127.0.0.1', 59786): REGISTER 1396 "timmy buyer" 127.0.0.1 59786 4072
+2024-11-25 22:17:15,528 - DEBUG - Parsed message parts: ['REGISTER', '1396', 'timmy buyer', '127.0.0.1', '59786', '4072']
+2024-11-25 22:17:15,531 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:17:15,532 - DEBUG - Registration message params: {'name': 'timmy buyer', 'ip': '127.0.0.1', 'udp_port': 59786, 'tcp_port': 4072}
+2024-11-25 22:17:15,540 - INFO - Registrations saved successfully
+2024-11-25 22:17:15,542 - INFO - User timmy buyer registered successfully
+2024-11-25 22:17:15,543 - INFO - Sent registration response to timmy buyer at ('127.0.0.1', 59786)
+2024-11-25 22:17:21,538 - INFO - Received UDP message from ('127.0.0.1', 59786): REGISTER 1396 "timmy buyer" 127.0.0.1 59786 4072
+2024-11-25 22:17:21,538 - DEBUG - Parsed message parts: ['REGISTER', '1396', 'timmy buyer', '127.0.0.1', '59786', '4072']
+2024-11-25 22:17:21,539 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:17:21,540 - DEBUG - Registration message params: {'name': 'timmy buyer', 'ip': '127.0.0.1', 'udp_port': 59786, 'tcp_port': 4072}
+2024-11-25 22:17:21,552 - WARNING - Registration denied for timmy buyer: already registered
+2024-11-25 22:17:21,553 - INFO - Sent registration response to timmy buyer at ('127.0.0.1', 59786)
+2024-11-25 22:17:37,602 - INFO - Received UDP message from ('127.0.0.1', 59786): REGISTER 9221 "timmy buyer" 127.0.0.1 59786 4072
+2024-11-25 22:17:37,602 - DEBUG - Parsed message parts: ['REGISTER', '9221', 'timmy buyer', '127.0.0.1', '59786', '4072']
+2024-11-25 22:17:37,603 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:17:37,604 - DEBUG - Registration message params: {'name': 'timmy buyer', 'ip': '127.0.0.1', 'udp_port': 59786, 'tcp_port': 4072}
+2024-11-25 22:17:37,604 - WARNING - Registration denied for timmy buyer: already registered
+2024-11-25 22:17:37,605 - INFO - Sent registration response to timmy buyer at ('127.0.0.1', 59786)
+2024-11-25 22:17:43,609 - INFO - Received UDP message from ('127.0.0.1', 59786): REGISTER 9221 "timmy buyer" 127.0.0.1 59786 4072
+2024-11-25 22:17:43,609 - DEBUG - Parsed message parts: ['REGISTER', '9221', 'timmy buyer', '127.0.0.1', '59786', '4072']
+2024-11-25 22:17:43,610 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:17:43,611 - DEBUG - Registration message params: {'name': 'timmy buyer', 'ip': '127.0.0.1', 'udp_port': 59786, 'tcp_port': 4072}
+2024-11-25 22:17:43,612 - WARNING - Registration denied for timmy buyer: already registered
+2024-11-25 22:17:43,613 - INFO - Sent registration response to timmy buyer at ('127.0.0.1', 59786)
+2024-11-25 22:18:11,372 - INFO - Received UDP message from ('127.0.0.1', 49665): test
+2024-11-25 22:18:24,548 - INFO - Received UDP message from ('127.0.0.1', 49666): REGISTER 5125 "troy buyer" 127.0.0.1 49666 3087
+2024-11-25 22:18:24,548 - DEBUG - Parsed message parts: ['REGISTER', '5125', 'troy buyer', '127.0.0.1', '49666', '3087']
+2024-11-25 22:18:24,550 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:18:24,550 - DEBUG - Registration message params: {'name': 'troy buyer', 'ip': '127.0.0.1', 'udp_port': 49666, 'tcp_port': 3087}
+2024-11-25 22:18:24,550 - WARNING - Registration denied for troy buyer: already registered
+2024-11-25 22:18:24,551 - INFO - Sent registration response to troy buyer at ('127.0.0.1', 49666)
+2024-11-25 22:19:26,083 - INFO - Server started - UDP port: 3000, TCP port: 3001
+2024-11-25 22:19:26,085 - INFO - Server running...
+2024-11-25 22:19:38,180 - INFO - Received UDP message from ('127.0.0.1', 55845): test
+2024-11-25 22:19:54,786 - INFO - Received UDP message from ('127.0.0.1', 55846): REGISTER 1577 "linda selling" 127.0.0.1 55846 2009
+2024-11-25 22:19:54,786 - DEBUG - Parsed message parts: ['REGISTER', '1577', 'linda selling', '127.0.0.1', '55846', '2009']
+2024-11-25 22:19:54,787 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:19:54,788 - DEBUG - Registration message params: {'name': 'linda selling', 'ip': '127.0.0.1', 'udp_port': 55846, 'tcp_port': 2009}
+2024-11-25 22:19:54,789 - INFO - Registrations saved successfully
+2024-11-25 22:19:54,790 - INFO - User linda selling registered successfully
+2024-11-25 22:19:54,790 - INFO - Sent registration response to linda selling at ('127.0.0.1', 55846)
+2024-11-25 22:20:31,526 - INFO - Received UDP message from ('127.0.0.1', 55187): test
+2024-11-25 22:20:48,742 - INFO - Received UDP message from ('127.0.0.1', 55188): REGISTER 6648 "bernard buying" 127.0.0.1 55188 3007
+2024-11-25 22:20:48,743 - DEBUG - Parsed message parts: ['REGISTER', '6648', 'bernard buying', '127.0.0.1', '55188', '3007']
+2024-11-25 22:20:48,744 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:20:48,745 - DEBUG - Registration message params: {'name': 'bernard buying', 'ip': '127.0.0.1', 'udp_port': 55188, 'tcp_port': 3007}
+2024-11-25 22:20:48,746 - INFO - Registrations saved successfully
+2024-11-25 22:20:48,747 - INFO - User bernard buying registered successfully
+2024-11-25 22:20:48,747 - INFO - Sent registration response to bernard buying at ('127.0.0.1', 55188)
+2024-11-25 22:21:01,114 - INFO - Received UDP message from ('127.0.0.1', 55188): LOOKING_FOR 7326 "bernard buying" "mouse" 40.0
+2024-11-25 22:21:01,115 - DEBUG - Parsed message parts: ['LOOKING_FOR', '7326', 'bernard buying', 'mouse', '40.0']
+2024-11-25 22:21:01,115 - INFO - Processing message type: MessageType.LOOKING_FOR
+2024-11-25 22:21:01,116 - INFO - Search broadcast sent to linda selling
+2024-11-25 22:21:01,116 - INFO - Search initiated by bernard buying for mouse
+2024-11-25 22:21:01,117 - INFO - Received UDP message from ('127.0.0.1', 55846): OFFER 7326 "linda selling" "mouse" 35.0
+2024-11-25 22:21:01,118 - DEBUG - Parsed message parts: ['OFFER', '7326', 'linda selling', 'mouse', '35.0']
+2024-11-25 22:21:01,118 - INFO - Processing message type: MessageType.OFFER
+2024-11-25 22:21:01,119 - INFO - Offer received from linda selling for search 7326
+2024-11-25 22:25:45,139 - INFO - Received UDP message from ('127.0.0.1', 57527): test
+2024-11-25 22:25:56,943 - INFO - Received UDP message from ('127.0.0.1', 57528): REGISTER 4772 "paul buyer" 127.0.0.1 57528 4908
+2024-11-25 22:25:56,944 - DEBUG - Parsed message parts: ['REGISTER', '4772', 'paul buyer', '127.0.0.1', '57528', '4908']
+2024-11-25 22:25:56,945 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:25:56,946 - DEBUG - Registration message params: {'name': 'paul buyer', 'ip': '127.0.0.1', 'udp_port': 57528, 'tcp_port': 4908}
+2024-11-25 22:25:56,949 - INFO - Registrations saved successfully
+2024-11-25 22:25:56,949 - INFO - User paul buyer registered successfully
+2024-11-25 22:25:56,950 - INFO - Sent registration response to paul buyer at ('127.0.0.1', 57528)
+2024-11-25 22:25:58,963 - INFO - Received UDP message from ('127.0.0.1', 57528): REGISTER 4772 "paul buyer" 127.0.0.1 57528 4908
+2024-11-25 22:25:58,963 - DEBUG - Parsed message parts: ['REGISTER', '4772', 'paul buyer', '127.0.0.1', '57528', '4908']
+2024-11-25 22:25:58,977 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:25:58,977 - DEBUG - Registration message params: {'name': 'paul buyer', 'ip': '127.0.0.1', 'udp_port': 57528, 'tcp_port': 4908}
+2024-11-25 22:25:58,978 - WARNING - Registration denied for paul buyer: already registered
+2024-11-25 22:25:58,980 - INFO - Sent registration response to paul buyer at ('127.0.0.1', 57528)
+2024-11-25 22:26:00,991 - INFO - Received UDP message from ('127.0.0.1', 57528): REGISTER 4772 "paul buyer" 127.0.0.1 57528 4908
+2024-11-25 22:26:00,991 - DEBUG - Parsed message parts: ['REGISTER', '4772', 'paul buyer', '127.0.0.1', '57528', '4908']
+2024-11-25 22:26:00,992 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:26:00,992 - DEBUG - Registration message params: {'name': 'paul buyer', 'ip': '127.0.0.1', 'udp_port': 57528, 'tcp_port': 4908}
+2024-11-25 22:26:00,992 - WARNING - Registration denied for paul buyer: already registered
+2024-11-25 22:26:01,004 - INFO - Sent registration response to paul buyer at ('127.0.0.1', 57528)
+2024-11-25 22:26:13,460 - INFO - Received UDP message from ('127.0.0.1', 57528): REGISTER 1436 "paul buyer" 127.0.0.1 57528 4908
+2024-11-25 22:26:13,460 - DEBUG - Parsed message parts: ['REGISTER', '1436', 'paul buyer', '127.0.0.1', '57528', '4908']
+2024-11-25 22:26:13,461 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:26:13,462 - DEBUG - Registration message params: {'name': 'paul buyer', 'ip': '127.0.0.1', 'udp_port': 57528, 'tcp_port': 4908}
+2024-11-25 22:26:13,462 - WARNING - Registration denied for paul buyer: already registered
+2024-11-25 22:26:13,463 - INFO - Sent registration response to paul buyer at ('127.0.0.1', 57528)
+2024-11-25 22:26:47,976 - INFO - Server started - UDP port: 3000, TCP port: 3001
+2024-11-25 22:26:47,978 - INFO - Server running...
+2024-11-25 22:27:10,380 - INFO - Received UDP message from ('127.0.0.1', 56892): test
+2024-11-25 22:27:14,338 - INFO - Received UDP message from ('127.0.0.1', 56895): test
+2024-11-25 22:27:34,432 - INFO - Received UDP message from ('127.0.0.1', 56893): REGISTER 6350 "test1 seller" 127.0.0.1 56893 1234
+2024-11-25 22:27:34,433 - DEBUG - Parsed message parts: ['REGISTER', '6350', 'test1 seller', '127.0.0.1', '56893', '1234']
+2024-11-25 22:27:34,433 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:27:34,434 - DEBUG - Registration message params: {'name': 'test1 seller', 'ip': '127.0.0.1', 'udp_port': 56893, 'tcp_port': 1234}
+2024-11-25 22:27:34,436 - INFO - Registrations saved successfully
+2024-11-25 22:27:34,436 - INFO - User test1 seller registered successfully
+2024-11-25 22:27:34,437 - INFO - Sent registration response to test1 seller at ('127.0.0.1', 56893)
+2024-11-25 22:27:36,431 - INFO - Received UDP message from ('127.0.0.1', 56893): REGISTER 6350 "test1 seller" 127.0.0.1 56893 1234
+2024-11-25 22:27:36,432 - DEBUG - Parsed message parts: ['REGISTER', '6350', 'test1 seller', '127.0.0.1', '56893', '1234']
+2024-11-25 22:27:36,433 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:27:36,434 - DEBUG - Registration message params: {'name': 'test1 seller', 'ip': '127.0.0.1', 'udp_port': 56893, 'tcp_port': 1234}
+2024-11-25 22:27:36,435 - WARNING - Registration denied for test1 seller: already registered
+2024-11-25 22:27:36,436 - INFO - Sent registration response to test1 seller at ('127.0.0.1', 56893)
+2024-11-25 22:28:00,575 - INFO - Received UDP message from ('127.0.0.1', 51113): test
+2024-11-25 22:28:13,558 - INFO - Received UDP message from ('127.0.0.1', 51114): REGISTER 8824 "test sell" 127.0.0.1 51114 1234
+2024-11-25 22:28:13,559 - DEBUG - Parsed message parts: ['REGISTER', '8824', 'test sell', '127.0.0.1', '51114', '1234']
+2024-11-25 22:28:13,559 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:28:13,560 - DEBUG - Registration message params: {'name': 'test sell', 'ip': '127.0.0.1', 'udp_port': 51114, 'tcp_port': 1234}
+2024-11-25 22:28:13,561 - INFO - Registrations saved successfully
+2024-11-25 22:28:13,562 - INFO - User test sell registered successfully
+2024-11-25 22:28:13,562 - INFO - Sent registration response to test sell at ('127.0.0.1', 51114)
+2024-11-25 22:28:23,214 - INFO - Received UDP message from ('127.0.0.1', 56896): REGISTER 7569 "test2 buy" 127.0.0.1 56896 1345
+2024-11-25 22:28:23,214 - DEBUG - Parsed message parts: ['REGISTER', '7569', 'test2 buy', '127.0.0.1', '56896', '1345']
+2024-11-25 22:28:23,215 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:28:23,216 - DEBUG - Registration message params: {'name': 'test2 buy', 'ip': '127.0.0.1', 'udp_port': 56896, 'tcp_port': 1345}
+2024-11-25 22:28:23,218 - INFO - Registrations saved successfully
+2024-11-25 22:28:23,218 - INFO - User test2 buy registered successfully
+2024-11-25 22:28:23,219 - INFO - Sent registration response to test2 buy at ('127.0.0.1', 56896)
+2024-11-25 22:28:42,762 - INFO - Received UDP message from ('127.0.0.1', 56896): LOOKING_FOR 4700 "test2 buy" "keyboard" 65.0
+2024-11-25 22:28:42,762 - DEBUG - Parsed message parts: ['LOOKING_FOR', '4700', 'test2 buy', 'keyboard', '65.0']
+2024-11-25 22:28:42,763 - INFO - Processing message type: MessageType.LOOKING_FOR
+2024-11-25 22:28:42,763 - INFO - Search broadcast sent to linda selling
+2024-11-25 22:28:42,775 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:28:42,776 - INFO - Search broadcast sent to bernard buying
+2024-11-25 22:28:42,776 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:28:42,776 - INFO - Search broadcast sent to paul buyer
+2024-11-25 22:28:42,776 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:28:42,777 - INFO - Search broadcast sent to test1 seller
+2024-11-25 22:28:42,777 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:28:42,777 - INFO - Search broadcast sent to test sell
+2024-11-25 22:28:42,778 - INFO - Search initiated by test2 buy for keyboard
+2024-11-25 22:28:42,780 - INFO - Received UDP message from ('127.0.0.1', 51114): OFFER 4700 "test sell" "keyboard" 60.0
+2024-11-25 22:28:42,780 - DEBUG - Parsed message parts: ['OFFER', '4700', 'test sell', 'keyboard', '60.0']
+2024-11-25 22:28:42,781 - INFO - Processing message type: MessageType.OFFER
+2024-11-25 22:28:42,782 - INFO - Offer received from test sell for search 4700
+2024-11-25 22:28:44,766 - INFO - Received UDP message from ('127.0.0.1', 56896): LOOKING_FOR 4700 "test2 buy" "keyboard" 65.0
+2024-11-25 22:28:44,767 - DEBUG - Parsed message parts: ['LOOKING_FOR', '4700', 'test2 buy', 'keyboard', '65.0']
+2024-11-25 22:28:44,767 - INFO - Processing message type: MessageType.LOOKING_FOR
+2024-11-25 22:28:44,767 - INFO - Search broadcast sent to linda selling
+2024-11-25 22:28:44,768 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:28:44,768 - INFO - Search broadcast sent to bernard buying
+2024-11-25 22:28:44,768 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:28:44,768 - INFO - Search broadcast sent to paul buyer
+2024-11-25 22:28:44,768 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:28:44,768 - INFO - Search broadcast sent to test1 seller
+2024-11-25 22:28:44,768 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:28:44,769 - INFO - Search broadcast sent to test sell
+2024-11-25 22:28:44,769 - INFO - Search initiated by test2 buy for keyboard
+2024-11-25 22:28:44,770 - INFO - Received UDP message from ('127.0.0.1', 51114): OFFER 4700 "test sell" "keyboard" 60.0
+2024-11-25 22:28:44,770 - DEBUG - Parsed message parts: ['OFFER', '4700', 'test sell', 'keyboard', '60.0']
+2024-11-25 22:28:44,770 - INFO - Processing message type: MessageType.OFFER
+2024-11-25 22:28:44,771 - INFO - Offer received from test sell for search 4700
+2024-11-25 22:30:53,707 - INFO - Received UDP message from ('127.0.0.1', 60617): test
+2024-11-25 22:31:08,538 - INFO - Received UDP message from ('127.0.0.1', 60618): REGISTER 8147 "testing selling" 127.0.0.1 60618 6347
+2024-11-25 22:31:08,538 - DEBUG - Parsed message parts: ['REGISTER', '8147', 'testing selling', '127.0.0.1', '60618', '6347']
+2024-11-25 22:31:08,539 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:31:08,540 - DEBUG - Registration message params: {'name': 'testing selling', 'ip': '127.0.0.1', 'udp_port': 60618, 'tcp_port': 6347}
+2024-11-25 22:31:08,541 - INFO - Registrations saved successfully
+2024-11-25 22:31:08,542 - INFO - User testing selling registered successfully
+2024-11-25 22:31:08,543 - INFO - Sent registration response to testing selling at ('127.0.0.1', 60618)
+2024-11-25 22:31:28,334 - INFO - Received UDP message from ('127.0.0.1', 52041): test
+2024-11-25 22:31:40,262 - INFO - Received UDP message from ('127.0.0.1', 52042): REGISTER 6939 "testingg buying" 127.0.0.1 52042 4486
+2024-11-25 22:31:40,263 - DEBUG - Parsed message parts: ['REGISTER', '6939', 'testingg buying', '127.0.0.1', '52042', '4486']
+2024-11-25 22:31:40,264 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:31:40,265 - DEBUG - Registration message params: {'name': 'testingg buying', 'ip': '127.0.0.1', 'udp_port': 52042, 'tcp_port': 4486}
+2024-11-25 22:31:40,277 - INFO - Registrations saved successfully
+2024-11-25 22:31:40,278 - INFO - User testingg buying registered successfully
+2024-11-25 22:31:40,278 - INFO - Sent registration response to testingg buying at ('127.0.0.1', 52042)
+2024-11-25 22:31:55,379 - INFO - Received UDP message from ('127.0.0.1', 52042): LOOKING_FOR 1239 "testingg buying" "keyboard" 50.0
+2024-11-25 22:31:55,380 - DEBUG - Parsed message parts: ['LOOKING_FOR', '1239', 'testingg buying', 'keyboard', '50.0']
+2024-11-25 22:31:55,380 - INFO - Processing message type: MessageType.LOOKING_FOR
+2024-11-25 22:31:55,381 - INFO - Search broadcast sent to linda selling
+2024-11-25 22:31:55,381 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:31:55,381 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:31:55,381 - INFO - Search broadcast sent to bernard buying
+2024-11-25 22:31:55,382 - INFO - Search broadcast sent to paul buyer
+2024-11-25 22:31:55,382 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:31:55,382 - INFO - Search broadcast sent to test1 seller
+2024-11-25 22:31:55,382 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:31:55,382 - INFO - Search broadcast sent to test sell
+2024-11-25 22:31:55,382 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:31:55,383 - INFO - Search broadcast sent to test2 buy
+2024-11-25 22:31:55,383 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:31:55,383 - INFO - Search broadcast sent to testing selling
+2024-11-25 22:31:55,384 - INFO - Search initiated by testingg buying for keyboard
+2024-11-25 22:31:55,385 - INFO - Received UDP message from ('127.0.0.1', 60618): OFFER 1239 "testing selling" "keyboard" 40.0
+2024-11-25 22:31:55,385 - DEBUG - Parsed message parts: ['OFFER', '1239', 'testing selling', 'keyboard', '40.0']
+2024-11-25 22:31:55,386 - INFO - Processing message type: MessageType.OFFER
+2024-11-25 22:31:55,386 - INFO - Offer received from testing selling for search 1239
+2024-11-25 22:32:01,402 - INFO - Received UDP message from ('127.0.0.1', 52042): LOOKING_FOR 1239 "testingg buying" "keyboard" 50.0
+2024-11-25 22:32:01,402 - DEBUG - Parsed message parts: ['LOOKING_FOR', '1239', 'testingg buying', 'keyboard', '50.0']
+2024-11-25 22:32:01,403 - INFO - Processing message type: MessageType.LOOKING_FOR
+2024-11-25 22:32:01,403 - INFO - Search broadcast sent to linda selling
+2024-11-25 22:32:01,403 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:32:01,403 - INFO - Search broadcast sent to bernard buying
+2024-11-25 22:32:01,403 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:32:01,404 - INFO - Search broadcast sent to paul buyer
+2024-11-25 22:32:01,404 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:32:01,404 - INFO - Search broadcast sent to test1 seller
+2024-11-25 22:32:01,404 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:32:01,405 - INFO - Search broadcast sent to test sell
+2024-11-25 22:32:01,405 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:32:01,406 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:32:01,406 - INFO - Search broadcast sent to test2 buy
+2024-11-25 22:32:01,406 - INFO - Search broadcast sent to testing selling
+2024-11-25 22:32:01,408 - INFO - Search initiated by testingg buying for keyboard
+2024-11-25 22:32:01,408 - INFO - Received UDP message from ('127.0.0.1', 60618): OFFER 1239 "testing selling" "keyboard" 40.0
+2024-11-25 22:32:01,409 - DEBUG - Parsed message parts: ['OFFER', '1239', 'testing selling', 'keyboard', '40.0']
+2024-11-25 22:32:01,409 - INFO - Processing message type: MessageType.OFFER
+2024-11-25 22:32:01,410 - INFO - Offer received from testing selling for search 1239
+2024-11-25 22:33:03,215 - INFO - Received UDP message from ('127.0.0.1', 51992): test
+2024-11-25 22:33:18,827 - INFO - Received UDP message from ('127.0.0.1', 51993): REGISTER 9804 "testest] sell" 127.0.0.1 51993 6347
+2024-11-25 22:33:18,827 - DEBUG - Parsed message parts: ['REGISTER', '9804', 'testest] sell', '127.0.0.1', '51993', '6347']
+2024-11-25 22:33:18,828 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:33:18,828 - DEBUG - Registration message params: {'name': 'testest] sell', 'ip': '127.0.0.1', 'udp_port': 51993, 'tcp_port': 6347}
+2024-11-25 22:33:18,830 - INFO - Registrations saved successfully
+2024-11-25 22:33:18,830 - INFO - User testest] sell registered successfully
+2024-11-25 22:33:18,831 - INFO - Sent registration response to testest] sell at ('127.0.0.1', 51993)
+2024-11-25 22:33:29,830 - INFO - Received UDP message from ('127.0.0.1', 51993): REGISTER 9804 "testest] sell" 127.0.0.1 51993 6347
+2024-11-25 22:33:29,830 - DEBUG - Parsed message parts: ['REGISTER', '9804', 'testest] sell', '127.0.0.1', '51993', '6347']
+2024-11-25 22:33:29,831 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:33:29,831 - DEBUG - Registration message params: {'name': 'testest] sell', 'ip': '127.0.0.1', 'udp_port': 51993, 'tcp_port': 6347}
+2024-11-25 22:33:29,832 - WARNING - Registration denied for testest] sell: already registered
+2024-11-25 22:33:29,833 - INFO - Sent registration response to testest] sell at ('127.0.0.1', 51993)
+2024-11-25 22:33:36,873 - INFO - Received UDP message from ('127.0.0.1', 51993): REGISTER 9919 "testest] sell" 127.0.0.1 51993 6347
+2024-11-25 22:33:36,873 - DEBUG - Parsed message parts: ['REGISTER', '9919', 'testest] sell', '127.0.0.1', '51993', '6347']
+2024-11-25 22:33:36,874 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:33:36,875 - DEBUG - Registration message params: {'name': 'testest] sell', 'ip': '127.0.0.1', 'udp_port': 51993, 'tcp_port': 6347}
+2024-11-25 22:33:36,875 - WARNING - Registration denied for testest] sell: already registered
+2024-11-25 22:33:36,875 - INFO - Sent registration response to testest] sell at ('127.0.0.1', 51993)
+2024-11-25 22:33:45,487 - INFO - Received UDP message from ('127.0.0.1', 55684): test
+2024-11-25 22:33:58,067 - INFO - Received UDP message from ('127.0.0.1', 55685): REGISTER 9547 "tests sells" 127.0.0.1 55685 6347
+2024-11-25 22:33:58,068 - DEBUG - Parsed message parts: ['REGISTER', '9547', 'tests sells', '127.0.0.1', '55685', '6347']
+2024-11-25 22:33:58,068 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:33:58,069 - DEBUG - Registration message params: {'name': 'tests sells', 'ip': '127.0.0.1', 'udp_port': 55685, 'tcp_port': 6347}
+2024-11-25 22:33:58,070 - INFO - Registrations saved successfully
+2024-11-25 22:33:58,071 - INFO - User tests sells registered successfully
+2024-11-25 22:33:58,072 - INFO - Sent registration response to tests sells at ('127.0.0.1', 55685)
+2024-11-25 22:34:09,087 - INFO - Received UDP message from ('127.0.0.1', 55685): REGISTER 9547 "tests sells" 127.0.0.1 55685 6347
+2024-11-25 22:34:09,087 - DEBUG - Parsed message parts: ['REGISTER', '9547', 'tests sells', '127.0.0.1', '55685', '6347']
+2024-11-25 22:34:09,088 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:34:09,088 - DEBUG - Registration message params: {'name': 'tests sells', 'ip': '127.0.0.1', 'udp_port': 55685, 'tcp_port': 6347}
+2024-11-25 22:34:09,089 - WARNING - Registration denied for tests sells: already registered
+2024-11-25 22:34:09,090 - INFO - Sent registration response to tests sells at ('127.0.0.1', 55685)
+2024-11-25 22:34:42,328 - INFO - Server started - UDP port: 3000, TCP port: 3001
+2024-11-25 22:34:42,330 - INFO - Server running...
+2024-11-25 22:35:02,053 - INFO - Received UDP message from ('127.0.0.1', 54887): test
+2024-11-25 22:35:18,259 - INFO - Received UDP message from ('127.0.0.1', 54888): REGISTER 4900 "oneone sell" 127.0.0.1 54888 1111
+2024-11-25 22:35:18,259 - DEBUG - Parsed message parts: ['REGISTER', '4900', 'oneone sell', '127.0.0.1', '54888', '1111']
+2024-11-25 22:35:18,260 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:35:18,260 - DEBUG - Registration message params: {'name': 'oneone sell', 'ip': '127.0.0.1', 'udp_port': 54888, 'tcp_port': 1111}
+2024-11-25 22:35:18,262 - INFO - Registrations saved successfully
+2024-11-25 22:35:18,262 - INFO - User oneone sell registered successfully
+2024-11-25 22:35:18,263 - INFO - Sent registration response to oneone sell at ('127.0.0.1', 54888)
+2024-11-25 22:35:29,886 - INFO - Received UDP message from ('127.0.0.1', 51469): test
+2024-11-25 22:35:40,328 - INFO - Received UDP message from ('127.0.0.1', 51470): REGISTER 7907 "twotwo buy" 127.0.0.1 51470 2222
+2024-11-25 22:35:40,329 - DEBUG - Parsed message parts: ['REGISTER', '7907', 'twotwo buy', '127.0.0.1', '51470', '2222']
+2024-11-25 22:35:40,329 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:35:40,330 - DEBUG - Registration message params: {'name': 'twotwo buy', 'ip': '127.0.0.1', 'udp_port': 51470, 'tcp_port': 2222}
+2024-11-25 22:35:40,331 - INFO - Registrations saved successfully
+2024-11-25 22:35:40,332 - INFO - User twotwo buy registered successfully
+2024-11-25 22:35:40,332 - INFO - Sent registration response to twotwo buy at ('127.0.0.1', 51470)
+2024-11-25 22:36:09,289 - INFO - Received UDP message from ('127.0.0.1', 51470): LOOKING_FOR 3589 "twotwo buy" "phone" 3000.0
+2024-11-25 22:36:09,290 - DEBUG - Parsed message parts: ['LOOKING_FOR', '3589', 'twotwo buy', 'phone', '3000.0']
+2024-11-25 22:36:09,291 - INFO - Processing message type: MessageType.LOOKING_FOR
+2024-11-25 22:36:09,292 - INFO - Search broadcast sent to linda selling
+2024-11-25 22:36:09,292 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:36:09,292 - INFO - Search broadcast sent to bernard buying
+2024-11-25 22:36:09,293 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:36:09,293 - INFO - Search broadcast sent to paul buyer
+2024-11-25 22:36:09,293 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:36:09,293 - INFO - Search broadcast sent to test1 seller
+2024-11-25 22:36:09,293 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:36:09,294 - INFO - Search broadcast sent to test sell
+2024-11-25 22:36:09,294 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:36:09,294 - INFO - Search broadcast sent to test2 buy
+2024-11-25 22:36:09,294 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:36:09,296 - INFO - Search broadcast sent to testing selling
+2024-11-25 22:36:09,296 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:36:09,296 - INFO - Search broadcast sent to testingg buying
+2024-11-25 22:36:09,296 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:36:09,296 - INFO - Search broadcast sent to testest] sell
+2024-11-25 22:36:09,297 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:36:09,297 - INFO - Search broadcast sent to tests sells
+2024-11-25 22:36:09,297 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:36:09,297 - INFO - Search broadcast sent to oneone sell
+2024-11-25 22:36:09,298 - INFO - Search initiated by twotwo buy for phone
+2024-11-25 22:36:09,299 - INFO - Received UDP message from ('127.0.0.1', 54888): OFFER 3589 "oneone sell" "phone" 2500.0
+2024-11-25 22:36:09,299 - DEBUG - Parsed message parts: ['OFFER', '3589', 'oneone sell', 'phone', '2500.0']
+2024-11-25 22:36:09,300 - INFO - Processing message type: MessageType.OFFER
+2024-11-25 22:36:09,303 - INFO - Offer received from oneone sell for search 3589
+2024-11-25 22:36:20,295 - INFO - Received UDP message from ('127.0.0.1', 51470): LOOKING_FOR 3589 "twotwo buy" "phone" 3000.0
+2024-11-25 22:36:20,296 - DEBUG - Parsed message parts: ['LOOKING_FOR', '3589', 'twotwo buy', 'phone', '3000.0']
+2024-11-25 22:36:20,298 - INFO - Processing message type: MessageType.LOOKING_FOR
+2024-11-25 22:36:20,299 - INFO - Search broadcast sent to linda selling
+2024-11-25 22:36:20,299 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:36:20,300 - INFO - Search broadcast sent to bernard buying
+2024-11-25 22:36:20,300 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:36:20,301 - INFO - Search broadcast sent to paul buyer
+2024-11-25 22:36:20,301 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:36:20,302 - INFO - Search broadcast sent to test1 seller
+2024-11-25 22:36:20,302 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:36:20,303 - INFO - Search broadcast sent to test sell
+2024-11-25 22:36:20,303 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:36:20,304 - INFO - Search broadcast sent to test2 buy
+2024-11-25 22:36:20,304 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:36:20,305 - INFO - Search broadcast sent to testing selling
+2024-11-25 22:36:20,306 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:36:20,306 - INFO - Search broadcast sent to testingg buying
+2024-11-25 22:36:20,307 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:36:20,308 - INFO - Search broadcast sent to testest] sell
+2024-11-25 22:36:20,308 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:36:20,309 - INFO - Search broadcast sent to tests sells
+2024-11-25 22:36:20,310 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:36:20,310 - INFO - Search broadcast sent to oneone sell
+2024-11-25 22:36:20,312 - INFO - Search initiated by twotwo buy for phone
+2024-11-25 22:36:20,313 - INFO - Received UDP message from ('127.0.0.1', 54888): OFFER 3589 "oneone sell" "phone" 2500.0
+2024-11-25 22:36:20,314 - DEBUG - Parsed message parts: ['OFFER', '3589', 'oneone sell', 'phone', '2500.0']
+2024-11-25 22:36:20,315 - INFO - Processing message type: MessageType.OFFER
+2024-11-25 22:36:20,317 - INFO - Offer received from oneone sell for search 3589
+2024-11-25 22:40:34,545 - INFO - Server started - UDP port: 3000, TCP port: 3001
+2024-11-25 22:40:34,546 - INFO - Server running...
+2024-11-25 22:41:05,051 - INFO - Received UDP message from ('127.0.0.1', 49201): test
+2024-11-25 22:41:08,966 - INFO - Received UDP message from ('127.0.0.1', 49204): test
+2024-11-25 22:41:34,797 - INFO - Received UDP message from ('127.0.0.1', 49202): REGISTER 5408 "trois vendre" 127.0.0.1 49202 3333
+2024-11-25 22:41:34,798 - DEBUG - Parsed message parts: ['REGISTER', '5408', 'trois vendre', '127.0.0.1', '49202', '3333']
+2024-11-25 22:41:34,798 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:41:34,799 - DEBUG - Registration message params: {'name': 'trois vendre', 'ip': '127.0.0.1', 'udp_port': 49202, 'tcp_port': 3333}
+2024-11-25 22:41:34,800 - INFO - Registrations saved successfully
+2024-11-25 22:41:34,801 - INFO - User trois vendre registered successfully
+2024-11-25 22:41:34,801 - INFO - Sent registration response to trois vendre at ('127.0.0.1', 49202)
+2024-11-25 22:41:38,825 - INFO - Received UDP message from ('127.0.0.1', 49205): REGISTER 6976 "quatre achete" 127.0.0.1 49205 4444
+2024-11-25 22:41:38,825 - DEBUG - Parsed message parts: ['REGISTER', '6976', 'quatre achete', '127.0.0.1', '49205', '4444']
+2024-11-25 22:41:38,826 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:41:38,826 - DEBUG - Registration message params: {'name': 'quatre achete', 'ip': '127.0.0.1', 'udp_port': 49205, 'tcp_port': 4444}
+2024-11-25 22:41:38,827 - INFO - Registrations saved successfully
+2024-11-25 22:41:38,828 - INFO - User quatre achete registered successfully
+2024-11-25 22:41:38,828 - INFO - Sent registration response to quatre achete at ('127.0.0.1', 49205)
+2024-11-25 22:41:49,828 - INFO - Received UDP message from ('127.0.0.1', 49205): REGISTER 6976 "quatre achete" 127.0.0.1 49205 4444
+2024-11-25 22:41:49,828 - DEBUG - Parsed message parts: ['REGISTER', '6976', 'quatre achete', '127.0.0.1', '49205', '4444']
+2024-11-25 22:41:49,829 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:41:49,829 - DEBUG - Registration message params: {'name': 'quatre achete', 'ip': '127.0.0.1', 'udp_port': 49205, 'tcp_port': 4444}
+2024-11-25 22:41:49,830 - WARNING - Registration denied for quatre achete: already registered
+2024-11-25 22:41:49,830 - INFO - Sent registration response to quatre achete at ('127.0.0.1', 49205)
+2024-11-25 22:42:08,863 - INFO - Received UDP message from ('127.0.0.1', 54876): test
+2024-11-25 22:42:17,864 - INFO - Received UDP message from ('127.0.0.1', 54877): REGISTER 3751 "qu ach" 127.0.0.1 54877 4444
+2024-11-25 22:42:17,865 - DEBUG - Parsed message parts: ['REGISTER', '3751', 'qu ach', '127.0.0.1', '54877', '4444']
+2024-11-25 22:42:17,866 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:42:17,866 - DEBUG - Registration message params: {'name': 'qu ach', 'ip': '127.0.0.1', 'udp_port': 54877, 'tcp_port': 4444}
+2024-11-25 22:42:17,867 - INFO - Registrations saved successfully
+2024-11-25 22:42:17,868 - INFO - User qu ach registered successfully
+2024-11-25 22:42:17,868 - INFO - Sent registration response to qu ach at ('127.0.0.1', 54877)
+2024-11-25 22:42:28,883 - INFO - Received UDP message from ('127.0.0.1', 54877): REGISTER 3751 "qu ach" 127.0.0.1 54877 4444
+2024-11-25 22:42:28,883 - DEBUG - Parsed message parts: ['REGISTER', '3751', 'qu ach', '127.0.0.1', '54877', '4444']
+2024-11-25 22:42:28,884 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:42:28,884 - DEBUG - Registration message params: {'name': 'qu ach', 'ip': '127.0.0.1', 'udp_port': 54877, 'tcp_port': 4444}
+2024-11-25 22:42:28,885 - WARNING - Registration denied for qu ach: already registered
+2024-11-25 22:42:28,886 - INFO - Sent registration response to qu ach at ('127.0.0.1', 54877)
+2024-11-25 22:43:03,424 - INFO - Received UDP message from ('127.0.0.1', 56674): test
+2024-11-25 22:43:13,528 - INFO - Received UDP message from ('127.0.0.1', 56675): REGISTER 5052 "cinq buy" 127.0.0.1 56675 5555
+2024-11-25 22:43:13,529 - DEBUG - Parsed message parts: ['REGISTER', '5052', 'cinq buy', '127.0.0.1', '56675', '5555']
+2024-11-25 22:43:13,530 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:43:13,530 - DEBUG - Registration message params: {'name': 'cinq buy', 'ip': '127.0.0.1', 'udp_port': 56675, 'tcp_port': 5555}
+2024-11-25 22:43:13,532 - INFO - Registrations saved successfully
+2024-11-25 22:43:13,533 - INFO - User cinq buy registered successfully
+2024-11-25 22:43:13,534 - INFO - Sent registration response to cinq buy at ('127.0.0.1', 56675)
+2024-11-25 22:43:24,529 - INFO - Received UDP message from ('127.0.0.1', 56675): REGISTER 5052 "cinq buy" 127.0.0.1 56675 5555
+2024-11-25 22:43:24,529 - DEBUG - Parsed message parts: ['REGISTER', '5052', 'cinq buy', '127.0.0.1', '56675', '5555']
+2024-11-25 22:43:24,530 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:43:24,531 - DEBUG - Registration message params: {'name': 'cinq buy', 'ip': '127.0.0.1', 'udp_port': 56675, 'tcp_port': 5555}
+2024-11-25 22:43:24,532 - WARNING - Registration denied for cinq buy: already registered
+2024-11-25 22:43:24,532 - INFO - Sent registration response to cinq buy at ('127.0.0.1', 56675)
+2024-11-25 22:43:35,529 - INFO - Received UDP message from ('127.0.0.1', 56675): REGISTER 5052 "cinq buy" 127.0.0.1 56675 5555
+2024-11-25 22:43:35,530 - DEBUG - Parsed message parts: ['REGISTER', '5052', 'cinq buy', '127.0.0.1', '56675', '5555']
+2024-11-25 22:43:35,532 - INFO - Processing message type: MessageType.REGISTER
+2024-11-25 22:43:35,534 - DEBUG - Registration message params: {'name': 'cinq buy', 'ip': '127.0.0.1', 'udp_port': 56675, 'tcp_port': 5555}
+2024-11-25 22:43:35,535 - WARNING - Registration denied for cinq buy: already registered
+2024-11-25 22:43:35,536 - INFO - Sent registration response to cinq buy at ('127.0.0.1', 56675)
+2024-11-25 22:43:39,876 - INFO - Received UDP message from ('127.0.0.1', 49202): LOOKING_FOR 3526 "trois vendre" "tree" 80.0
+2024-11-25 22:43:39,877 - DEBUG - Parsed message parts: ['LOOKING_FOR', '3526', 'trois vendre', 'tree', '80.0']
+2024-11-25 22:43:39,877 - INFO - Processing message type: MessageType.LOOKING_FOR
+2024-11-25 22:43:39,878 - INFO - Search broadcast sent to linda selling
+2024-11-25 22:43:39,878 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:39,879 - INFO - Search broadcast sent to bernard buying
+2024-11-25 22:43:39,879 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:39,879 - INFO - Search broadcast sent to paul buyer
+2024-11-25 22:43:39,879 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:39,880 - INFO - Search broadcast sent to test1 seller
+2024-11-25 22:43:39,880 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:39,892 - INFO - Search broadcast sent to test sell
+2024-11-25 22:43:39,892 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:39,892 - INFO - Search broadcast sent to test2 buy
+2024-11-25 22:43:39,892 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:39,893 - INFO - Search broadcast sent to testing selling
+2024-11-25 22:43:39,893 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:39,894 - INFO - Search broadcast sent to testingg buying
+2024-11-25 22:43:39,894 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:39,894 - INFO - Search broadcast sent to testest] sell
+2024-11-25 22:43:39,894 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:39,895 - INFO - Search broadcast sent to tests sells
+2024-11-25 22:43:39,895 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:39,895 - INFO - Search broadcast sent to oneone sell
+2024-11-25 22:43:39,896 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:39,896 - INFO - Search broadcast sent to twotwo buy
+2024-11-25 22:43:39,896 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:39,896 - INFO - Search broadcast sent to quatre achete
+2024-11-25 22:43:39,897 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:39,897 - INFO - Search broadcast sent to qu ach
+2024-11-25 22:43:39,897 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:39,897 - INFO - Search broadcast sent to cinq buy
+2024-11-25 22:43:39,898 - INFO - Search initiated by trois vendre for tree
+2024-11-25 22:43:50,885 - INFO - Received UDP message from ('127.0.0.1', 49202): LOOKING_FOR 3526 "trois vendre" "tree" 80.0
+2024-11-25 22:43:50,886 - DEBUG - Parsed message parts: ['LOOKING_FOR', '3526', 'trois vendre', 'tree', '80.0']
+2024-11-25 22:43:50,887 - INFO - Processing message type: MessageType.LOOKING_FOR
+2024-11-25 22:43:50,888 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:50,888 - INFO - Search broadcast sent to linda selling
+2024-11-25 22:43:50,889 - INFO - Search broadcast sent to bernard buying
+2024-11-25 22:43:50,889 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:50,889 - INFO - Search broadcast sent to paul buyer
+2024-11-25 22:43:50,890 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:50,890 - INFO - Search broadcast sent to test1 seller
+2024-11-25 22:43:50,890 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:50,891 - INFO - Search broadcast sent to test sell
+2024-11-25 22:43:50,891 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:50,891 - INFO - Search broadcast sent to test2 buy
+2024-11-25 22:43:50,891 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:50,892 - INFO - Search broadcast sent to testing selling
+2024-11-25 22:43:50,892 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:50,894 - INFO - Search broadcast sent to testingg buying
+2024-11-25 22:43:50,894 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:50,894 - INFO - Search broadcast sent to testest] sell
+2024-11-25 22:43:50,894 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:50,895 - INFO - Search broadcast sent to tests sells
+2024-11-25 22:43:50,895 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:50,895 - INFO - Search broadcast sent to oneone sell
+2024-11-25 22:43:50,895 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:50,896 - INFO - Search broadcast sent to twotwo buy
+2024-11-25 22:43:50,896 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:50,896 - INFO - Search broadcast sent to quatre achete
+2024-11-25 22:43:50,896 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:50,896 - INFO - Search broadcast sent to qu ach
+2024-11-25 22:43:50,897 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:43:50,897 - INFO - Search broadcast sent to cinq buy
+2024-11-25 22:43:50,898 - INFO - Search initiated by trois vendre for tree
+2024-11-25 22:44:01,899 - INFO - Received UDP message from ('127.0.0.1', 49202): LOOKING_FOR 3526 "trois vendre" "tree" 80.0
+2024-11-25 22:44:01,900 - DEBUG - Parsed message parts: ['LOOKING_FOR', '3526', 'trois vendre', 'tree', '80.0']
+2024-11-25 22:44:01,901 - INFO - Processing message type: MessageType.LOOKING_FOR
+2024-11-25 22:44:01,901 - INFO - Search broadcast sent to linda selling
+2024-11-25 22:44:01,902 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:44:01,902 - INFO - Search broadcast sent to bernard buying
+2024-11-25 22:44:01,904 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:44:01,904 - INFO - Search broadcast sent to paul buyer
+2024-11-25 22:44:01,904 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:44:01,905 - INFO - Search broadcast sent to test1 seller
+2024-11-25 22:44:01,905 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:44:01,906 - INFO - Search broadcast sent to test sell
+2024-11-25 22:44:01,906 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:44:01,907 - INFO - Search broadcast sent to test2 buy
+2024-11-25 22:44:01,907 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:44:01,907 - INFO - Search broadcast sent to testing selling
+2024-11-25 22:44:01,908 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:44:01,908 - INFO - Search broadcast sent to testingg buying
+2024-11-25 22:44:01,909 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:44:01,909 - INFO - Search broadcast sent to testest] sell
+2024-11-25 22:44:01,909 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:44:01,910 - INFO - Search broadcast sent to tests sells
+2024-11-25 22:44:01,911 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:44:01,911 - INFO - Search broadcast sent to oneone sell
+2024-11-25 22:44:01,911 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:44:01,912 - INFO - Search broadcast sent to twotwo buy
+2024-11-25 22:44:01,912 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:44:01,913 - INFO - Search broadcast sent to quatre achete
+2024-11-25 22:44:01,913 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:44:01,914 - INFO - Search broadcast sent to qu ach
+2024-11-25 22:44:01,915 - ERROR - UDP listening error: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 22:44:01,915 - INFO - Search broadcast sent to cinq buy
+2024-11-25 22:44:01,916 - INFO - Search initiated by trois vendre for tree
+2024-11-25 22:48:39,915 - INFO - Search 3526 timed out with no offers

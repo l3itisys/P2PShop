@@ -125,3 +125,254 @@
 2024-11-25 17:07:18,326 - INFO - Server response: REGISTER-DENIED 9079 User Tom Seller is already registered
 2024-11-25 17:12:59,921 - INFO - Client cleaned up successfully
 2024-11-25 17:12:59,922 - INFO - Client cleaned up successfully
+2024-11-25 17:14:27,255 - INFO - Client initialized - UDP port: 49706, TCP port: 2096
+2024-11-25 17:14:31,191 - INFO - Attempting registration with message: REGISTER 3847 "Yas Sell" 127.0.0.1 49706 2096
+2024-11-25 17:14:31,191 - INFO - Sending UDP message (attempt 1): REGISTER 3847 "Yas Sell" 127.0.0.1 49706 2096
+2024-11-25 17:14:31,209 - INFO - Received message: REGISTERED 3847
+2024-11-25 17:14:32,201 - WARNING - Timeout, retrying in 1 seconds...
+2024-11-25 17:14:33,202 - INFO - Sending UDP message (attempt 2): REGISTER 3847 "Yas Sell" 127.0.0.1 49706 2096
+2024-11-25 17:14:33,208 - INFO - Server response: REGISTER-DENIED 3847 User Yas Sell is already registered
+2024-11-25 17:15:43,891 - INFO - Client cleaned up successfully
+2024-11-25 17:15:43,891 - INFO - Client cleaned up successfully
+2024-11-25 17:16:07,380 - INFO - Client initialized - UDP port: 51591, TCP port: 5000
+2024-11-25 17:16:12,867 - INFO - Attempting registration with message: REGISTER 9381 "alice seller" 127.0.0.1 51591 5000
+2024-11-25 17:16:12,868 - INFO - Sending UDP message (attempt 1): REGISTER 9381 "alice seller" 127.0.0.1 51591 5000
+2024-11-25 17:16:12,875 - INFO - Server response: REGISTERED 9381
+2024-11-25 17:16:45,124 - INFO - Added item for sale: laptop at price 1500.0
+2024-11-25 17:17:22,304 - INFO - Client initialized - UDP port: 64644, TCP port: 5001
+2024-11-25 17:17:25,971 - INFO - Attempting registration with message: REGISTER 4422 "bob buyer" 127.0.0.1 64644 5001
+2024-11-25 17:17:25,972 - INFO - Sending UDP message (attempt 1): REGISTER 4422 "bob buyer" 127.0.0.1 64644 5001
+2024-11-25 17:17:25,979 - INFO - Server response: REGISTERED 4422
+2024-11-25 17:17:58,034 - INFO - Sending UDP message (attempt 1): LOOKING_FOR 3912 "bob buyer" "laptop" 2000.0
+2024-11-25 17:17:58,045 - INFO - Received message: SEARCH 3912 "laptop"
+2024-11-25 17:17:58,051 - INFO - Sending UDP message (attempt 1): OFFER 3912 "alice seller" "laptop" 1500.0
+2024-11-25 17:17:58,054 - INFO - Received message: FOUND 3912 "laptop" 1500.0
+2024-11-25 17:17:58,055 - INFO - Server response: RESERVE 3912 "laptop" 1500.0
+2024-11-25 17:17:58,055 - INFO - Sent offer for laptop
+2024-11-25 17:17:59,044 - WARNING - Timeout, retrying in 1 seconds...
+2024-11-25 17:18:00,045 - INFO - Sending UDP message (attempt 2): LOOKING_FOR 3912 "bob buyer" "laptop" 2000.0
+2024-11-25 17:18:00,053 - INFO - Received message: SEARCH 3912 "laptop"
+2024-11-25 17:18:00,053 - INFO - Sending UDP message (attempt 1): OFFER 3912 "alice seller" "laptop" 1500.0
+2024-11-25 17:18:00,056 - INFO - Server response: RESERVE 3912 "laptop" 1500.0
+2024-11-25 17:18:00,056 - INFO - Sent offer for laptop
+2024-11-25 17:18:00,056 - INFO - Server response: FOUND 3912 "laptop" 1500.0
+2024-11-25 17:18:00,056 - INFO - Search response received: FOUND 3912 "laptop" 1500.0
+2024-11-25 18:25:54,048 - ERROR - Error handling found notification: 'ClientUDP_TCP' object has no attribute 'send_cancel_message'
+2024-11-25 18:28:57,903 - INFO - Client initialized - UDP port: 62815, TCP port: 4890
+2024-11-25 18:29:04,652 - INFO - Attempting registration with message: REGISTER 6236 "troy buyer" 127.0.0.1 62815 4890
+2024-11-25 18:29:04,653 - INFO - Sending UDP message (attempt 1): REGISTER 6236 "troy buyer" 127.0.0.1 62815 4890
+2024-11-25 18:29:04,671 - INFO - Server response: REGISTERED 6236
+2024-11-25 18:29:13,949 - INFO - Sending UDP message (attempt 1): LOOKING_FOR 6572 "troy buyer" "laptop" 2000.0
+2024-11-25 18:29:13,973 - INFO - Received message: SEARCH 6572 "laptop"
+2024-11-25 18:29:13,988 - INFO - Sending UDP message (attempt 1): OFFER 6572 "alice seller" "laptop" 1500.0
+2024-11-25 18:29:13,990 - INFO - Received message: FOUND 6572 "laptop" 1500.0
+2024-11-25 18:29:13,994 - INFO - Server response: RESERVE 6572 "laptop" 1500.0
+2024-11-25 18:29:13,995 - INFO - Sent offer for laptop
+2024-11-25 18:29:14,956 - WARNING - Timeout, retrying in 1 seconds...
+2024-11-25 18:29:15,958 - INFO - Sending UDP message (attempt 2): LOOKING_FOR 6572 "troy buyer" "laptop" 2000.0
+2024-11-25 18:29:15,972 - INFO - Received message: SEARCH 6572 "laptop"
+2024-11-25 18:29:15,974 - INFO - Sending UDP message (attempt 1): OFFER 6572 "alice seller" "laptop" 1500.0
+2024-11-25 18:29:15,976 - INFO - Server response: RESERVE 6572 "laptop" 1500.0
+2024-11-25 18:29:15,976 - INFO - Sent offer for laptop
+2024-11-25 18:29:15,976 - INFO - Server response: FOUND 6572 "laptop" 1500.0
+2024-11-25 18:29:15,976 - INFO - Search response received: FOUND 6572 "laptop" 1500.0
+2024-11-25 22:17:12,560 - INFO - Client initialized - UDP port: 59786, TCP port: 4072
+2024-11-25 22:17:15,508 - INFO - Attempting registration with message: REGISTER 1396 "timmy buyer" 127.0.0.1 59786 4072
+2024-11-25 22:17:15,520 - INFO - Sending UDP message (attempt 1): REGISTER 1396 "timmy buyer" 127.0.0.1 59786 4072
+2024-11-25 22:17:15,543 - INFO - Received message: REGISTERED 1396
+2024-11-25 22:17:16,535 - WARNING - Timeout, retrying in 5 seconds...
+2024-11-25 22:17:21,536 - INFO - Sending UDP message (attempt 2): REGISTER 1396 "timmy buyer" 127.0.0.1 59786 4072
+2024-11-25 22:17:21,553 - INFO - Server response: REGISTER-DENIED 1396 User timmy buyer is already registered
+2024-11-25 22:17:37,600 - INFO - Attempting registration with message: REGISTER 9221 "timmy buyer" 127.0.0.1 59786 4072
+2024-11-25 22:17:37,600 - INFO - Sending UDP message (attempt 1): REGISTER 9221 "timmy buyer" 127.0.0.1 59786 4072
+2024-11-25 22:17:37,605 - INFO - Received message: REGISTER-DENIED 9221 User timmy buyer is already registered
+2024-11-25 22:17:38,606 - WARNING - Timeout, retrying in 5 seconds...
+2024-11-25 22:17:43,607 - INFO - Sending UDP message (attempt 2): REGISTER 9221 "timmy buyer" 127.0.0.1 59786 4072
+2024-11-25 22:17:43,613 - INFO - Server response: REGISTER-DENIED 9221 User timmy buyer is already registered
+2024-11-25 22:18:03,568 - INFO - Client cleaned up successfully
+2024-11-25 22:18:03,568 - INFO - Client cleaned up successfully
+2024-11-25 22:18:21,542 - INFO - Client initialized - UDP port: 49666, TCP port: 3087
+2024-11-25 22:18:24,536 - INFO - Attempting registration with message: REGISTER 5125 "troy buyer" 127.0.0.1 49666 3087
+2024-11-25 22:18:24,536 - INFO - Sending UDP message (attempt 1): REGISTER 5125 "troy buyer" 127.0.0.1 49666 3087
+2024-11-25 22:18:24,551 - INFO - Server response: REGISTER-DENIED 5125 User troy buyer is already registered
+2024-11-25 22:18:57,386 - INFO - Client cleaned up successfully
+2024-11-25 22:18:57,386 - INFO - Client cleaned up successfully
+2024-11-25 22:19:49,745 - INFO - Client initialized - UDP port: 55846, TCP port: 2009
+2024-11-25 22:19:54,784 - INFO - Attempting registration with message: REGISTER 1577 "linda selling" 127.0.0.1 55846 2009
+2024-11-25 22:19:54,785 - INFO - Sending UDP message (attempt 1): REGISTER 1577 "linda selling" 127.0.0.1 55846 2009
+2024-11-25 22:19:54,790 - INFO - Server response: REGISTERED 1577
+2024-11-25 22:20:18,770 - INFO - Added item for sale: mouse at price 35.0
+2024-11-25 22:20:46,354 - INFO - Client initialized - UDP port: 55188, TCP port: 3007
+2024-11-25 22:20:48,741 - INFO - Attempting registration with message: REGISTER 6648 "bernard buying" 127.0.0.1 55188 3007
+2024-11-25 22:20:48,741 - INFO - Sending UDP message (attempt 1): REGISTER 6648 "bernard buying" 127.0.0.1 55188 3007
+2024-11-25 22:20:48,748 - INFO - Server response: REGISTERED 6648
+2024-11-25 22:21:01,113 - INFO - Sending UDP message (attempt 1): LOOKING_FOR 7326 "bernard buying" "mouse" 40.0
+2024-11-25 22:21:01,116 - INFO - Received message: SEARCH 7326 "mouse"
+2024-11-25 22:21:01,117 - INFO - Sending UDP message (attempt 1): OFFER 7326 "linda selling" "mouse" 35.0
+2024-11-25 22:21:01,119 - INFO - Server response: RESERVE 7326 "mouse" 35.0
+2024-11-25 22:21:01,119 - INFO - Server response: FOUND 7326 "mouse" 35.0
+2024-11-25 22:21:01,119 - INFO - Search response received: FOUND 7326 "mouse" 35.0
+2024-11-25 22:25:30,597 - INFO - Client cleaned up successfully
+2024-11-25 22:25:30,600 - INFO - Client cleaned up successfully
+2024-11-25 22:25:54,288 - INFO - Client initialized - UDP port: 57528, TCP port: 4908
+2024-11-25 22:25:56,942 - INFO - Attempting registration with message: REGISTER 4772 "paul buyer" 127.0.0.1 57528 4908
+2024-11-25 22:25:56,942 - INFO - Sending UDP message (attempt 1): REGISTER 4772 "paul buyer" 127.0.0.1 57528 4908
+2024-11-25 22:25:56,950 - INFO - Received message: REGISTERED 4772
+2024-11-25 22:25:57,960 - WARNING - Timeout, retrying in 1 seconds...
+2024-11-25 22:25:58,961 - INFO - Sending UDP message (attempt 2): REGISTER 4772 "paul buyer" 127.0.0.1 57528 4908
+2024-11-25 22:25:58,980 - INFO - Received message: REGISTER-DENIED 4772 User paul buyer is already registered
+2024-11-25 22:25:59,977 - WARNING - Timeout, retrying in 1 seconds...
+2024-11-25 22:26:00,990 - INFO - Sending UDP message (attempt 3): REGISTER 4772 "paul buyer" 127.0.0.1 57528 4908
+2024-11-25 22:26:01,004 - INFO - Received message: REGISTER-DENIED 4772 User paul buyer is already registered
+2024-11-25 22:26:01,991 - ERROR - Server not responding after multiple attempts
+2024-11-25 22:26:13,458 - INFO - Attempting registration with message: REGISTER 1436 "paul buyer" 127.0.0.1 57528 4908
+2024-11-25 22:26:13,458 - INFO - Sending UDP message (attempt 1): REGISTER 1436 "paul buyer" 127.0.0.1 57528 4908
+2024-11-25 22:26:13,463 - INFO - Server response: REGISTER-DENIED 1436 User paul buyer is already registered
+2024-11-25 22:27:31,258 - INFO - Client initialized - UDP port: 56893, TCP port: 1234
+2024-11-25 22:27:34,430 - INFO - Attempting registration with message: REGISTER 6350 "test1 seller" 127.0.0.1 56893 1234
+2024-11-25 22:27:34,431 - INFO - Sending UDP message (attempt 1): REGISTER 6350 "test1 seller" 127.0.0.1 56893 1234
+2024-11-25 22:27:34,437 - INFO - Received message: REGISTERED 6350
+2024-11-25 22:27:35,429 - WARNING - Timeout, retrying in 1 seconds...
+2024-11-25 22:27:36,430 - INFO - Sending UDP message (attempt 2): REGISTER 6350 "test1 seller" 127.0.0.1 56893 1234
+2024-11-25 22:27:36,436 - INFO - Server response: REGISTER-DENIED 6350 User test1 seller is already registered
+2024-11-25 22:27:54,230 - INFO - Client cleaned up successfully
+2024-11-25 22:27:54,230 - INFO - Client cleaned up successfully
+2024-11-25 22:28:10,970 - INFO - Client initialized - UDP port: 51114, TCP port: 1234
+2024-11-25 22:28:13,557 - INFO - Attempting registration with message: REGISTER 8824 "test sell" 127.0.0.1 51114 1234
+2024-11-25 22:28:13,557 - INFO - Sending UDP message (attempt 1): REGISTER 8824 "test sell" 127.0.0.1 51114 1234
+2024-11-25 22:28:13,562 - INFO - Server response: REGISTERED 8824
+2024-11-25 22:28:21,185 - INFO - Client initialized - UDP port: 56896, TCP port: 1345
+2024-11-25 22:28:23,212 - INFO - Attempting registration with message: REGISTER 7569 "test2 buy" 127.0.0.1 56896 1345
+2024-11-25 22:28:23,212 - INFO - Sending UDP message (attempt 1): REGISTER 7569 "test2 buy" 127.0.0.1 56896 1345
+2024-11-25 22:28:23,219 - INFO - Server response: REGISTERED 7569
+2024-11-25 22:28:34,638 - INFO - Added item for sale: keyboard at price 60.0
+2024-11-25 22:28:42,760 - INFO - Sending UDP message (attempt 1): LOOKING_FOR 4700 "test2 buy" "keyboard" 65.0
+2024-11-25 22:28:42,777 - INFO - Received message: SEARCH 4700 "keyboard"
+2024-11-25 22:28:42,778 - INFO - Sending UDP message (attempt 1): OFFER 4700 "test sell" "keyboard" 60.0
+2024-11-25 22:28:42,782 - INFO - Received message: FOUND 4700 "keyboard" 60.0
+2024-11-25 22:28:42,782 - INFO - Server response: RESERVE 4700 "keyboard" 60.0
+2024-11-25 22:28:42,782 - INFO - Sent offer for keyboard
+2024-11-25 22:28:43,763 - WARNING - Timeout, retrying in 1 seconds...
+2024-11-25 22:28:44,765 - INFO - Sending UDP message (attempt 2): LOOKING_FOR 4700 "test2 buy" "keyboard" 65.0
+2024-11-25 22:28:44,769 - INFO - Received message: SEARCH 4700 "keyboard"
+2024-11-25 22:28:44,769 - INFO - Sending UDP message (attempt 1): OFFER 4700 "test sell" "keyboard" 60.0
+2024-11-25 22:28:44,771 - INFO - Server response: RESERVE 4700 "keyboard" 60.0
+2024-11-25 22:28:44,771 - INFO - Sent offer for keyboard
+2024-11-25 22:28:44,771 - INFO - Server response: FOUND 4700 "keyboard" 60.0
+2024-11-25 22:28:44,771 - INFO - Search response received: FOUND 4700 "keyboard" 60.0
+2024-11-25 22:28:52,502 - ERROR - Purchase initiation error: type object 'MessageType' has no attribute 'BUY'
+2024-11-25 22:30:39,329 - INFO - Client cleaned up successfully
+2024-11-25 22:30:39,329 - INFO - Client cleaned up successfully
+2024-11-25 22:31:05,453 - INFO - Client initialized - UDP port: 60618, TCP port: 6347
+2024-11-25 22:31:08,535 - INFO - Attempting registration with message: REGISTER 8147 "testing selling" 127.0.0.1 60618 6347
+2024-11-25 22:31:08,536 - INFO - Sending UDP message (attempt 1): REGISTER 8147 "testing selling" 127.0.0.1 60618 6347
+2024-11-25 22:31:08,543 - INFO - Server response: REGISTERED 8147
+2024-11-25 22:31:19,805 - INFO - Added item for sale: keyboard at price 40.0
+2024-11-25 22:31:38,075 - INFO - Client initialized - UDP port: 52042, TCP port: 4486
+2024-11-25 22:31:40,260 - INFO - Attempting registration with message: REGISTER 6939 "testingg buying" 127.0.0.1 52042 4486
+2024-11-25 22:31:40,261 - INFO - Sending UDP message (attempt 1): REGISTER 6939 "testingg buying" 127.0.0.1 52042 4486
+2024-11-25 22:31:40,279 - INFO - Server response: REGISTERED 6939
+2024-11-25 22:31:55,378 - INFO - Sending UDP message (attempt 1): LOOKING_FOR 1239 "testingg buying" "keyboard" 50.0
+2024-11-25 22:31:55,383 - INFO - Received message: SEARCH 1239 "keyboard"
+2024-11-25 22:31:55,384 - INFO - Sending UDP message (attempt 1): OFFER 1239 "testing selling" "keyboard" 40.0
+2024-11-25 22:31:55,386 - INFO - Received message: FOUND 1239 "keyboard" 40.0
+2024-11-25 22:31:55,386 - INFO - Server response: RESERVE 1239 "keyboard" 40.0
+2024-11-25 22:31:55,386 - INFO - Sent offer for keyboard
+2024-11-25 22:31:56,400 - WARNING - Timeout, retrying in 5 seconds...
+2024-11-25 22:31:58,505 - ERROR - Purchase initiation error: type object 'MessageType' has no attribute 'BUY'
+2024-11-25 22:32:01,401 - INFO - Sending UDP message (attempt 2): LOOKING_FOR 1239 "testingg buying" "keyboard" 50.0
+2024-11-25 22:32:01,406 - INFO - Received message: SEARCH 1239 "keyboard"
+2024-11-25 22:32:01,408 - INFO - Sending UDP message (attempt 1): OFFER 1239 "testing selling" "keyboard" 40.0
+2024-11-25 22:32:01,410 - INFO - Server response: RESERVE 1239 "keyboard" 40.0
+2024-11-25 22:32:01,410 - INFO - Server response: FOUND 1239 "keyboard" 40.0
+2024-11-25 22:32:01,410 - INFO - Sent offer for keyboard
+2024-11-25 22:32:01,410 - INFO - Search response received: FOUND 1239 "keyboard" 40.0
+2024-11-25 22:32:53,697 - INFO - Client cleaned up successfully
+2024-11-25 22:32:53,697 - INFO - Client cleaned up successfully
+2024-11-25 22:32:57,881 - INFO - Client cleaned up successfully
+2024-11-25 22:32:57,881 - INFO - Client cleaned up successfully
+2024-11-25 22:33:15,386 - INFO - Client initialized - UDP port: 51993, TCP port: 6347
+2024-11-25 22:33:18,825 - INFO - Attempting registration with message: REGISTER 9804 "testest] sell" 127.0.0.1 51993 6347
+2024-11-25 22:33:18,826 - INFO - Sending UDP message (attempt 1): REGISTER 9804 "testest] sell" 127.0.0.1 51993 6347
+2024-11-25 22:33:18,831 - INFO - Received message: REGISTERED 9804
+2024-11-25 22:33:19,828 - WARNING - Timeout, retrying in 10 seconds...
+2024-11-25 22:33:29,829 - INFO - Sending UDP message (attempt 2): REGISTER 9804 "testest] sell" 127.0.0.1 51993 6347
+2024-11-25 22:33:29,833 - INFO - Server response: REGISTER-DENIED 9804 User testest] sell is already registered
+2024-11-25 22:33:36,871 - INFO - Attempting registration with message: REGISTER 9919 "testest] sell" 127.0.0.1 51993 6347
+2024-11-25 22:33:36,871 - INFO - Sending UDP message (attempt 1): REGISTER 9919 "testest] sell" 127.0.0.1 51993 6347
+2024-11-25 22:33:36,875 - INFO - Server response: REGISTER-DENIED 9919 User testest] sell is already registered
+2024-11-25 22:33:39,209 - INFO - Client cleaned up successfully
+2024-11-25 22:33:39,209 - INFO - Client cleaned up successfully
+2024-11-25 22:33:55,464 - INFO - Client initialized - UDP port: 55685, TCP port: 6347
+2024-11-25 22:33:58,065 - INFO - Attempting registration with message: REGISTER 9547 "tests sells" 127.0.0.1 55685 6347
+2024-11-25 22:33:58,066 - INFO - Sending UDP message (attempt 1): REGISTER 9547 "tests sells" 127.0.0.1 55685 6347
+2024-11-25 22:33:58,072 - INFO - Received message: REGISTERED 9547
+2024-11-25 22:33:59,084 - WARNING - Timeout, retrying in 10 seconds...
+2024-11-25 22:34:09,086 - INFO - Sending UDP message (attempt 2): REGISTER 9547 "tests sells" 127.0.0.1 55685 6347
+2024-11-25 22:34:09,090 - INFO - Server response: REGISTER-DENIED 9547 User tests sells is already registered
+2024-11-25 22:35:16,093 - INFO - Client initialized - UDP port: 54888, TCP port: 1111
+2024-11-25 22:35:18,257 - INFO - Attempting registration with message: REGISTER 4900 "oneone sell" 127.0.0.1 54888 1111
+2024-11-25 22:35:18,257 - INFO - Sending UDP message (attempt 1): REGISTER 4900 "oneone sell" 127.0.0.1 54888 1111
+2024-11-25 22:35:18,263 - INFO - Server response: REGISTERED 4900
+2024-11-25 22:35:38,057 - INFO - Client initialized - UDP port: 51470, TCP port: 2222
+2024-11-25 22:35:40,326 - INFO - Attempting registration with message: REGISTER 7907 "twotwo buy" 127.0.0.1 51470 2222
+2024-11-25 22:35:40,326 - INFO - Sending UDP message (attempt 1): REGISTER 7907 "twotwo buy" 127.0.0.1 51470 2222
+2024-11-25 22:35:40,332 - INFO - Server response: REGISTERED 7907
+2024-11-25 22:35:54,995 - INFO - Added item for sale: phone at price 2500.0
+2024-11-25 22:36:09,288 - INFO - Sending UDP message (attempt 1): LOOKING_FOR 3589 "twotwo buy" "phone" 3000.0
+2024-11-25 22:36:09,297 - INFO - Received message: SEARCH 3589 "phone"
+2024-11-25 22:36:09,298 - INFO - Sending UDP message (attempt 1): OFFER 3589 "oneone sell" "phone" 2500.0
+2024-11-25 22:36:09,301 - INFO - Received message: FOUND 3589 "phone" 2500.0
+2024-11-25 22:36:09,301 - INFO - Server response: RESERVE 3589 "phone" 2500.0
+2024-11-25 22:36:09,301 - INFO - Sent offer for phone
+2024-11-25 22:36:10,291 - WARNING - Timeout, retrying in 10 seconds...
+2024-11-25 22:36:11,039 - ERROR - Purchase initiation error: type object 'MessageType' has no attribute 'BUY'
+2024-11-25 22:36:20,293 - INFO - Sending UDP message (attempt 2): LOOKING_FOR 3589 "twotwo buy" "phone" 3000.0
+2024-11-25 22:36:20,310 - INFO - Received message: SEARCH 3589 "phone"
+2024-11-25 22:36:20,311 - INFO - Sending UDP message (attempt 1): OFFER 3589 "oneone sell" "phone" 2500.0
+2024-11-25 22:36:20,317 - INFO - Server response: RESERVE 3589 "phone" 2500.0
+2024-11-25 22:36:20,317 - INFO - Server response: FOUND 3589 "phone" 2500.0
+2024-11-25 22:36:20,317 - INFO - Sent offer for phone
+2024-11-25 22:36:20,318 - INFO - Search response received: FOUND 3589 "phone" 2500.0
+2024-11-25 22:41:21,837 - INFO - Client initialized - UDP port: 49202, TCP port: 3333
+2024-11-25 22:41:31,176 - INFO - Client initialized - UDP port: 49205, TCP port: 4444
+2024-11-25 22:41:34,795 - INFO - Attempting registration with message: REGISTER 5408 "trois vendre" 127.0.0.1 49202 3333
+2024-11-25 22:41:34,795 - INFO - Sending UDP message (attempt 1): REGISTER 5408 "trois vendre" 127.0.0.1 49202 3333
+2024-11-25 22:41:34,802 - INFO - Server response: REGISTERED 5408
+2024-11-25 22:41:38,822 - INFO - Attempting registration with message: REGISTER 6976 "quatre achete" 127.0.0.1 49205 4444
+2024-11-25 22:41:38,824 - INFO - Sending UDP message (attempt 1): REGISTER 6976 "quatre achete" 127.0.0.1 49205 4444
+2024-11-25 22:41:38,828 - INFO - Received message: REGISTERED 6976
+2024-11-25 22:41:39,825 - WARNING - Timeout, retrying in 10 seconds...
+2024-11-25 22:41:49,827 - INFO - Sending UDP message (attempt 2): REGISTER 6976 "quatre achete" 127.0.0.1 49205 4444
+2024-11-25 22:41:49,830 - INFO - Server response: REGISTER-DENIED 6976 User quatre achete is already registered
+2024-11-25 22:42:15,725 - INFO - Client initialized - UDP port: 54877, TCP port: 4444
+2024-11-25 22:42:17,863 - INFO - Attempting registration with message: REGISTER 3751 "qu ach" 127.0.0.1 54877 4444
+2024-11-25 22:42:17,863 - INFO - Sending UDP message (attempt 1): REGISTER 3751 "qu ach" 127.0.0.1 54877 4444
+2024-11-25 22:42:17,868 - INFO - Received message: REGISTERED 3751
+2024-11-25 22:42:18,880 - WARNING - Timeout, retrying in 10 seconds...
+2024-11-25 22:42:28,639 - INFO - Added item for sale: tree at price 40.0
+2024-11-25 22:42:28,881 - INFO - Sending UDP message (attempt 2): REGISTER 3751 "qu ach" 127.0.0.1 54877 4444
+2024-11-25 22:42:28,886 - INFO - Server response: REGISTER-DENIED 3751 User qu ach is already registered
+2024-11-25 22:42:54,108 - INFO - Client cleaned up successfully
+2024-11-25 22:42:54,108 - INFO - Client cleaned up successfully
+2024-11-25 22:43:11,617 - INFO - Client initialized - UDP port: 56675, TCP port: 5555
+2024-11-25 22:43:13,526 - INFO - Attempting registration with message: REGISTER 5052 "cinq buy" 127.0.0.1 56675 5555
+2024-11-25 22:43:13,526 - INFO - Sending UDP message (attempt 1): REGISTER 5052 "cinq buy" 127.0.0.1 56675 5555
+2024-11-25 22:43:13,534 - INFO - Received message: REGISTERED 5052
+2024-11-25 22:43:14,526 - WARNING - Timeout, retrying in 10 seconds...
+2024-11-25 22:43:24,527 - INFO - Sending UDP message (attempt 2): REGISTER 5052 "cinq buy" 127.0.0.1 56675 5555
+2024-11-25 22:43:24,532 - INFO - Received message: REGISTER-DENIED 5052 User cinq buy is already registered
+2024-11-25 22:43:25,525 - WARNING - Timeout, retrying in 10 seconds...
+2024-11-25 22:43:35,527 - INFO - Sending UDP message (attempt 3): REGISTER 5052 "cinq buy" 127.0.0.1 56675 5555
+2024-11-25 22:43:35,536 - INFO - Received message: REGISTER-DENIED 5052 User cinq buy is already registered
+2024-11-25 22:43:36,528 - ERROR - Server not responding after multiple attempts
+2024-11-25 22:43:39,875 - INFO - Sending UDP message (attempt 1): LOOKING_FOR 3526 "trois vendre" "tree" 80.0
+2024-11-25 22:43:39,897 - INFO - Received message: SEARCH 3526 "tree"
+2024-11-25 22:43:40,883 - WARNING - Timeout, retrying in 10 seconds...
+2024-11-25 22:43:50,884 - INFO - Sending UDP message (attempt 2): LOOKING_FOR 3526 "trois vendre" "tree" 80.0
+2024-11-25 22:43:50,897 - INFO - Received message: SEARCH 3526 "tree"
+2024-11-25 22:43:51,896 - WARNING - Timeout, retrying in 10 seconds...
+2024-11-25 22:44:01,898 - INFO - Sending UDP message (attempt 3): LOOKING_FOR 3526 "trois vendre" "tree" 80.0
+2024-11-25 22:44:01,915 - INFO - Received message: SEARCH 3526 "tree"
+2024-11-25 22:44:02,904 - ERROR - Server not responding after multiple attempts
+2024-11-25 22:48:39,916 - INFO - Received message: NOT_AVAILABLE 3526 "tree"

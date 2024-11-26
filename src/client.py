@@ -333,7 +333,7 @@ class ClientUDP_TCP:
             logging.error(f"Error handling search response: {e}")
             print("Error processing search response")
 
-    def send_udp_message(self, message: str, max_retries=3, retry_delay=1):
+    def send_udp_message(self, message: str, max_retries=3, retry_delay=10):
         """Send UDP message to server with retry mechanism"""
         for attempt in range(max_retries):
             try:
@@ -478,16 +478,26 @@ class ClientUDP_TCP:
             item_name = msg.params["item_name"]
             price = msg.params["price"]
             print(f"\nItem found: {item_name} at price ${price:.2f}")
-            if input("Would you like to purchase this item? (yes/no): ").lower() == 'yes':
-                self.initiate_purchase(msg.rq_number, item_name, price)
-            else:
-                self.send_cancel_message(msg.rq_number, item_name, price)
+            print("You can proceed with the purchase through TCP connection.")
+
+            while True:
+                response = input("Would you like to purchase this item? (yes/no): ").lower().strip()
+                if response == 'yes':
+                    self.initiate_purchase(msg.rq_number, item_name, price)
+                    break
+                elif response == 'no':
+                    print("Purchase cancelled")
+                    break
+                else:
+                    print ("Please enter 'yes' or 'no")
         except Exception as e:
             logging.error(f"Error handling found notification: {e}")
 
     def initiate_purchase(self, rq_number: str, item_name: str, price: float): #yasmine added init.purch
         """Start purchase process"""
         try:
+           print("Initiating purchase...")  # Debug print
+           
            # Send BUY message via UDP
            buy_msg = self.message_handler.create_message(
                MessageType.BUY,
@@ -495,15 +505,20 @@ class ClientUDP_TCP:
                item_name=item_name,
                price=price
            )
+           print(f"Sending BUY message: {buy_msg}")  # Debug print
            self.send_udp_message(buy_msg)
 
+           print(f"Setting up TCP socket on port {self.client_tcp_port}")  # Debug print
            # Wait for TCP connection from server
            tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+           tcp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
            tcp_socket.bind(('', self.client_tcp_port))
            tcp_socket.listen(1)
            tcp_socket.settimeout(30)
-        
+
+           print("Waiting for server TCP connection...")  # Debug print
            conn, addr = tcp_socket.accept()
+           print(f"TCP connection established with {addr}")  # Debug print
            self.handle_tcp_transaction(conn)
            tcp_socket.close() 
         except Exception as e:
