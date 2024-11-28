@@ -257,7 +257,7 @@ class ServerUDP_TCP:
                 logging.error(f"Error sending registration error response: {send_error}")
 
 
-   def handle_deregistration(self, msg: Message, client_address: tuple):
+    def handle_deregistration(self, msg: Message, client_address: tuple):
        try:
            name = msg.params["name"]
            with self.registration_lock:
@@ -301,7 +301,7 @@ class ServerUDP_TCP:
            logging.error(f"De-registration error: {e}")
            self._send_error_to_client(client_address, msg.rq_number, str(e))
 
-   def _validate_registration(self, name: str, ip: str, udp_port: int, tcp_port: int) -> bool:
+    def _validate_registration(self, name: str, ip: str, udp_port: int, tcp_port: int) -> bool:
        try:
            if not name or len(name.strip()) == 0:
                return False
@@ -319,7 +319,7 @@ class ServerUDP_TCP:
            logging.error(f"Error validating registration parameters: {e}")
            return False
 
-   def _send_error_response(self, rq_number: str, message: str, client_address: tuple):
+    def _send_error_response(self, rq_number: str, message: str, client_address: tuple):
        try:
            error_response = self.message_handler.create_message(
                MessageType.ERROR,
@@ -331,7 +331,7 @@ class ServerUDP_TCP:
        except Exception as e:
            logging.error(f"Error sending error response: {e}")
 
-   def handle_looking_for(self, msg: Message, client_address: tuple):
+    def handle_looking_for(self, msg: Message, client_address: tuple):
        try:
            buyer_name = msg.params["name"]
            if not self._validate_search_request(msg, client_address):
@@ -366,7 +366,7 @@ class ServerUDP_TCP:
            self._send_error_to_client(client_address, msg.rq_number, str(e))
 
 
-   def _broadcast_search(self, search_id: str, search_request: SearchRequest):
+    def _broadcast_search(self, search_id: str, search_request: SearchRequest):
        try:
            search_message = self.message_handler.create_message(
                MessageType.SEARCH,
@@ -392,7 +392,7 @@ class ServerUDP_TCP:
        except Exception as e:
            logging.error(f"Error broadcasting search: {e}")
 
-   def handle_offer(self, msg: Message, client_address: tuple):
+    def handle_offer(self, msg: Message, client_address: tuple):
        try:
            seller_name = msg.params["name"]
            if seller_name not in self.registration_data:
@@ -417,7 +417,7 @@ class ServerUDP_TCP:
        except Exception as e:
            logging.error(f"Error handling offer: {e}")
 
-   def _handle_search_timeout(self, search_id: str):
+    def _handle_search_timeout(self, search_id: str):
        try:
            with self.search_lock:
                if search_id not in self.active_searches:
@@ -436,7 +436,7 @@ class ServerUDP_TCP:
            logging.error(f"Error handling search timeout: {e}")
            self._cleanup_search(search_id)
 
-   def _process_offers(self, search_id: str, search_request: SearchRequest):
+    def _process_offers(self, search_id: str, search_request: SearchRequest):
        try:
            sorted_offers = sorted(search_request.offers, key=lambda x: x["price"])
            acceptable_offers = [
@@ -455,7 +455,7 @@ class ServerUDP_TCP:
            logging.error(f"Error processing offers: {e}")
 
 
-   def _handle_accepted_offer(self, search_id: str, search_request: SearchRequest, offer: Dict):
+    def _handle_accepted_offer(self, search_id: str, search_request: SearchRequest, offer: Dict):
        try:
            # Create reservation
            with self.reservation_lock:
@@ -505,7 +505,7 @@ class ServerUDP_TCP:
            logging.error(f"Error handling accepted offer: {e}")
            self._cleanup_reservation(search_id)
 
-   def listen_udp(self):
+    def listen_udp(self):
        print("Starting UDP listener...")
        self.udp_socket.settimeout(1)
        while self.running:
@@ -519,7 +519,7 @@ class ServerUDP_TCP:
                if self.running:
                    logging.error(f"UDP listening error: {e}")
 
-   def listen_tcp(self):
+    def listen_tcp(self):
        self.tcp_socket.settimeout(1)
        while self.running:
            try:
@@ -533,7 +533,7 @@ class ServerUDP_TCP:
                    logging.error(f"TCP listening error: {e}")
 
 
-   def handle_udp_client(self, data: bytes, client_address: tuple):
+    def handle_udp_client(self, data: bytes, client_address: tuple):
        try:
            message = data.decode()
            logging.info(f"Received UDP message from {client_address}: {message}")
@@ -559,7 +559,7 @@ class ServerUDP_TCP:
            logging.error(f"Error handling UDP client: {e}")
            self._send_error_response("0000", "Internal server error", client_address)
 
-   def handle_tcp_client(self, client_socket: socket.socket, client_address: tuple):
+    def handle_tcp_client(self, client_socket: socket.socket, client_address: tuple):
        try:
            client_socket.settimeout(30)
            while self.running:
@@ -608,7 +608,7 @@ class ServerUDP_TCP:
                pass
 
 
-   def route_message(self, msg: Message, client_address: tuple):
+    def route_message(self, msg: Message, client_address: tuple):
        try:
            handlers = {
                MessageType.REGISTER: self.handle_registration,
@@ -636,7 +636,7 @@ class ServerUDP_TCP:
            logging.error(f"Error routing message: {e}")
            self._send_error_to_client(client_address, msg.rq_number, "Internal server error")
 
-   def cleanup(self):
+    def cleanup(self):
        try:
            print("\nStarting server cleanup...")
            self.running = False
@@ -667,12 +667,12 @@ class ServerUDP_TCP:
            logging.error(f"Error during cleanup: {e}")
            print(f"Error during shutdown: {e}")
 
-   def signal_handler(self, signum, frame):
+    def signal_handler(self, signum, frame):
        print("\nSignal received. Shutting down server...")
        self.cleanup()
        os._exit(0)
 
-   def run(self):
+    def run(self):
        try:
            signal.signal(signal.SIGINT, self.signal_handler)
            signal.signal(signal.SIGTERM, self.signal_handler)
@@ -689,13 +689,13 @@ class ServerUDP_TCP:
            self.cleanup()
 
 def main():
-   try:
-       server = ServerUDP_TCP()
-       server.run()
-   except Exception as e:
-       print(f"Failed to start server: {e}")
-       logging.error(f"Failed to start server: {e}")
-       sys.exit(1)
+    try:
+        server = ServerUDP_TCP()
+        server.run()
+    except Exception as e:
+        print(f"Failed to start server: {e}")
+        logging.error(f"Failed to start server: {e}")
+        sys.exit(1)
 
 if __name__ == "__main__":
    main()
