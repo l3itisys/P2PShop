@@ -1,56 +1,12 @@
 {
-    "Snow White": {
-        "ip": "172.30.59.147",
-        "udp_port": 56244,
-        "tcp_port": 5000
-    },
-    "Emily Smith": {
-        "ip": "172.30.59.147",
-        "udp_port": 65086,
-        "tcp_port": 5002
-    },
-    "John Smith": {
-        "ip": "172.30.29.193",
-        "udp_port": 57440,
-        "tcp_port": 4999
-    },
-    "Kate Smith": {
-        "ip": "172.30.29.193",
-        "udp_port": 53099,
-        "tcp_port": 4998
-    },
-    "Emilia Johnson": {
-        "ip": "192.168.2.78",
-        "udp_port": 63452
-    },
-    "Nayla Smith": {
-        "ip": "192.168.2.78",
-        "udp_port": 53580,
-        "tcp_port": 6001
-    },
-    "John Doe Doe": {
+    "ke kl": {
         "ip": "127.0.0.1",
-        "udp_port": 43631,
-        "tcp_port": 5001
-    },
-    "ll ll": {
-        "ip": "127.0.0.1",
-        "udp_port": 57556,
-        "tcp_port": 1024
-    },
-    "hi there": {
-        "ip": "127.0.0.1",
-        "udp_port": 54853,
-        "tcp_port": 5666
-    },
-    "seller1 sel": {
-        "ip": "127.0.0.1",
-        "udp_port": 34957,
+        "udp_port": 48649,
         "tcp_port": 4556
     },
-    "buyer buy": {
+    "dd ds": {
         "ip": "127.0.0.1",
-        "udp_port": 41684,
-        "tcp_port": 4554
+        "udp_port": 42868,
+        "tcp_port": 4766
     }
 }

@@ -1,8 +1,8 @@
 import json
-from dataclasses import dataclass
-from typing import Optional, Dict, Any
 import logging
 import shlex
+from dataclasses import dataclass
+from typing import Optional, Dict, Any
 from enum import Enum
 
 class MessageType(Enum):
@@ -13,6 +13,7 @@ class MessageType(Enum):
     DE_REGISTERED = "DE-REGISTERED"
     LOOKING_FOR = "LOOKING_FOR"
     SEARCH = "SEARCH"
+    SEARCH_ACK = "SEARCH_ACK"
     OFFER = "OFFER"
     NEGOTIATE = "NEGOTIATE"
     ACCEPT = "ACCEPT"
@@ -23,6 +24,10 @@ class MessageType(Enum):
     RESERVE = "RESERVE"
     ERROR = "ERROR"
     CANCEL = "CANCEL"
+    BUY = "BUY"
+    INFORM_REQ = "INFORM_REQ"
+    INFORM_RES = "INFORM_RES"
+    SHIPPING_INFO = "SHIPPING_INFO"
 
 @dataclass
 class Message:
@@ -33,7 +38,6 @@ class Message:
 class MessageHandler:
     @staticmethod
     def validate_request_number(rq: str) -> bool:
-        """Validate request number format"""
         try:
             return len(rq) == 4 and rq.isdigit()
         except:
@@ -41,10 +45,8 @@ class MessageHandler:
 
     @staticmethod
     def parse_message(message: str) -> Optional[Message]:
-        """Parse incoming messages into structured format"""
         try:
             parts = shlex.split(message)
-            logging.debug(f"Parsed message parts: {parts}")
             if len(parts) < 2:
                 logging.error("Invalid message format: insufficient parts")
                 return None
@@ -76,38 +78,19 @@ class MessageHandler:
 
     @staticmethod
     def parse_params(command: MessageType, param_parts: list) -> Dict[str, Any]:
-        """Parse parameters based on command type"""
         params = {}
-
         try:
             if command == MessageType.REGISTER:
-                # Handle name with spaces and quotes
-                name = ''
-                index = 0
-                if param_parts[0].startswith('"'):
-                    while index < len(param_parts):
-                        name_part = param_parts[index]
-                        name += name_part + ' '
-                        if name_part.endswith('"'):
-                            break
-                        index += 1
-                    name = name.strip().strip('"')
-                    index += 1
-                else:
-                    name = param_parts[0]
-                    index = 1
-
-                ip = param_parts[index]
-                udp_port = int(param_parts[index + 1])
-                tcp_port = int(param_parts[index + 2])
-
+                name = param_parts[0].strip('"')
+                ip = param_parts[1]
+                udp_port = int(param_parts[2])
+                tcp_port = int(param_parts[3])
                 params = {
                     "name": name,
                     "ip": ip,
                     "udp_port": udp_port,
                     "tcp_port": tcp_port
                 }
-
             elif command == MessageType.DE_REGISTER:
                 params = {"name": param_parts[0].strip('"')}
             elif command == MessageType.LOOKING_FOR:
@@ -120,6 +103,8 @@ class MessageHandler:
                     "max_price": max_price
                 }
             elif command == MessageType.SEARCH:
+                params = {"item_name": param_parts[0].strip('"')}
+            elif command == MessageType.SEARCH_ACK:
                 params = {"item_name": param_parts[0].strip('"')}
             elif command == MessageType.OFFER:
                 name = param_parts[0].strip('"')
@@ -168,14 +153,7 @@ class MessageHandler:
                     "max_price": max_price
                 }
             elif command == MessageType.NOT_AVAILABLE:
-                item_name = param_parts[0].strip('"')
-                params = {"item_name": item_name}
-            elif command == MessageType.REGISTER_DENIED:
-                reason = " ".join(param_parts)
-                params = {"reason": reason}
-            elif command == MessageType.ERROR:
-                message = " ".join(param_parts)
-                params = {"message": message}
+                params = {"item_name": param_parts[0].strip('"')}
             elif command == MessageType.RESERVE:
                 item_name = param_parts[0].strip('"')
                 price = float(param_parts[1])
@@ -183,16 +161,42 @@ class MessageHandler:
                     "item_name": item_name,
                     "price": price
                 }
-            elif command == MessageType.CANCEL:
+            elif command == MessageType.REGISTER_DENIED:
+                params = {"reason": " ".join(param_parts)}
+            elif command == MessageType.ERROR:
+                params = {"message": " ".join(param_parts)}
+            elif command == MessageType.BUY:
                 item_name = param_parts[0].strip('"')
                 price = float(param_parts[1])
                 params = {
                     "item_name": item_name,
                     "price": price
                 }
-            else:
-                # Handle other commands if necessary
-                pass
+            elif command == MessageType.INFORM_REQ:
+                item_name = param_parts[0].strip('"')
+                price = float(param_parts[1])
+                params = {
+                    "item_name": item_name,
+                    "price": price
+                }
+            elif command == MessageType.INFORM_RES:
+                name = param_parts[0].strip('"')
+                cc_number = param_parts[1]
+                cc_exp_date = param_parts[2]
+                address = " ".join(param_parts[3:]).strip('"')
+                params = {
+                    "name": name,
+                    "cc_number": cc_number,
+                    "cc_exp_date": cc_exp_date,
+                    "address": address
+                }
+            elif command == MessageType.SHIPPING_INFO:
+                name = param_parts[0].strip('"')
+                address = " ".join(param_parts[1:]).strip('"')
+                params = {
+                    "name": name,
+                    "address": address
+                }
 
             return params
 
@@ -202,7 +206,6 @@ class MessageHandler:
 
     @staticmethod
     def create_message(command: MessageType, rq_number: str, **params) -> str:
-        """Create formatted message with parameters"""
         try:
             msg_parts = [command.value, rq_number]
 
@@ -222,6 +225,8 @@ class MessageHandler:
                     str(params["max_price"])
                 ])
             elif command == MessageType.SEARCH:
+                msg_parts.append(f'"{params["item_name"]}"')
+            elif command == MessageType.SEARCH_ACK:
                 msg_parts.append(f'"{params["item_name"]}"')
             elif command == MessageType.OFFER:
                 msg_parts.extend([
@@ -257,27 +262,40 @@ class MessageHandler:
                 ])
             elif command == MessageType.NOT_AVAILABLE:
                 msg_parts.append(f'"{params["item_name"]}"')
-            elif command == MessageType.REGISTER_DENIED:
-                msg_parts.append(params.get("reason", ""))
-            elif command == MessageType.ERROR:
-                msg_parts.append(params["message"])
             elif command == MessageType.RESERVE:
                 msg_parts.extend([
                     f'"{params["item_name"]}"',
                     str(params["price"])
                 ])
-            elif command == MessageType.CANCEL:
+            elif command == MessageType.REGISTER_DENIED:
+                msg_parts.append(params["reason"])
+            elif command == MessageType.ERROR:
+                msg_parts.append(params["message"])
+            elif command == MessageType.BUY:
                 msg_parts.extend([
                     f'"{params["item_name"]}"',
                     str(params["price"])
                 ])
-            else:
-                # Handle other commands if necessary
-                pass
+            elif command == MessageType.INFORM_REQ:
+                msg_parts.extend([
+                    f'"{params["item_name"]}"',
+                    str(params["price"])
+                ])
+            elif command == MessageType.INFORM_RES:
+                msg_parts.extend([
+                    f'"{params["name"]}"',
+                    params["cc_number"],
+                    params["cc_exp_date"],
+                    f'"{params["address"]}"'
+                ])
+            elif command == MessageType.SHIPPING_INFO:
+                msg_parts.extend([
+                    f'"{params["name"]}"',
+                    f'"{params["address"]}"'
+                ])
 
             return " ".join(msg_parts)
 
         except Exception as e:
             logging.error(f"Error creating message: {e}")
             raise
-
