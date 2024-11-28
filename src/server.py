@@ -308,8 +308,9 @@ class ServerUDP_TCP:
     def handle_accept(self, msg: Message, client_address: tuple):
         try:
             seller_name = msg.params["name"]
-            if msg.rq_number not in self.active_searches:
-                logging.warning(f"Accept received for inactive search: {msg.rq_number}")
+            with self.search_lock:
+                if msg.rq_number not in self.active_searches:
+                    logging.warning(f"Accept received for inactive search: {msg.rq_number}")
                 return
 
             search_request = self.active_searches[msg.rq_number]
@@ -319,11 +320,13 @@ class ServerUDP_TCP:
                     item_name=msg.params["item_name"],
                     price=msg.params["price"]
                     )
-            self.reservations[msg.rq_number] = reservation
+            with self.reservation_lock:
+                self.reservations[msg.rq_number] = reservation
 
             self._notify_buyer_found(msg.rq_number, search_request, msg.params)
-            del self.active_searches[msg.rq_number]
+            search_request.status = "completed"
             self.timeout_manager.cancel_timer(msg.rq_number)
+            del self.active_searches[msg.rq_number]
 
         except Exception as e:
             logging.error(f"Error handling accept: {e}")
@@ -547,6 +550,9 @@ class ServerUDP_TCP:
                search_request.offers.append(offer)
                logging.info(f"Offer received from {seller_name} for search {msg.rq_number}")
 
+               # process offers immediatly
+               self._process_offers(msg.rq_number, search_request)
+
        except Exception as e:
            logging.error(f"Error handling offer: {e}")
 
@@ -571,6 +577,10 @@ class ServerUDP_TCP:
 
     def _process_offers(self, search_id: str, search_request: SearchRequest):
        try:
+           # Check if the search has already been processed
+           if search_request.status != "active":
+               return
+
            sorted_offers = sorted(search_request.offers, key=lambda x: x["price"])
            acceptable_offers = [
                offer for offer in sorted_offers
@@ -579,10 +589,17 @@ class ServerUDP_TCP:
 
            if acceptable_offers:
                self._handle_accepted_offer(search_id, search_request, acceptable_offers[0])
+               search_request.status = "completed"
+               self.timeout_manager.cancel_timer(search_id)
+               del self.active_searches[search_id]
            elif sorted_offers:
-               self._start_negotiation(search_id, search_request, sorted_offers[0])
+               # Start negotiation only if negociation hasn't been started yet
+               if not search_request.status == "negotiation_started":
+                   self._start_negotiation(search_id, search_request, sorted_offers[0])
+                   search_request.status = "negotiation_started"
            else:
-               self._send_not_found(search_id, search_request)
+               # Do nothing; wait for more offers
+               pass
 
        except Exception as e:
            logging.error(f"Error processing offers: {e}")

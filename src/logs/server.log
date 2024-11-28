@@ -1,7 +1,7 @@
 
-2024-11-28 11:55:27,567 - ERROR - Error loading registrations: Expecting value: line 2 column 1 (char 1)
-2024-11-28 11:55:27,568 - INFO - Server started - UDP port: 3000, TCP port: 3001
-2024-11-28 11:55:27,568 - INFO - Server running...
-2024-11-28 11:55:29,938 - INFO - Starting server cleanup...
-2024-11-28 11:55:29,939 - INFO - Registrations saved successfully
-2024-11-28 11:55:31,571 - INFO - Server cleanup completed
+2024-11-28 13:36:57,612 - ERROR - Error loading registrations: Expecting value: line 2 column 1 (char 1)
+2024-11-28 13:36:57,612 - INFO - Server started - UDP port: 3000, TCP port: 3001
+2024-11-28 13:36:57,613 - INFO - Server running...
+2024-11-28 13:36:59,212 - INFO - Starting server cleanup...
+2024-11-28 13:36:59,213 - INFO - Registrations saved successfully
+2024-11-28 13:37:00,616 - INFO - Server cleanup completed
