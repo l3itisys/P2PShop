@@ -65,6 +65,11 @@ class ClientUDP_TCP:
             level=logging.INFO,
             format='%(asctime)s - %(levelname)s - %(message)s'
         )
+        console = logging.StreamHandler()
+        console.setLevel(logging.INFO)
+        formatter = logging.Formatter('%(message)s')
+        console.setFormatter(formatter)
+        logging.getLogger('').addHandler(console)
 
     def setup_client(self):
         try:
@@ -90,7 +95,7 @@ class ClientUDP_TCP:
 
             self.message_handler = MessageHandler()
             self.items_for_sale: Dict[str, ItemForSale] = {}
-            self.active_searches: Dict[str, SearchRequest] = {}
+            self.active_searches: Dict[str, ActiveSearch] = {}
             self.response_lock = threading.Lock()
             self.items_lock = threading.Lock()
 
@@ -227,12 +232,21 @@ class ClientUDP_TCP:
                     print("Successfully registered!")
                     return True
                 elif msg and msg.command == MessageType.REGISTER_DENIED:
-                    if "already registered" in msg.params.get('reason', ''):
-                        self.registered = True
-                        print("Already registered! You can proceed with other commands.")
-                        return True
+                    reason = msg.params.get('reason', '')
+                    if "already registered" in reason:
+                        # Send DE-REGISTER message
+                        print("Name already registered. Updating registration with new ports.")
+                        dereg_rq = str(random.randint(1000, 9999))
+                        dereg_message = self.message_handler.create_message(
+                            MessageType.DE_REGISTER,
+                            dereg_rq,
+                            name=self.name
+                        )
+                        dereg_response = self.send_udp_message(dereg_message)
+                        # Attempt to register again
+                        return self.register()
                     else:
-                        print(f"Registration denied: {msg.params.get('reason', 'Unknown reason')}")
+                        print(f"Registration denied: {reason}")
                 else:
                     print(f"Unexpected registration response: {response}")
             return self.registered
@@ -647,7 +661,6 @@ class ClientUDP_TCP:
         print("  exit       - Exit the client")
 
 def main():
-    """Keep existing main function unchanged"""
     try:
         client = ClientUDP_TCP()
         signal.signal(signal.SIGINT, client.signal_handler)

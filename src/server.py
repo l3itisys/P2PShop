@@ -220,25 +220,18 @@ class ServerUDP_TCP:
             response = None
 
             with self.registration_lock:
-                if name in self.registration_data:
-                    response = self.message_handler.create_message(
-                        MessageType.REGISTER_DENIED,
-                        msg.rq_number,
-                        reason=f"User {name} is already registered"
-                    )
-                    logging.warning(f"Registration denied for {name}: already registered")
-                else:
-                    self.registration_data[name] = {
-                        'ip': ip,
-                        'udp_port': udp_port,
-                        'tcp_port': tcp_port
-                    }
-                    self.save_registrations()
-                    response = self.message_handler.create_message(
-                        MessageType.REGISTERED,
-                        msg.rq_number
-                    )
-                    logging.info(f"User {name} registered successfully")
+                # Update registration if name already exists
+                self.registration_data[name] = {
+                    'ip': ip,
+                    'udp_port': udp_port,
+                    'tcp_port': tcp_port
+                }
+                self.save_registrations()
+                response = self.message_handler.create_message(
+                    MessageType.REGISTERED,
+                    msg.rq_number
+                )
+                logging.info(f"User {name} registered/updated successfully")
 
             if response:
                 self.udp_socket.sendto(response.encode(), client_address)
@@ -256,50 +249,100 @@ class ServerUDP_TCP:
             except Exception as send_error:
                 logging.error(f"Error sending registration error response: {send_error}")
 
-
     def handle_deregistration(self, msg: Message, client_address: tuple):
-       try:
-           name = msg.params["name"]
-           with self.registration_lock:
-               if name in self.registration_data:
-                   del self.registration_data[name]
-                   self.save_registrations()
-                   response = self.message_handler.create_message(
-                       MessageType.DE_REGISTERED,
-                       msg.rq_number,
-                       name=name
-                   )
-                   logging.info(f"User {name} de-registered successfully")
+        try:
+            name = msg.params["name"]
+            with self.registration_lock:
+                if name in self.registration_data:
+                    del self.registration_data[name]
+                    self.save_registrations()
+                    response = self.message_handler.create_message(
+                        MessageType.DE_REGISTERED,
+                        msg.rq_number,
+                        name=name
+                    )
+                    logging.info(f"User {name} de-registered successfully")
 
-                   # Clean up searches and reservations
-                   with self.search_lock:
-                       searches_to_remove = [
-                           search_id for search_id, search in self.active_searches.items()
-                           if search.buyer_name == name
-                       ]
-                       for search_id in searches_to_remove:
-                           self.timeout_manager.cancel_timer(search_id)
-                           del self.active_searches[search_id]
+                    # Clean up searches and reservations
+                    with self.search_lock:
+                        searches_to_remove = [
+                            search_id for search_id, search in self.active_searches.items()
+                            if search.buyer_name == name
+                        ]
+                        for search_id in searches_to_remove:
+                            self.timeout_manager.cancel_timer(search_id)
+                            del self.active_searches[search_id]
 
-                   with self.reservation_lock:
-                       reservations_to_remove = [
-                           res_id for res_id, reservation in self.reservations.items()
-                           if reservation.buyer == name or reservation.seller == name
-                       ]
-                       for res_id in reservations_to_remove:
-                           del self.reservations[res_id]
-               else:
-                   response = self.message_handler.create_message(
-                       MessageType.ERROR,
-                       msg.rq_number,
-                       message=f"User {name} not found"
-                   )
+                    with self.reservation_lock:
+                        reservations_to_remove = [
+                            res_id for res_id, reservation in self.reservations.items()
+                            if reservation.buyer == name or reservation.seller == name
+                        ]
+                        for res_id in reservations_to_remove:
+                            del self.reservations[res_id]
+                else:
+                    response = self.message_handler.create_message(
+                        MessageType.ERROR,
+                        msg.rq_number,
+                        message=f"User {name} not found"
+                    )
 
-               self.udp_socket.sendto(response.encode(), client_address)
+                self.udp_socket.sendto(response.encode(), client_address)
 
-       except Exception as e:
-           logging.error(f"De-registration error: {e}")
-           self._send_error_to_client(client_address, msg.rq_number, str(e))
+        except Exception as e:
+            logging.error(f"De-registration error: {e}")
+            self._send_error_to_client(client_address, msg.rq_number, str(e))
+
+    def _send_error_to_client(self, client_address: tuple, rq_number: str, error_msg: str):
+        try:
+            error_response = self.message_handler.create_message(
+                MessageType.ERROR,
+                rq_number,
+                message=error_msg
+            )
+            self.udp_socket.sendto(error_response.encode(), client_address)
+            logging.error(f"Sent error to {client_address}: {error_msg}")
+        except Exception as e:
+            logging.error(f"Failed to send error message: {e}")
+
+    def handle_accept(self, msg: Message, client_address: tuple):
+        try:
+            seller_name = msg.params["name"]
+            if msg.rq_number not in self.active_searches:
+                logging.warning(f"Accept received for inactive search: {msg.rq_number}")
+                return
+
+            search_request = self.active_searches[msg.rq_number]
+            reservation = ItemReservation(
+                    seller=seller_name,
+                    buyer=search_request.buyer_name,
+                    item_name=msg.params["item_name"],
+                    price=msg.params["price"]
+                    )
+            self.reservations[msg.rq_number] = reservation
+
+            self._notify_buyer_found(msg.rq_number, search_request, msg.params)
+            del self.active_searches[msg.rq_number]
+            self.timeout_manager.cancel_timer(msg.rq_number)
+
+        except Exception as e:
+            logging.error(f"Error handling accept: {e}")
+
+    def _notify_buyer_found(self, search_id: str, search_request: SearchRequest, params: dict):
+        try:
+            found_msg = self.message_handler.create_message(
+                    MessageType.FOUND,
+                    search_id,
+                    item_name=params["item_name"],
+                    price=params["price"]
+                    )
+            buyer_data = self.registration_data[search_request.buyer_name]
+            buyer_address = (buyer_data["ip"], buyer_data["udp_port"])
+            self.message_delivery.send_with_retry(found_msg, buyer_address)
+            logging.info(f"Notified buyer of found item: {params['item_name']}")
+        except Exception as e:
+            logging.error(f"Error notifying buyer: {e}")
+
 
     def _validate_registration(self, name: str, ip: str, udp_port: int, tcp_port: int) -> bool:
        try:
@@ -330,6 +373,96 @@ class ServerUDP_TCP:
            logging.info(f"Sent error response to {client_address}: {message}")
        except Exception as e:
            logging.error(f"Error sending error response: {e}")
+
+    def _validate_search_request(self, msg: Message, client_address: tuple) -> bool:
+        try:
+            buyer_name = msg.params["name"]
+            # Check if user is registered
+            if buyer_name not in self.registration_data:
+                self._send_error_to_client(
+                        client_address,
+                        msg.rq_number,
+                        "User not registered"
+                        )
+                return False
+
+            # Validate price
+            if msg.params["max_price"] <= 0:
+                self._send_error_to_client(
+                        client_address,
+                        msg.rq_number,
+                        "Invalide price"
+                        )
+                return False
+            return True
+
+        except Exception as e:
+            logging.error(f"Error validating search request: {e}")
+            self._send_error_to_client(
+                    client_address,
+                    msg.rq_number,
+                    str(e)
+                    )
+            return False
+
+    def _handle_no_sellers(self, search_id: str, search_request: SearchRequest):
+        """Handle case when no sellers are available"""
+        try:
+            not_available_msg = self.message_handler.create_message(
+                    MessageType.NOT_AVAILABLE,
+                    search_id,
+                    item_name=search_request.item_name
+                    )
+            self.udp_socket.sendto(not_available_msg.encode(), search_request.client_address)
+
+            self._cleanup_search(search_id)
+            logging.info(f"No sellers available for item {search_request.item_name}")
+        except Exception as e:
+            logging.error(f"Error handling no sellers case: {e}")
+
+    def _handle_no_offers(self, search_id: str, search_request: SearchRequest):
+        """Handle case when no offers received"""
+        try:
+            not_available_msg = self.message_handler.create_message(
+                    MessageType.NOT_AVAILABLE,
+                    search_id,
+                    item_name=search_request.item_name
+                    )
+            self.udp_socket.sendto(not_available_msg.encode(), search_request.client_address)
+            logging.info(f"No offers received for search {search_id}")
+        except Exception as e:
+            logging.error(f"Error handling no offers case: {e}")
+
+    def _start_negotiation(self, search_id: str, search_request: SearchRequest, offer: Dict):
+        """Start price negotiation with seller"""
+        try:
+            # Send negotiate message to seller
+            negotiate_msg = self.message_handler.create_message(
+                    MessageType.NEGOCIATE,
+                    search_id,
+                    item_name=offer["item_name"],
+                    max_price=search_request.max_price
+                    )
+            seller_data = self.registration_data[offer["seller"]]
+            seller_address = (seller_data["ip"], seller_data["udp_port"])
+            self.message_delivery.send_with_retry(negotiate_msg, seller_address)
+            logging.info(f"Started negotiation for {offer['item_name']} with seller {offer['seller']}")
+        except Exception as e:
+            logging.error(f"Error starting negotiation: {e}")
+
+    def _send_not_found(self, search_id: str, search_request: SearchRequest):
+        """Send not found message to buyer"""
+        try:
+            not_found_msg = self.message_handler.create_message(
+                    MessageType.NOT_FOUND,
+                    search_id,
+                    item_name=search_request.item_name,
+                    max_price=search_request.max_price
+                    )
+            self.udp_socket.sendto(not_found_msg.encode(), search_request.client_address)
+            logging.info(f"Sent NOT_FOUND to buyer for {search_request.item_name}")
+        except Exception as e:
+            logging.error(f"Error sending not found message: {e}")
 
     def handle_looking_for(self, msg: Message, client_address: tuple):
        try:
@@ -505,19 +638,100 @@ class ServerUDP_TCP:
            logging.error(f"Error handling accepted offer: {e}")
            self._cleanup_reservation(search_id)
 
+    def handle_refuse(self, msg: Message, client_address: tuple):
+        try:
+            if msg.rq_number not in self.active_searches:
+                logging.warning(f"Refuse received for inactive search: {msg.rq_number}")
+                return
+
+            search_request = self.active_searches[msg.rq_number]
+            self._notify_buyer_not_found(msg.rq_number, search_request, msg.params)
+
+            self._cleanup_search(msg.rq_number)
+            logging.info(f"Negotiation refused for search {msg.rq_number}")
+
+        except Exception as e:
+            logging.error(f"Error handling refuse: {e}")
+
+    def _notify_buyer_not_found(self, search_id: str, search_request: SearchRequest, params: dict):
+        try:
+            not_found_msg = self.message_handler.create_message(
+                    MessageType.NOT_FOUND,
+                    search_id,
+                    item_name=params["item_name"],
+                    max_price=params["max_price"]
+                    )
+            buyer_data = self.registration_data[search_request.buyer_name]
+            buyer_address = (buyer_data["ip"], buyer_data["udp_port"])
+            self.message_delivery.send_with_retry(not_found_msg, buyer_address)
+            logging.info(f"Sent NOT_FOUND message to buyer {search_request.buyer_name}")
+        except Exception as e:
+            logging.error(f"Error notifying buyer about not found: {e}")
+
+
+    def handle_cancel(self, msg: Message, client_address: tuple):
+        try:
+            search_id = msg.rq_number
+            if search_id not in self.reservations:
+                logging.warning(f"Cancel received for non-existent reservation: {search_id}")
+                return
+
+            with self.reservation_lock:
+                reservation = self.reservations[search_id]
+                seller_data = self.registration_data[reservation.seller]
+                self._notify_seller_cancel(search_id, seller_data, msg.params)
+                del self.reservations[search_id]
+
+            logging.info(f"Cancelled reservation for search {search_id}")
+
+        except Exception as e:
+            logging.error(f"Error handling cancel: {e}")
+
+    def _notify_seller_cancel(self, search_id: str, seller_data: dict, params: dict):
+        try:
+            cancel_msg = self.message_handler.create_message(
+                    MessageType.CANCEL,
+                    search_id,
+                    item_name=params["item_name"],
+                    price=params["price"]
+                    )
+            seller_address = (seller_data["ip"], seller_data["udp_port"])
+            self.message_delivery.send_with_retry(cancel_msg, seller_address)
+            logging.info(f"Notified seller about cancellation")
+        except Exception as e:
+            logging.error(f"Error notifying seller about cancellation: {e}")
+
+    def _cleanup_search(self, search_id: str):
+        try:
+            with self.search_lock:
+                if search_id in self.active_searches:
+                    del self.active_searches[search_id]
+                    self.timeout_manager.cancel_timer(search_id)
+        except Exception as e:
+            logging.error(f"Error cleaning up search: {e}")
+
+    def _cleanup_reservation(self, search_id: str):
+        try:
+            with self.reservation_lock:
+                if search_id in self.reservations:
+                    del self.reservations[search_id]
+        except Exception as e:
+            logging.error(f"Error cleaning up reservation: {e}")
+
+
     def listen_udp(self):
-       print("Starting UDP listener...")
-       self.udp_socket.settimeout(1)
-       while self.running:
-           try:
-               data, client_address = self.udp_socket.recvfrom(1024)
-               threading.Thread(target=self.handle_udp_client,
-                             args=(data, client_address)).start()
-           except socket.timeout:
-               continue
-           except Exception as e:
-               if self.running:
-                   logging.error(f"UDP listening error: {e}")
+        print("Starting UDP listener...")
+        self.udp_socket.settimeout(1)
+        while self.running:
+            try:
+                data, client_address = self.udp_socket.recvfrom(1024)
+                threading.Thread(target=self.handle_udp_client,
+                                 args=(data, client_address)).start()
+            except socket.timeout:
+                continue
+            except Exception as e:
+                if self.running:
+                    logging.error(f"UDP listening error: {e}")
 
     def listen_tcp(self):
        self.tcp_socket.settimeout(1)
@@ -637,56 +851,56 @@ class ServerUDP_TCP:
            self._send_error_to_client(client_address, msg.rq_number, "Internal server error")
 
     def cleanup(self):
-       try:
-           print("\nStarting server cleanup...")
-           self.running = False
-           logging.info("Starting server cleanup...")
+        try:
+            print("\nStarting server cleanup...")
+            self.running = False
+            logging.info("Starting server cleanup...")
 
-           self.timeout_manager.cleanup()
+            self.timeout_manager.cleanup()
 
-           with self.registration_lock:
-               self.save_registrations()
+            with self.registration_lock:
+                self.save_registrations()
 
-           for socket_attr in ['udp_socket', 'tcp_socket']:
-               if hasattr(self, socket_attr):
-                   try:
-                       getattr(self, socket_attr).close()
-                   except:
-                       pass
+            for socket_attr in ['udp_socket', 'tcp_socket']:
+                if hasattr(self, socket_attr):
+                    try:
+                        getattr(self, socket_attr).close()
+                    except:
+                        pass
 
-           for thread_attr in ['udp_thread', 'tcp_thread', 'cleanup_thread']:
-               if hasattr(self, thread_attr):
-                   thread = getattr(self, thread_attr)
-                   if thread.is_alive():
-                       thread.join(timeout=1)
+            for thread_attr in ['udp_thread', 'tcp_thread', 'cleanup_thread']:
+                if hasattr(self, thread_attr):
+                    thread = getattr(self, thread_attr)
+                    if thread.is_alive():
+                        thread.join(timeout=1)
 
-           logging.info("Server cleanup completed")
-           print("Server shutdown complete")
+            logging.info("Server cleanup completed")
+            print("Server shutdown complete")
 
-       except Exception as e:
-           logging.error(f"Error during cleanup: {e}")
-           print(f"Error during shutdown: {e}")
+        except Exception as e:
+            logging.error(f"Error during cleanup: {e}")
+            print(f"Error during shutdown: {e}")
 
     def signal_handler(self, signum, frame):
-       print("\nSignal received. Shutting down server...")
-       self.cleanup()
-       os._exit(0)
+        print("\nSignal received. Shutting down server...")
+        self.cleanup()
+        os._exit(0)
 
     def run(self):
-       try:
-           signal.signal(signal.SIGINT, self.signal_handler)
-           signal.signal(signal.SIGTERM, self.signal_handler)
+        try:
+            signal.signal(signal.SIGINT, self.signal_handler)
+            signal.signal(signal.SIGTERM, self.signal_handler)
 
-           while self.running:
-               time.sleep(0.1)
+            while self.running:
+                time.sleep(0.1)
 
-       except KeyboardInterrupt:
-           print("\nShutdown requested...")
-       except Exception as e:
-           logging.error(f"Server error: {e}")
-           print(f"Server error: {e}")
-       finally:
-           self.cleanup()
+        except KeyboardInterrupt:
+            print("\nShutdown requested...")
+        except Exception as e:
+            logging.error(f"Server error: {e}")
+            print(f"Server error: {e}")
+        finally:
+            self.cleanup()
 
 def main():
     try:
@@ -698,4 +912,4 @@ def main():
         sys.exit(1)
 
 if __name__ == "__main__":
-   main()
+    main()
