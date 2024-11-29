@@ -589,8 +589,81 @@ class ClientUDP_TCP:
                 print(f"\nItem '{item_name}' has been reserved at price ${price:.2f}")
                 logging.info(f"Item {item_name} reserved at price {price}")
 
+            # Initiate TCP connection
+            self.initiate_tcp_transaction(rq_number, item_name, price)
+
         except Exception as e:
             logging.error(f"Error handling reserve request: {e}")
+
+    def initiate_tcp_transaction(self, rq_number: str, item_name: str, price: float):
+        """Handle TCP transaction as seller"""
+        try:
+            # Create TCP connection to server
+            transaction_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            transaction_socket.settimeout(30)
+
+            try:
+                # Connect to server
+                transaction_socket.connect((self.server_ip, self.server_tcp_port))
+                print("Connected to server for transaction...")
+                logging.info(f"TCP connection established for transaction {rq_number}")
+
+                # Wait for INFORM_REQ
+                data = transaction_socket.recv(1024).decode()
+                msg = self.message_handler.parse_message(data)
+
+                if not msg or msg.command != MessageType.INFORM_REQ:
+                    raise Exception("Invalid server response")
+
+                # Send INFORM_RES with seller's details (if any)
+                inform_res = self.message_handler.create_message(
+
+                        MessageType.INFORM_RES,
+                        rq_number,
+                        name=self.name,
+                        cc_number='',  # Sellers might not need to send cc info
+                        cc_exp_date='',
+                        address=''  # Seller's address if needed
+                        )
+                transaction_socket.sendall(inform_res.encode())
+                logging.info("Sent INFORM_RES to server from seller")
+
+                # Wait for transaction result
+                result = transaction_socket.recv(1024).decode()
+                result_msg = self.message_handler.parse_message(result)
+
+                if result_msg:
+                    if result_msg.command == MessageType.SHIPPING_INFO:
+                        print("\nTransaction completed. Please ship the item to:")
+                        print(f"Name: {result_msg.params['name']}")
+                        print(f"Address: {result_msg.params['address']}")
+                    elif result_msg.command == MessageType.TRANSACTION_SUCCESS:
+                        print("\nTransaction completed successfully!")
+                        # Update local item status if seller
+                        with self.items_lock:
+                            if item_name in self.items_for_sale:
+                                del self.items_for_sale[item_name]
+                                self.save_items()
+                    elif result_msg.command == MessageType.TRANSACTION_FAILED:
+                        print(f"\nTransaction failed: {result_msg.params.get('reason', 'Unknown error')}")
+                        # Release item if seller
+                        with self.items_lock:
+                            if item_name in self.items_for_sale:
+                                self.items_for_sale[item_name].reserved = False
+                                self.save_items()
+                else:
+                    print("Invalid response from server")
+
+            except socket.timeout:
+                print("Transaction timed out. Please try again.")
+            except ConnectionRefusedError:
+                print("Could not connect to server. Please try again.")
+            finally:
+                transaction_socket.close()
+
+        except Exception as e:
+            logging.error(f"Error during TCP transaction: {e}")
+            print(f"Error during transaction: {e}")
 
     def handle_not_found_notification(self, msg: Message):
         """Handle NOT_FOUND message as a buyer"""
@@ -809,7 +882,7 @@ class ClientUDP_TCP:
 
             except socket.timeout:
                 print("Transaction timed out. Please try again.")
-            except ConnectionRefuseError:
+            except ConnectionRefusedError:
                 print("Could not connect to server. Please try again.")
             finally:
                 purchase_socket.close()

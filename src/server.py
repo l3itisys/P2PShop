@@ -743,95 +743,91 @@ class ServerUDP_TCP:
                 logging.error("Buyer or seller information not found for finalizing purchase")
                 return
 
-            # Create TCP connections
-            buyer_socket = None
-            seller_socket = None
+            # Accept TCP connections with timeouts
+            self.tcp_socket.settimeout(30)
 
-            try:
-                # Accept TCP Connections with timeout
-                self.tcp_socket_settimeout(30)
+            # Wait for buyer connection
+            logging.info("Waiting for TCP connections...")
 
-                # Wait for buyer connection
-                logging.info("Waiting for TCP connections...")
+            # Accept fisrt connection
+            conn1, addr1 = self.tcp_socket.accept()
+            logging.info(f"First connection accepted from {addr1}")
 
-                # Accept fisrt connection
-                conn1, addr1 = self.tcp_socket.accept()
-                logging.info(f"First connection accepted from {addr1}")
+            # Accept second connection
+            conn2, addr2 = self.tcp_socket.accept()
+            logging.info(f"Second connection accepted from {addr2}")
 
-                # Accept second connection
-                conn2, addr2 = self.tcp_socket.accept()
-                logging.info(f"Second connection accepted from {addr2}")
+            # Determine which is buyer and seller
+            if addr1[0] == buyer_info['ip']:
+                buyer_socket = conn1
+                seller_socket == conn2
+            else:
+                buyer_socket = conn2
+                seller_socket = conn1
 
-                # Determine which is buyer and seller
-                if addr1[0] == buyer_info['ip']:
-                    buyer_socket = conn1
-                    seller_socket == conn2
-                else:
-                    buyer_socket = conn2
-                    seller_socket = conn1
+            # Set timeouts
+            buyer_socket.settimeout(30)
+            seller_socket.settimeout(30)
 
-                # Set timeouts
-                buyer_socket.settimeout(30)
-                seller_socket.settimeout(30)
+            # Send INFORM_REQ to both parties
+            inform_req = self.message_handler.create_message(
+                    MessageType.INFORM_REQ,
+                    rq_number,
+                    item_name=reservation.item_name,
+                    price=reservation.price
+                    )
+            buyer_socket.sendall(inform_req.encode())
+            seller_socket.sendall(inform_req.encode())
 
-                # Send INFORM_REQ to both parties
-                inform_req = self.message_handler.create_message(
-                        MessageType.INFORM_REQ,
-                        rq_number,
-                        item_name=reservation.item_name,
-                        price=reservation.price
+            # Get responses
+            buyer_res = buyer_socket.recv(1024).decode()
+            seller_res = seller_socket.recv(1024).decode()
+
+            buyer_msg = self.message_handler.parse_message(buyer_res)
+            seller_msg = self.message_handler.parse_message(seller_res)
+
+            # Process payment
+            if self.process_payment(buyer_msg, seller_msg, reservation.price):
+                # Send sucess messages
+                success_msg = self.message_handler.create_message(
+                        MessageType.TRANSACTION_SECCESS,
+                        rq_number
                         )
-                buyer_socket.sendall(inform_req.encode())
-                seller_socket.sendall(inform_req.encode())
+                buyer_socket.sendall(success_msg.encode())
 
-                # Get responses
-                buyer_res = buyer_socket.recv(1024).decode()
-                seller_res = seller_socket.recv(1024).decode()
+                # Send SHIPPING_INFO to seller
+                shipping_info = self.message_handler.create_message(
+                        Messagetype.SHIPPING_INFO,
+                        rq_number,
+                        name=buyer_msg.params["name"],
+                        address=buyer_msg.params["address"]
+                        )
+                seller_socket.sendall(shipping_info.encode())
 
-                buyer_msg = self.message_handler.parse_message(buyer_response)
-                seller_msg = self.message_handler.parse_message(seller_response)
+                logging.info(f"Transaction {rq_number} completed successfully")
+            else:
+                # Send failure messages
+                fail_msg = self.message_handler.create_message(
+                        MessageType.TRANSACTION_FAILED,
+                        rq_number,
+                        reason="Payment processing failed"
+                        )
+                buyer_socket.sendall(fail_msg.encode())
+                seller_socket.sendall(fail_msg.encode())
+                logging.error(f"Transaction {rq_number} failed during payment")
 
-                if buyer_msg and seller_msg:
-                    # Process payment
-                    if self.process_payment(buyer_msg, seller_msg, reservation.price):
-                        # Send sucess messages
-                        success_msg = self.message_handler.create_message(
-                                MessageType.TRANSACTION_SECCESS,
-                                rq_number
-                                )
-                        buyer_socket.sendall(success_msg.encode())
-
-                        shipping_info = self.message_handler.create_message(
-                                Messagetype.SHIPPING_INFO,
-                                rq_number,
-                                name=buyer_msg.params["name"],
-                                address=buyer_msg.params["address"]
-                                )
-                        seller_socket.sendall(shipping_info.encode())
-                        logging.info(f"Transaction {rq_number} completed successfully")
-                    else:
-                        # Send failure messages
-                        fail_msg = self.message_handler.create_message(
-                               MessageType.TRANSACTION_FAILED,
-                               rq_number,
-                               reason="Payment processing failed"
-                               )
-                        buyer_socket.sendall(fail_msg.encode())
-                        seller_socket.sendall(fail_msg.encode())
-                        logging.error(f"Transaction {rq_number} failed during payment")
-
-            except socket.timeout:
-                logging.error(f"TCP connection timeout for transaction {rq_number}")
-                self._handle_transaction_timeout(rq_number, reservation)
-            finally:
-                # Cleanup connections
-                if buyer_socket:
-                    buyer_socket.close()
-                if seller_socket:
-                    seller_socket.close()
-
+        except socket.timeout:
+            logging.error(f"TCP connection timeout for transaction {rq_number}")
+            self._handle_transaction_timeout(rq_number, reservation)
         except Exception as e:
             logging.error(f"Error finalizing purchase: {e}")
+            self._handle_transaction_error(rq_number, reservation)
+        finally:
+            # Cleanup connections
+            if 'buyer_socket' in locals():
+                buyer_socket.close()
+            if 'seller_socket' in locals():
+                seller_socket.close()
 
     def _handle_transaction_timeout(self, rq_number: str, reservation: ItemReservation):
         """Handle timeout during transaction"""
