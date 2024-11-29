@@ -2,13 +2,21 @@
     "users": {
         "seller one": {
             "ip": "127.0.1.1",
-            "udp_port": 38221,
-            "tcp_port": 4857
+            "udp_port": 56052,
+            "tcp_port": 6776,
+            "source_address": [
+                "127.0.0.1",
+                44050
+            ]
         },
         "buyer one": {
             "ip": "127.0.1.1",
-            "udp_port": 38484,
-            "tcp_port": 4655
+            "udp_port": 35244,
+            "tcp_port": 6434,
+            "source_address": [
+                "127.0.0.1",
+                37225
+            ]
         }
     }
 }

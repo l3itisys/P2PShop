@@ -1,45 +1,62 @@
-2024-11-28 19:36:16,020 - INFO - Server started - UDP port: 3000, TCP port: 3001
-2024-11-28 19:36:16,021 - INFO - Server running...
-2024-11-28 19:36:24,524 - INFO - Received UDP message from ('127.0.0.1', 43507): test
-2024-11-28 19:36:34,200 - INFO - Received UDP message from ('127.0.0.1', 60685): REGISTER 3601 "seller one" "127.0.1.1" "38221" "4857"
-2024-11-28 19:36:34,200 - INFO - Processing message type: MessageType.REGISTER
-2024-11-28 19:36:34,201 - INFO - Registrations saved successfully
-2024-11-28 19:36:34,202 - INFO - User seller one registered successfully
-2024-11-28 19:36:34,202 - INFO - Sent registration response to seller one at ('127.0.0.1', 60685)
-2024-11-28 19:36:59,534 - INFO - Received UDP message from ('127.0.0.1', 49067): test
-2024-11-28 19:37:08,098 - INFO - Received UDP message from ('127.0.0.1', 44544): REGISTER 3094 "buyer one" "127.0.1.1" "38484" "4655"
-2024-11-28 19:37:08,099 - INFO - Processing message type: MessageType.REGISTER
-2024-11-28 19:37:08,099 - INFO - Registrations saved successfully
-2024-11-28 19:37:08,099 - INFO - User buyer one registered successfully
-2024-11-28 19:37:08,100 - INFO - Sent registration response to buyer one at ('127.0.0.1', 44544)
-2024-11-28 19:37:19,485 - INFO - Received UDP message from ('127.0.0.1', 44544): LOOKING_FOR 4445 "buyer one" "computer" "" "800.0"
-2024-11-28 19:37:19,485 - INFO - Processing message type: MessageType.LOOKING_FOR
-2024-11-28 19:37:19,486 - INFO - Sent message to ('127.0.0.1', 44544) (attempt 1)
-2024-11-28 19:37:19,487 - INFO - Search 5926 started with 300s timeout
-2024-11-28 19:37:19,487 - INFO - Sent message to ('127.0.1.1', 38221) (attempt 1)
-2024-11-28 19:37:19,488 - INFO - Search broadcast sent to seller one
-2024-11-28 19:37:19,489 - INFO - Received UDP message from ('127.0.0.1', 60685): OFFER 5926 "seller one" "computer1" "877.0"
-2024-11-28 19:37:19,490 - INFO - Processing message type: MessageType.OFFER
-2024-11-28 19:37:19,490 - INFO - Offer received from seller one for search 5926
-2024-11-28 19:37:19,491 - INFO - Received UDP message from ('127.0.0.1', 60685): OFFER 5926 "seller one" "computer2" "1000.0"
-2024-11-28 19:37:19,492 - INFO - Sent message to ('127.0.1.1', 38221) (attempt 1)
-2024-11-28 19:37:19,492 - INFO - Processing message type: MessageType.OFFER
-2024-11-28 19:37:19,493 - INFO - Sent NEGOTIATE message to seller seller one
-2024-11-28 19:37:19,494 - INFO - Offer received from seller one for search 5926
-2024-11-28 19:37:27,457 - INFO - Received UDP message from ('127.0.0.1', 60685): ACCEPT 5926 "seller one" "computer1" "800.0"
-2024-11-28 19:37:27,458 - INFO - Processing message type: MessageType.ACCEPT
-2024-11-28 19:37:27,458 - INFO - Sent message to ('127.0.1.1', 38484) (attempt 1)
-2024-11-28 19:37:27,458 - INFO - Sent FOUND message to buyer buyer one
-2024-11-28 19:37:27,459 - INFO - Accept handled successfully for search 5926
-2024-11-28 19:37:33,117 - INFO - Received UDP message from ('127.0.0.1', 44544): BUY 4445 "computer1" "800.0"
-2024-11-28 19:37:33,117 - INFO - Processing message type: MessageType.BUY
-2024-11-28 19:37:33,117 - WARNING - BUY received from unregistered buyer at ('127.0.0.1', 44544)
-2024-11-28 19:37:38,123 - INFO - Received UDP message from ('127.0.0.1', 44544): BUY 4445 "computer1" "800.0"
-2024-11-28 19:37:38,123 - INFO - Processing message type: MessageType.BUY
-2024-11-28 19:37:38,124 - WARNING - BUY received from unregistered buyer at ('127.0.0.1', 44544)
-2024-11-28 19:37:43,128 - INFO - Received UDP message from ('127.0.0.1', 44544): BUY 4445 "computer1" "800.0"
-2024-11-28 19:37:43,128 - INFO - Processing message type: MessageType.BUY
-2024-11-28 19:37:43,128 - WARNING - BUY received from unregistered buyer at ('127.0.0.1', 44544)
-2024-11-28 19:52:40,964 - INFO - Starting server cleanup...
-2024-11-28 19:52:40,965 - INFO - Registrations saved successfully
-2024-11-28 19:52:42,052 - INFO - Server cleanup completed
+2024-11-28 23:06:24,479 - INFO - Server started - UDP port: 3000, TCP port: 3001
+2024-11-28 23:06:24,480 - INFO - Server running...
+2024-11-28 23:06:37,596 - INFO - Received UDP message from ('127.0.0.1', 51589): test
+2024-11-28 23:06:47,482 - INFO - Received UDP message from ('127.0.0.1', 44050): REGISTER 5913 "seller one" "127.0.1.1" "56052" "6776"
+2024-11-28 23:06:47,482 - INFO - Processing message type: MessageType.REGISTER
+2024-11-28 23:06:47,484 - INFO - Registrations saved successfully
+2024-11-28 23:06:47,484 - INFO - User seller one registered successfully
+2024-11-28 23:06:47,484 - INFO - Sent registration response to seller one at ('127.0.0.1', 44050)
+2024-11-28 23:07:26,547 - INFO - Received UDP message from ('127.0.0.1', 38826): test
+2024-11-28 23:07:35,002 - INFO - Received UDP message from ('127.0.0.1', 37225): REGISTER 1335 "buyer one" "127.0.1.1" "35244" "6434"
+2024-11-28 23:07:35,003 - INFO - Processing message type: MessageType.REGISTER
+2024-11-28 23:07:35,004 - INFO - Registrations saved successfully
+2024-11-28 23:07:35,004 - INFO - User buyer one registered successfully
+2024-11-28 23:07:35,005 - INFO - Sent registration response to buyer one at ('127.0.0.1', 37225)
+2024-11-28 23:07:50,813 - INFO - Received UDP message from ('127.0.0.1', 37225): LOOKING_FOR 5030 "buyer one" "computer" "" "700.0"
+2024-11-28 23:07:50,813 - INFO - Processing message type: MessageType.LOOKING_FOR
+2024-11-28 23:07:50,814 - INFO - Sent message to ('127.0.0.1', 37225) (attempt 1)
+2024-11-28 23:07:50,815 - INFO - Search 8487 started with 300s timeout
+2024-11-28 23:07:50,815 - INFO - Sent message to ('127.0.1.1', 56052) (attempt 1)
+2024-11-28 23:07:50,815 - INFO - Search broadcast sent to seller one
+2024-11-28 23:07:50,817 - INFO - Received UDP message from ('127.0.0.1', 44050): OFFER 8487 "seller one" "computer1" "788.0"
+2024-11-28 23:07:50,818 - INFO - Received UDP message from ('127.0.0.1', 44050): OFFER 8487 "seller one" "computer2" "1000.0"
+2024-11-28 23:07:50,818 - INFO - Processing message type: MessageType.OFFER
+2024-11-28 23:07:50,819 - INFO - Processing message type: MessageType.OFFER
+2024-11-28 23:07:50,820 - INFO - Offer received from seller one for search 8487
+2024-11-28 23:07:50,820 - INFO - Sent message to ('127.0.1.1', 56052) (attempt 1)
+2024-11-28 23:07:50,821 - INFO - Sent NEGOTIATE message to seller seller one
+2024-11-28 23:07:50,821 - INFO - Offer received from seller one for search 8487
+2024-11-28 23:08:09,248 - INFO - Received UDP message from ('127.0.0.1', 44050): ACCEPT 8487 "seller one" "computer1" "700.0"
+2024-11-28 23:08:09,249 - INFO - Processing message type: MessageType.ACCEPT
+2024-11-28 23:08:09,249 - INFO - Sent message to ('127.0.1.1', 35244) (attempt 1)
+2024-11-28 23:08:09,250 - INFO - Sent FOUND message to buyer buyer one
+2024-11-28 23:08:09,250 - INFO - Accept handled successfully for search 8487
+2024-11-28 23:08:24,918 - INFO - Received UDP message from ('127.0.0.1', 37225): CANCEL 5030 "computer1" "700.0"
+2024-11-28 23:08:24,919 - INFO - Processing message type: MessageType.CANCEL
+2024-11-28 23:08:24,919 - WARNING - CANCEL received from unregistered buyer at ('127.0.0.1', 37225)
+2024-11-28 23:08:46,922 - INFO - Received UDP message from ('127.0.0.1', 37225): LOOKING_FOR 6980 "buyer one" "computer" "" "700.0"
+2024-11-28 23:08:46,922 - INFO - Processing message type: MessageType.LOOKING_FOR
+2024-11-28 23:08:46,923 - INFO - Sent message to ('127.0.0.1', 37225) (attempt 1)
+2024-11-28 23:08:46,924 - INFO - Search 4106 started with 300s timeout
+2024-11-28 23:08:46,924 - INFO - Sent message to ('127.0.1.1', 56052) (attempt 1)
+2024-11-28 23:08:46,924 - INFO - Search broadcast sent to seller one
+2024-11-28 23:08:46,926 - INFO - Received UDP message from ('127.0.0.1', 44050): OFFER 4106 "seller one" "computer1" "788.0"
+2024-11-28 23:08:46,926 - INFO - Processing message type: MessageType.OFFER
+2024-11-28 23:08:46,927 - INFO - Offer received from seller one for search 4106
+2024-11-28 23:08:46,927 - INFO - Received UDP message from ('127.0.0.1', 44050): OFFER 4106 "seller one" "computer2" "1000.0"
+2024-11-28 23:08:46,928 - INFO - Processing message type: MessageType.OFFER
+2024-11-28 23:08:46,928 - INFO - Sent message to ('127.0.1.1', 56052) (attempt 1)
+2024-11-28 23:08:46,929 - INFO - Sent NEGOTIATE message to seller seller one
+2024-11-28 23:08:46,930 - INFO - Offer received from seller one for search 4106
+2024-11-28 23:08:52,650 - INFO - Received UDP message from ('127.0.0.1', 44050): ACCEPT 4106 "seller one" "computer1" "700.0"
+2024-11-28 23:08:52,651 - INFO - Processing message type: MessageType.ACCEPT
+2024-11-28 23:08:52,651 - INFO - Sent message to ('127.0.1.1', 35244) (attempt 1)
+2024-11-28 23:08:52,651 - INFO - Sent FOUND message to buyer buyer one
+2024-11-28 23:08:52,651 - INFO - Accept handled successfully for search 4106
+2024-11-28 23:09:07,853 - INFO - Received UDP message from ('127.0.0.1', 37225): BUY 6980 "computer1" "700.0"
+2024-11-28 23:09:07,854 - INFO - Processing message type: MessageType.BUY
+2024-11-28 23:09:07,859 - INFO - Sent BUY_ACK to buyer buyer one
+2024-11-28 23:09:07,859 - ERROR - Error finalizing purchase: 'ServerUDP_TCP' object has no attribute 'tcp_socket_settimeout'
+2024-11-28 23:10:02,862 - INFO - Starting server cleanup...
+2024-11-28 23:10:02,863 - INFO - Registrations saved successfully
+2024-11-28 23:10:03,917 - INFO - Server cleanup completed

@@ -1,46 +1,58 @@
-2024-11-28 19:36:30,502 - INFO - TCP server listening on port 4857
-2024-11-28 19:36:30,503 - INFO - Client initialized - UDP port: 38221, TCP port: 4857
-2024-11-28 19:36:34,198 - INFO - Sending message to server (attempt 1): REGISTER 3601 "seller one" "127.0.1.1" "38221" "4857"
-2024-11-28 19:36:34,199 - INFO - Sending UDP message (attempt 1): REGISTER 3601 "seller one" "127.0.1.1" "38221" "4857"
-2024-11-28 19:36:34,202 - INFO - Server response: REGISTERED 3601
-2024-11-28 19:36:42,741 - INFO - Items saved successfully
-2024-11-28 19:36:42,741 - INFO - Added item for sale: computer1 at price 877.0
-2024-11-28 19:36:50,429 - INFO - Items saved successfully
-2024-11-28 19:36:50,429 - INFO - Added item for sale: computer2 at price 1000.0
-2024-11-28 19:37:05,497 - INFO - TCP server listening on port 4655
-2024-11-28 19:37:05,498 - INFO - Client initialized - UDP port: 38484, TCP port: 4655
-2024-11-28 19:37:08,098 - INFO - Sending message to server (attempt 1): REGISTER 3094 "buyer one" "127.0.1.1" "38484" "4655"
-2024-11-28 19:37:08,098 - INFO - Sending UDP message (attempt 1): REGISTER 3094 "buyer one" "127.0.1.1" "38484" "4655"
-2024-11-28 19:37:08,100 - INFO - Server response: REGISTERED 3094
-2024-11-28 19:37:19,483 - INFO - Sending message to server (attempt 1): LOOKING_FOR 4445 "buyer one" "computer" "" "800.0"
-2024-11-28 19:37:19,484 - INFO - Sending UDP message (attempt 1): LOOKING_FOR 4445 "buyer one" "computer" "" "800.0"
-2024-11-28 19:37:19,487 - INFO - Server response: SEARCH_ACK 4445 "computer"
-2024-11-28 19:37:19,487 - INFO - Search request 4445 acknowledged by server
-2024-11-28 19:37:19,487 - INFO - Received message: SEARCH 5926 "computer" ""
-2024-11-28 19:37:19,488 - INFO - Sending UDP message: OFFER 5926 "seller one" "computer1" "877.0"
-2024-11-28 19:37:19,488 - INFO - Sent offer for computer1 at price 877.0
-2024-11-28 19:37:19,489 - INFO - Sending UDP message: OFFER 5926 "seller one" "computer2" "1000.0"
-2024-11-28 19:37:19,489 - INFO - Sent offer for computer2 at price 1000.0
-2024-11-28 19:37:19,492 - INFO - Received message: NEGOTIATE 5926 "computer1" "800.0"
-2024-11-28 19:37:27,456 - INFO - Sending UDP message: ACCEPT 5926 "seller one" "computer1" "800.0"
-2024-11-28 19:37:27,457 - INFO - Sent ACCEPT message for computer1 at 800.0
-2024-11-28 19:37:27,458 - INFO - Received message: FOUND 4445 "computer1" "800.0"
-2024-11-28 19:37:27,459 - INFO - Found notification received for computer1 at 800.0
-2024-11-28 19:37:33,115 - INFO - Sending message to server (attempt 1): BUY 4445 "computer1" "800.0"
-2024-11-28 19:37:33,116 - INFO - Sending UDP message (attempt 1): BUY 4445 "computer1" "800.0"
-2024-11-28 19:37:38,121 - WARNING - No response from server on attempt 1
-2024-11-28 19:37:38,122 - INFO - Sending message to server (attempt 2): BUY 4445 "computer1" "800.0"
-2024-11-28 19:37:38,122 - INFO - Sending UDP message (attempt 2): BUY 4445 "computer1" "800.0"
-2024-11-28 19:37:43,127 - WARNING - No response from server on attempt 2
-2024-11-28 19:37:43,127 - INFO - Sending message to server (attempt 3): BUY 4445 "computer1" "800.0"
-2024-11-28 19:37:43,128 - INFO - Sending UDP message (attempt 3): BUY 4445 "computer1" "800.0"
-2024-11-28 19:37:48,132 - WARNING - No response from server on attempt 3
-2024-11-28 19:37:48,133 - INFO - Sent BUY message for computer1 at 800.0
-2024-11-28 19:52:39,053 - INFO - Items saved successfully
-2024-11-28 19:52:39,054 - INFO - Client cleaned up successfully
-2024-11-28 19:52:39,055 - INFO - Items saved successfully
-2024-11-28 19:52:39,055 - INFO - Client cleaned up successfully
-2024-11-28 19:52:45,403 - INFO - Items saved successfully
-2024-11-28 19:52:45,403 - INFO - Client cleaned up successfully
-2024-11-28 19:52:45,410 - INFO - Items saved successfully
-2024-11-28 19:52:45,410 - INFO - Client cleaned up successfully
+2024-11-28 23:06:44,429 - INFO - TCP server listening on port 6776
+2024-11-28 23:06:44,430 - INFO - Client initialized - UDP port: 56052, TCP port: 6776
+2024-11-28 23:06:47,480 - INFO - Sending message to server (attempt 1): REGISTER 5913 "seller one" "127.0.1.1" "56052" "6776"
+2024-11-28 23:06:47,481 - INFO - Sending UDP message (attempt 1): REGISTER 5913 "seller one" "127.0.1.1" "56052" "6776"
+2024-11-28 23:06:47,485 - INFO - Server response: REGISTERED 5913
+2024-11-28 23:06:57,357 - INFO - Items saved successfully
+2024-11-28 23:06:57,357 - INFO - Added item for sale: computer1 at price 788.0
+2024-11-28 23:07:04,319 - INFO - Items saved successfully
+2024-11-28 23:07:04,320 - INFO - Added item for sale: computer2 at price 1000.0
+2024-11-28 23:07:32,678 - INFO - TCP server listening on port 6434
+2024-11-28 23:07:32,678 - INFO - Client initialized - UDP port: 35244, TCP port: 6434
+2024-11-28 23:07:35,001 - INFO - Sending message to server (attempt 1): REGISTER 1335 "buyer one" "127.0.1.1" "35244" "6434"
+2024-11-28 23:07:35,002 - INFO - Sending UDP message (attempt 1): REGISTER 1335 "buyer one" "127.0.1.1" "35244" "6434"
+2024-11-28 23:07:35,005 - INFO - Server response: REGISTERED 1335
+2024-11-28 23:07:50,811 - INFO - Sending message to server (attempt 1): LOOKING_FOR 5030 "buyer one" "computer" "" "700.0"
+2024-11-28 23:07:50,812 - INFO - Sending UDP message (attempt 1): LOOKING_FOR 5030 "buyer one" "computer" "" "700.0"
+2024-11-28 23:07:50,814 - INFO - Server response: SEARCH_ACK 5030 "computer"
+2024-11-28 23:07:50,815 - INFO - Search request 5030 acknowledged by server
+2024-11-28 23:07:50,815 - INFO - Received message: SEARCH 8487 "computer" ""
+2024-11-28 23:07:50,816 - INFO - Sending UDP message: OFFER 8487 "seller one" "computer1" "788.0"
+2024-11-28 23:07:50,816 - INFO - Sent offer for computer1 at price 788.0
+2024-11-28 23:07:50,817 - INFO - Sending UDP message: OFFER 8487 "seller one" "computer2" "1000.0"
+2024-11-28 23:07:50,817 - INFO - Sent offer for computer2 at price 1000.0
+2024-11-28 23:07:50,821 - INFO - Received message: NEGOTIATE 8487 "computer1" "700.0"
+2024-11-28 23:08:09,248 - INFO - Sending UDP message: ACCEPT 8487 "seller one" "computer1" "700.0"
+2024-11-28 23:08:09,248 - INFO - Sent ACCEPT message for computer1 at 700.0
+2024-11-28 23:08:09,250 - INFO - Received message: FOUND 5030 "computer1" "700.0"
+2024-11-28 23:08:09,250 - INFO - Found notification received for computer1 at 700.0
+2024-11-28 23:08:24,917 - INFO - Sending UDP message: CANCEL 5030 "computer1" "700.0"
+2024-11-28 23:08:46,920 - INFO - Sending message to server (attempt 1): LOOKING_FOR 6980 "buyer one" "computer" "" "700.0"
+2024-11-28 23:08:46,921 - INFO - Sending UDP message (attempt 1): LOOKING_FOR 6980 "buyer one" "computer" "" "700.0"
+2024-11-28 23:08:46,923 - INFO - Server response: SEARCH_ACK 6980 "computer"
+2024-11-28 23:08:46,924 - INFO - Search request 6980 acknowledged by server
+2024-11-28 23:08:46,924 - INFO - Received message: SEARCH 4106 "computer" ""
+2024-11-28 23:08:46,925 - INFO - Sending UDP message: OFFER 4106 "seller one" "computer1" "788.0"
+2024-11-28 23:08:46,925 - INFO - Sent offer for computer1 at price 788.0
+2024-11-28 23:08:46,926 - INFO - Sending UDP message: OFFER 4106 "seller one" "computer2" "1000.0"
+2024-11-28 23:08:46,926 - INFO - Sent offer for computer2 at price 1000.0
+2024-11-28 23:08:46,927 - INFO - Received message: NEGOTIATE 4106 "computer1" "700.0"
+2024-11-28 23:08:52,650 - INFO - Sending UDP message: ACCEPT 4106 "seller one" "computer1" "700.0"
+2024-11-28 23:08:52,650 - INFO - Sent ACCEPT message for computer1 at 700.0
+2024-11-28 23:08:52,651 - INFO - Received message: FOUND 6980 "computer1" "700.0"
+2024-11-28 23:08:52,651 - INFO - Found notification received for computer1 at 700.0
+2024-11-28 23:09:07,852 - INFO - Sending message to server (attempt 1): BUY 6980 "computer1" "700.0"
+2024-11-28 23:09:07,853 - INFO - Sending UDP message (attempt 1): BUY 6980 "computer1" "700.0"
+2024-11-28 23:09:07,859 - INFO - Server response: BUY_ACK 6980 "127.0.1.1" "3001"
+2024-11-28 23:09:07,860 - INFO - Sent BUY message for computer1 at 700.0
+2024-11-28 23:09:07,861 - INFO - TCP connection established for purchase 6980
+2024-11-28 23:09:07,861 - ERROR - Invalid message format: insufficient parts
+2024-11-28 23:09:07,861 - ERROR - Error during TCP purchase: name 'ConnectionRefuseError' is not defined
+2024-11-28 23:09:48,707 - INFO - Items saved successfully
+2024-11-28 23:09:48,708 - INFO - Client cleaned up successfully
+2024-11-28 23:09:48,714 - INFO - Items saved successfully
+2024-11-28 23:09:48,714 - INFO - Client cleaned up successfully
+2024-11-28 23:09:56,912 - INFO - Items saved successfully
+2024-11-28 23:09:56,912 - INFO - Client cleaned up successfully
+2024-11-28 23:09:56,913 - INFO - Items saved successfully
+2024-11-28 23:09:56,913 - INFO - Client cleaned up successfully

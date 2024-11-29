@@ -423,32 +423,10 @@ class ClientUDP_TCP:
                 self.handle_not_available_notification(msg)
             elif msg.command == MessageType.BUY_ACK:
                 self.handle_buy_ack(msg)
-            elif msg.command == MessageType.CANCEL:
-                self.handle_transaction_cancel(msg)
-            elif msg.command == MessageType.ERROR:
-                self.handle_error_message(msg)
             else:
                 logging.info(f"Unhandled message type: {msg.command}")
         except Exception as e:
             logging.error(f"Error handling incoming message: {e}")
-
-
-    def handle_error_message(self, msg: Message):
-        """Handle error messages from server"""
-        try:
-            error_message = msg.params.get("message", "Unknown error")
-            print(f"\nError from server: {error_message}")
-            logging.error(f"Received error from server: {error_message}")
-
-            # If this was during a purchase, update item status
-            with self.search_lock:
-                for search in self.active_searches.values():
-                    if search.status == "found":
-                        search.status = "error"
-                        logging.info(f"Updated search status to error for {search.item_name}")
-
-        except Exception as e:
-            logging.error(f"Error handling error message: {e}")
 
     def handle_search_request(self, msg: Message):
         """Handle incoming SEARCH messages as a seller"""
@@ -516,17 +494,11 @@ class ClientUDP_TCP:
     def prompt_purchase_decision(self, rq_number: str, item_name: str, price: float):
         """Prompt the buyer to decide whether to buy the item or cancel"""
         try:
-            # Clear any pending input
-            import sys, termios, tty
-            fd = sys.stdin.fileno()
-            old_settings = termios.tcgetattr(fd)
-            try:
-                tty.setraw(sys.stdin.fileno())
-                sys.stdin.read(1)  # Clear one character
-            finally:
-                termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-
-            decision = input(f"\nDo you want to buy '{item_name}' at ${price:.2f}? (yes/no): ").strip().lower()
+            while True:
+                decision = input(f"Do you want to buy '{item_name}' at ${price:.2f}? (yes/no): ").strip().lower()
+                if decision in ['yes', 'no']:
+                    break
+                print("Please answer 'yes' or 'no'")
 
             if decision == 'yes':
                 # Send BUY message to server
@@ -543,17 +515,15 @@ class ClientUDP_TCP:
                 if response:
                     msg = self.message_handler.parse_message(response)
                     if msg and msg.command == MessageType.BUY_ACK:
-                        seller_ip = msg.params.get("seller_ip")
-                        seller_tcp_port = msg.params.get("seller_tcp_port")
-                        if seller_ip and seller_tcp_port:
-                            print("Connecting to server for purchase...")
-                            self.initiate_tcp_purchase(seller_ip, seller_tcp_port, rq_number, item_name, price)
-                        elif msg and msg.command == MessageType.ERROR:
-                            print(f"Error from server: {msg.params.get('message', 'Unknown error')}")
-                        else:
-                            print("Unexpected response from server")
+                        seller_ip = msg.params["seller_ip"]
+                        seller_tcp_port = msg.params["seller_tcp_port"]
+                        print(f"Finalizing purchase with server...")
+                        self.connect_to_server_for_purchase(seller_ip, seller_tcp_port, rq_number, item_name, price)
+                    else:
+                        print(f"Unexpected response from server: {response}")
+                else:
+                    print("Failed to receive BUY_ACK from server.")
             else:
-                print("Purchase cancelled")
                 # Send CANCEL message to server
                 cancel_message = self.message_handler.create_message(
                     MessageType.CANCEL,
@@ -562,10 +532,11 @@ class ClientUDP_TCP:
                     price=price
                 )
                 self.send_udp_message_no_response(cancel_message)
+                logging.info(f"Sent CANCEL message for {item_name}")
+                print("Purchase cancelled.")
 
         except Exception as e:
             logging.error(f"Error prompting purchase decision: {e}")
-            print(f"Error during purchase: {e}")
 
     def handle_reserve_request(self, msg: Message):
         """Handle RESERVE message as a seller"""
@@ -675,8 +646,6 @@ class ClientUDP_TCP:
             seller_ip = msg.params["seller_ip"]
             seller_tcp_port = msg.params["seller_tcp_port"]
             rq_number = msg.rq_number
-
-            # Get item details from active searches
             item_name = None
             price = None
             with self.search_lock:
@@ -684,14 +653,12 @@ class ClientUDP_TCP:
                 if search_entry:
                     item_name = search_entry.item_name
                     price = search_entry.found_price
-                else:
-                    logging.error(f"No active search found for RQ# {rq_number}")
-                    return
 
             if item_name and price is not None:
-                self.initiate_tcp_purchase(seller_ip, seller_tcp_port, rq_number, item_name, price)
+                print(f"Finalizing purchase with server...")
+                self.connect_to_server_for_purchase(seller_ip, seller_tcp_port, rq_number, item_name, price)
             else:
-                logging.error("Missing item details for purchase")
+                logging.error("Active search not found for BUY_ACK")
 
         except Exception as e:
             logging.error(f"Error handling BUY_ACK: {e}")
@@ -742,99 +709,6 @@ class ClientUDP_TCP:
         except Exception as e:
             logging.error(f"Error connecting to server for purchase: {e}")
             print(f"Failed to finalize purchase: {e}")
-
-    def initiate_tcp_purchase(self, server_ip: str, server_tcp_port: int, rq_number: str, item_name: str, price: float):
-        """Handle TCP purchase process"""
-        try:
-            # Create TCP connection to server
-            purchase_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            purchase_socket.settimeout(30)
-
-            try:
-                # Connect to server
-                purchase_socket.connect((server_ip, server_tcp_port))
-                print("Connected to server. Processing transaction...")
-                logging.info(f"TCP connection established for purchase {rq_number}")
-
-                # wait for INFORM_REQ
-                data = purchase_socket.recv(1024).decode()
-                msg = self.message_handler.parse_message(data)
-
-                if not msg or msg.command != MessageType.INFORM_REQ:
-                    raise Exception("Invalid server response")
-
-                # Get user info
-                print("\nPlease provide transaction details:")
-                cc_number = input("Enter credit card number: ").strip()
-                cc_exp_date = input("Enter credit card expiration date (MM/YY): ").strip()
-                address = input("Enter shipping address: ").strip()
-
-                # Send INFORM_REQ
-                inform_res = self.message_handler.create_message(
-                        MessageType.INFORM_RES,
-                        rq_number,
-                        name=self.name,
-                        cc_number=cc_number,
-                        cc_exp_date=cc_exp_date,
-                        address=address
-                        )
-                purchase_socket.sendall(inform_res.encode())
-                print("Waiting for transaction processing...")
-
-                # Wait for transaction result
-                result = purchase_socket.recv(1024).decode()
-                result_msg = self.message_handler.parse_message(result)
-
-                if result_msg:
-                    if result_msg.command == MessageType.TRANSACTION_SUCCESS:
-                        print("\nTransaction completed successfully!")
-                        # Update local item status if seller
-                        with self.items_lock:
-                            if item_name in self.items_for_sale:
-                                del self.items_for_sale[item_name]
-                                self.save_items()
-                    elif result_msg.command == MessageType.SHIPPING_INFO:
-                        print("\nTransaction completed. Please ship the item to:")
-                        print(f"Name: {result_msg.params['name']}")
-                        print(f"Address: {result_msg.params['address']}")
-                    elif result_msg.command == MessageType.TRANSACTION_FAILED:
-                        print(f"\nTransaction failed: {result_msg.params.get('reason', 'Unknown error')}")
-                        # Release item if seller
-                        with self.items_lock:
-                            if item_name in self.items_for_sale:
-                                self.items_for_sale[item_name].reserved = False
-                                self.save_items()
-                else:
-                    print("Invalid response from server")
-
-            except socket.timeout:
-                print("Transaction timed out. Please try again.")
-            except ConnectionRefuseError:
-                print("Could not connect to server. Please try again.")
-            finally:
-                purchase_socket.close()
-
-        except Exception as e:
-            logging.error(f"Error during TCP purchase: {e}")
-            print(f"Error during purchase: {e}")
-
-    def handle_transaction_cancel(self, msg: Message):
-        """Handle transaction cancellation"""
-        try:
-            reason = msg.params.get("reason", "Unknown reason")
-            print(f"\nTransaction cancelled: {reason}")
-
-            # Update item status if seller
-            item_name = msg.params.get("item_name")
-            if item_name:
-                with self.items_lock:
-                    if item_name in self.items_for_sale:
-                        self.items_for_sale[item_name].reserved = False
-                        self.save_items()
-                        logging.info(f"Item {item_name} reservation cancelled")
-
-        except Exception as e:
-            logging.error(f"Error handling transaction cancel: {e}")
 
     def save_items(self):
         try:

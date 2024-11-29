@@ -236,8 +236,7 @@ class ServerUDP_TCP:
                     self.registration_data[name] = {
                         'ip': ip,
                         'udp_port': udp_port,
-                        'tcp_port': tcp_port,
-                        'source_address': client_address
+                        'tcp_port': tcp_port
                     }
                     self.save_registrations()
                     response = self.message_handler.create_message(
@@ -609,23 +608,11 @@ class ServerUDP_TCP:
             logging.error(f"Error handling no offers: {e}")
 
     def get_name_by_address(self, client_address: tuple) -> Optional[str]:
-        """Get client name by matching either IP/port or just IP"""
-        try:
-            with self.registration_lock:
-                # first try exact match
-                for name, info in self.registration_data.items():
-                    if (info['ip'] == client_address[0] and
-                        info['udp_port'] == client_address[1]):
-                        return name
-
-                # If no, try matching just IP
-                for name, info in self.registration_data.items():
-                    if info['ip'] == client_address[0]:
-                        return name
-            return None
-        except Exception as e:
-            logging.error(f"Error in get_name_by_address: {e}")
-            return None
+        with self.registration_lock:
+            for name, info in self.registration_data.items():
+                if info['ip'] == client_address[0] and info['udp_port'] == client_address[1]:
+                    return name
+        return None
 
     def handle_cancel(self, msg: Message, client_address: tuple):
         try:
@@ -670,46 +657,15 @@ class ServerUDP_TCP:
 
     def handle_buy(self, msg: Message, client_address: tuple):
         try:
-            # Find buyer by source address
-            buyer_name = None
-            with self.registration_lock:
-                for name, info in self.registration_data.items():
-                    if info.get('source_address') == client_address:
-                        buyer_name = name
-                        break
-
+            buyer_name = self.get_name_by_address(client_address)
             if not buyer_name:
                 logging.warning(f"BUY received from unregistered buyer at {client_address}")
-                error_msg = self.message_handler.create_message(
-                        MessageType.ERROR,
-                        msg.rq_number,
-                        message="Buyer not registered"
-                        )
-                self.udp_socket.sendto(error_msg.encode(), client_address)
                 return
 
-            # Find the reservation
-            item_name = msg.params["item_name"]
-            price = msg.params["price"]
-
             with self.reservation_lock:
-                reservation = None
-                reservation_id = None
-                for res_id, res in self.reservations.items():
-                    if (res.buyer == buyer_name and
-                        res.item_name == item_name and
-                        abs(res.price - price) < 0.01):
-                        reservation = res
-                        reservation_id = res_id
-                        break
-
+                reservation = self.reservations.get(msg.rq_number)
                 if not reservation:
-                    error_msg = self.message_handler.create_message(
-                            MessageType.ERROR,
-                            msg.rq_number,
-                            message="No matching reservation found"
-                            )
-                    self.udp_socket.sendto(error_msg.encode(), client_address)
+                    logging.warning(f"No reservation found for RQ# {msg.rq_number}")
                     return
 
                 # Send BUY_ACK to buyer with server's IP and TCP port
@@ -722,181 +678,90 @@ class ServerUDP_TCP:
                 self.udp_socket.sendto(buy_ack.encode(), client_address)
                 logging.info(f"Sent BUY_ACK to buyer {buyer_name}")
 
-                # Start purchase finalization
-                threading.Thread(
-                        target=self.finalize_purchase,
-                        args=(reservation, reservation_id),
-                        daemon=True
-                        ).start()
+                # Proceed to finalize purchase over TCP
+                threading.Thread(target=self.finalize_purchase, args=(reservation, msg.rq_number), daemon=True).start()
 
         except Exception as e:
             logging.error(f"Error handling BUY: {e}")
+            self._send_error_to_client(client_address, msg.rq_number, str(e))
 
     def finalize_purchase(self, reservation: ItemReservation, rq_number: str):
-        """Handle the purchase finalization over TCP"""
         try:
             # Open TCP connections to buyer and seller
             buyer_info = self.registration_data.get(reservation.buyer)
             seller_info = self.registration_data.get(reservation.seller)
-
             if not buyer_info or not seller_info:
                 logging.error("Buyer or seller information not found for finalizing purchase")
                 return
 
-            # Create TCP connections
-            buyer_socket = None
-            seller_socket = None
+            # Connect to buyer and seller
+            buyer_address = (buyer_info['ip'], buyer_info['tcp_port'])
+            seller_address = (seller_info['ip'], seller_info['tcp_port'])
 
-            try:
-                # Accept TCP Connections with timeout
-                self.tcp_socket_settimeout(30)
+            # Accept connections from buyer and seller
+            # For simplicity, we assume the buyer and seller will connect to the server
+            # The server listens for connections and handles the transaction
 
-                # Wait for buyer connection
-                logging.info("Waiting for TCP connections...")
+            # Wait for connections
+            buyer_conn, buyer_addr = self.tcp_socket.accept()
+            seller_conn, seller_addr = self.tcp_socket.accept()
+            logging.info(f"Accepted TCP connections from buyer and seller")
 
-                # Accept fisrt connection
-                conn1, addr1 = self.tcp_socket.accept()
-                logging.info(f"First connection accepted from {addr1}")
+            # Send INFORM_REQ to both buyer and seller
+            inform_req = self.message_handler.create_message(
+                MessageType.INFORM_REQ,
+                rq_number,
+                item_name=reservation.item_name,
+                price=reservation.price
+            )
+            buyer_conn.sendall(inform_req.encode())
+            seller_conn.sendall(inform_req.encode())
 
-                # Accept second connection
-                conn2, addr2 = self.tcp_socket.accept()
-                logging.info(f"Second connection accepted from {addr2}")
+            # Receive INFORM_RES from buyer and seller
+            buyer_data = buyer_conn.recv(1024).decode()
+            seller_data = seller_conn.recv(1024).decode()
 
-                # Determine which is buyer and seller
-                if addr1[0] == buyer_info['ip']:
-                    buyer_socket = conn1
-                    seller_socket == conn2
-                else:
-                    buyer_socket = conn2
-                    seller_socket = conn1
+            buyer_msg = self.message_handler.parse_message(buyer_data)
+            seller_msg = self.message_handler.parse_message(seller_data)
 
-                # Set timeouts
-                buyer_socket.settimeout(30)
-                seller_socket.settimeout(30)
+            # Process payment (simulated)
+            transaction_success = self.process_payment(buyer_msg, seller_msg, reservation.price)
 
-                # Send INFORM_REQ to both parties
-                inform_req = self.message_handler.create_message(
-                        MessageType.INFORM_REQ,
-                        rq_number,
-                        item_name=reservation.item_name,
-                        price=reservation.price
-                        )
-                buyer_socket.sendall(inform_req.encode())
-                seller_socket.sendall(inform_req.encode())
+            if transaction_success:
+                # Send TRANSACTION_SUCCESS to buyer
+                success_msg = self.message_handler.create_message(
+                    MessageType.TRANSACTION_SUCCESS,
+                    rq_number
+                )
+                buyer_conn.sendall(success_msg.encode())
 
-                # Get responses
-                buyer_res = buyer_socket.recv(1024).decode()
-                seller_res = seller_socket.recv(1024).decode()
+                # Send SHIPPING_INFO to seller with buyer's name and address
+                shipping_info = self.message_handler.create_message(
+                    MessageType.SHIPPING_INFO,
+                    rq_number,
+                    name=buyer_msg.params["name"],
+                    address=buyer_msg.params["address"]
+                )
+                seller_conn.sendall(shipping_info.encode())
 
-                buyer_msg = self.message_handler.parse_message(buyer_response)
-                seller_msg = self.message_handler.parse_message(seller_response)
+                logging.info("Transaction completed successfully")
+            else:
+                # Send TRANSACTION_FAILED to both buyer and seller
+                fail_msg = self.message_handler.create_message(
+                    MessageType.TRANSACTION_FAILED,
+                    rq_number,
+                    reason="Payment processing failed"
+                )
+                buyer_conn.sendall(fail_msg.encode())
+                seller_conn.sendall(fail_msg.encode())
+                logging.info("Transaction failed during payment processing")
 
-                if buyer_msg and seller_msg:
-                    # Process payment
-                    if self.process_payment(buyer_msg, seller_msg, reservation.price):
-                        # Send sucess messages
-                        success_msg = self.message_handler.create_message(
-                                MessageType.TRANSACTION_SECCESS,
-                                rq_number
-                                )
-                        buyer_socket.sendall(success_msg.encode())
-
-                        shipping_info = self.message_handler.create_message(
-                                Messagetype.SHIPPING_INFO,
-                                rq_number,
-                                name=buyer_msg.params["name"],
-                                address=buyer_msg.params["address"]
-                                )
-                        seller_socket.sendall(shipping_info.encode())
-                        logging.info(f"Transaction {rq_number} completed successfully")
-                    else:
-                        # Send failure messages
-                        fail_msg = self.message_handler.create_message(
-                               MessageType.TRANSACTION_FAILED,
-                               rq_number,
-                               reason="Payment processing failed"
-                               )
-                        buyer_socket.sendall(fail_msg.encode())
-                        seller_socket.sendall(fail_msg.encode())
-                        logging.error(f"Transaction {rq_number} failed during payment")
-
-            except socket.timeout:
-                logging.error(f"TCP connection timeout for transaction {rq_number}")
-                self._handle_transaction_timeout(rq_number, reservation)
-            finally:
-                # Cleanup connections
-                if buyer_socket:
-                    buyer_socket.close()
-                if seller_socket:
-                    seller_socket.close()
+            # Close connections
+            buyer_conn.close()
+            seller_conn.close()
 
         except Exception as e:
             logging.error(f"Error finalizing purchase: {e}")
-
-    def _handle_transaction_timeout(self, rq_number: str, reservation: ItemReservation):
-        """Handle timeout during transaction"""
-        try:
-            # Remove reservation
-            with self.reservation_lock:
-                if rq_number in self.reservations:
-                    del self.reservations[rq_number]
-
-            # Notify both parties through UDP
-            cancel_msg = self.message_handler.create_message(
-                    MessageType.CANCEL,
-                    rq_number,
-                    reason="Transaction timeout"
-                    )
-
-            buyer_info = self.registration_data.get(reservation.buyer)
-            seller_info = self.registration_data.get(reservation.seller)
-
-            if buyer_info:
-                self.message_delivery.send_with_retry(
-                        cancel_msg,
-                        (buyer_info['ip'], buyer_info['udp_port'])
-                        )
-
-            if seller_info:
-                self.message_delivery.send_with_retry(
-                        cancel_msg,
-                        (seller_info['ip'], seller_info['udp_port'])
-                        )
-
-        except Exception as e:
-            logging.error(f"Error handling transaction timeout: {e}")
-
-    def _handle_transaction_error(self, rq_number: str, reservation: ItemReservation):
-        """Handle general transaction errors"""
-        try:
-            # Remove Transaction
-            with self.reservation_lock:
-                if rq_number in self.reservations:
-                    del self.reservations[rq_number]
-
-            # Notify both parties
-            error_msg = self.message_handler.create_message(
-                    MessageType.CANCEL,
-                    rq_number,
-                    reason="Transaction failed"
-
-                    )
-            buyer_info = self.registration_data.get(reservation.buyer)
-            seller_info = self.registration_data.get(reservation.seller)\
-
-            if buyer_info:
-                self.message_delivery.send_with_retry(
-                        error_msg,
-                        (buyer_info['ip'], buyer_info['udp_port'])
-                        )
-            if seller_info:
-                self.message_delivery.send_with_retry(
-                        error_msg,
-                        (seller_info['ip'], seller_info['udp_port'])
-                        )
-
-        except Exception as e:
-            logging.error(f"Error handling transaction error: {e}")
 
     def process_payment(self, buyer_msg: Message, seller_msg: Message, price: float) -> bool:
         # Simulate payment processing
