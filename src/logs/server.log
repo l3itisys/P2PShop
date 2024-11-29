@@ -1,7 +1,45 @@
-
-2024-11-28 13:36:57,612 - ERROR - Error loading registrations: Expecting value: line 2 column 1 (char 1)
-2024-11-28 13:36:57,612 - INFO - Server started - UDP port: 3000, TCP port: 3001
-2024-11-28 13:36:57,613 - INFO - Server running...
-2024-11-28 13:36:59,212 - INFO - Starting server cleanup...
-2024-11-28 13:36:59,213 - INFO - Registrations saved successfully
-2024-11-28 13:37:00,616 - INFO - Server cleanup completed
+2024-11-28 19:36:16,020 - INFO - Server started - UDP port: 3000, TCP port: 3001
+2024-11-28 19:36:16,021 - INFO - Server running...
+2024-11-28 19:36:24,524 - INFO - Received UDP message from ('127.0.0.1', 43507): test
+2024-11-28 19:36:34,200 - INFO - Received UDP message from ('127.0.0.1', 60685): REGISTER 3601 "seller one" "127.0.1.1" "38221" "4857"
+2024-11-28 19:36:34,200 - INFO - Processing message type: MessageType.REGISTER
+2024-11-28 19:36:34,201 - INFO - Registrations saved successfully
+2024-11-28 19:36:34,202 - INFO - User seller one registered successfully
+2024-11-28 19:36:34,202 - INFO - Sent registration response to seller one at ('127.0.0.1', 60685)
+2024-11-28 19:36:59,534 - INFO - Received UDP message from ('127.0.0.1', 49067): test
+2024-11-28 19:37:08,098 - INFO - Received UDP message from ('127.0.0.1', 44544): REGISTER 3094 "buyer one" "127.0.1.1" "38484" "4655"
+2024-11-28 19:37:08,099 - INFO - Processing message type: MessageType.REGISTER
+2024-11-28 19:37:08,099 - INFO - Registrations saved successfully
+2024-11-28 19:37:08,099 - INFO - User buyer one registered successfully
+2024-11-28 19:37:08,100 - INFO - Sent registration response to buyer one at ('127.0.0.1', 44544)
+2024-11-28 19:37:19,485 - INFO - Received UDP message from ('127.0.0.1', 44544): LOOKING_FOR 4445 "buyer one" "computer" "" "800.0"
+2024-11-28 19:37:19,485 - INFO - Processing message type: MessageType.LOOKING_FOR
+2024-11-28 19:37:19,486 - INFO - Sent message to ('127.0.0.1', 44544) (attempt 1)
+2024-11-28 19:37:19,487 - INFO - Search 5926 started with 300s timeout
+2024-11-28 19:37:19,487 - INFO - Sent message to ('127.0.1.1', 38221) (attempt 1)
+2024-11-28 19:37:19,488 - INFO - Search broadcast sent to seller one
+2024-11-28 19:37:19,489 - INFO - Received UDP message from ('127.0.0.1', 60685): OFFER 5926 "seller one" "computer1" "877.0"
+2024-11-28 19:37:19,490 - INFO - Processing message type: MessageType.OFFER
+2024-11-28 19:37:19,490 - INFO - Offer received from seller one for search 5926
+2024-11-28 19:37:19,491 - INFO - Received UDP message from ('127.0.0.1', 60685): OFFER 5926 "seller one" "computer2" "1000.0"
+2024-11-28 19:37:19,492 - INFO - Sent message to ('127.0.1.1', 38221) (attempt 1)
+2024-11-28 19:37:19,492 - INFO - Processing message type: MessageType.OFFER
+2024-11-28 19:37:19,493 - INFO - Sent NEGOTIATE message to seller seller one
+2024-11-28 19:37:19,494 - INFO - Offer received from seller one for search 5926
+2024-11-28 19:37:27,457 - INFO - Received UDP message from ('127.0.0.1', 60685): ACCEPT 5926 "seller one" "computer1" "800.0"
+2024-11-28 19:37:27,458 - INFO - Processing message type: MessageType.ACCEPT
+2024-11-28 19:37:27,458 - INFO - Sent message to ('127.0.1.1', 38484) (attempt 1)
+2024-11-28 19:37:27,458 - INFO - Sent FOUND message to buyer buyer one
+2024-11-28 19:37:27,459 - INFO - Accept handled successfully for search 5926
+2024-11-28 19:37:33,117 - INFO - Received UDP message from ('127.0.0.1', 44544): BUY 4445 "computer1" "800.0"
+2024-11-28 19:37:33,117 - INFO - Processing message type: MessageType.BUY
+2024-11-28 19:37:33,117 - WARNING - BUY received from unregistered buyer at ('127.0.0.1', 44544)
+2024-11-28 19:37:38,123 - INFO - Received UDP message from ('127.0.0.1', 44544): BUY 4445 "computer1" "800.0"
+2024-11-28 19:37:38,123 - INFO - Processing message type: MessageType.BUY
+2024-11-28 19:37:38,124 - WARNING - BUY received from unregistered buyer at ('127.0.0.1', 44544)
+2024-11-28 19:37:43,128 - INFO - Received UDP message from ('127.0.0.1', 44544): BUY 4445 "computer1" "800.0"
+2024-11-28 19:37:43,128 - INFO - Processing message type: MessageType.BUY
+2024-11-28 19:37:43,128 - WARNING - BUY received from unregistered buyer at ('127.0.0.1', 44544)
+2024-11-28 19:52:40,964 - INFO - Starting server cleanup...
+2024-11-28 19:52:40,965 - INFO - Registrations saved successfully
+2024-11-28 19:52:42,052 - INFO - Server cleanup completed

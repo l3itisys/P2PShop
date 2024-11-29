@@ -26,6 +26,8 @@ class ActiveSearch:
     status: str = "pending"
     offers: list = field(default_factory=list)
     timestamp: datetime = field(default_factory=datetime.now)
+    rq_number: str = ""
+    found_price: Optional[float] = None
 
 class ClientUDP_TCP:
     def __init__(self):
@@ -103,6 +105,8 @@ class ClientUDP_TCP:
             self.listener_thread.daemon = True
             self.listener_thread.start()
 
+            self.setup_tcp_server()
+
             self.load_items()
             logging.info(f"Client initialized - UDP port: {self.client_udp_port}, TCP port: {self.client_tcp_port}")
 
@@ -113,100 +117,110 @@ class ClientUDP_TCP:
 
     def get_server_ip(self):
         while True:
-            try:
-                server_ip = input("Enter server IP address (or 'localhost'): ").strip()
-                if server_ip.lower() == 'localhost':
-                    return '127.0.0.1'
-                parts = server_ip.split('.')
-                if len(parts) == 4 and all(0 <= int(part) <= 255 for part in parts):
-                    return server_ip
-                print("Invalid IP address format. Please use format: xxx.xxx.xxx.xxx or 'localhost'")
-            except ValueError:
-                print("Invalid IP address. Please try again.")
+            server_ip = input("Enter server IP address (or 'localhost'): ").strip()
+            if server_ip.lower() == 'localhost':
+                return '127.0.0.1'
+            else:
+                return server_ip
 
     def test_server_connection(self):
-        test_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        test_socket.settimeout(5)
         try:
-            test_socket.sendto(b"test", (self.server_ip, self.server_udp_port))
+            test_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            test_socket.settimeout(2)
+            test_socket.sendto(b"test", (self.server_ip, 3000))
             response, _ = test_socket.recvfrom(1024)
             if response.decode() == "ok":
                 print(f"Successfully connected to server at {self.server_ip}")
             else:
-                raise ConnectionError("Unexpected server response")
+                print(f"Failed to receive proper response from server at {self.server_ip}")
+                sys.exit(1)
         except Exception as e:
-            print(f"Warning: Unable to reach server at {self.server_ip}:{self.server_udp_port}")
-            print(f"Error: {e}")
-            proceed = input("Do you want to continue anyway? (yes/no): ").lower()
-            if proceed != 'yes':
-                raise ConnectionError("Unable to connect to server")
+            print(f"Failed to connect to server at {self.server_ip}: {e}")
+            sys.exit(1)
         finally:
             test_socket.close()
 
     def get_client_ip(self):
-        try:
-            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            s.connect((self.server_ip, 1))
-            ip = s.getsockname()[0]
-            s.close()
-            return ip
-        except Exception as e:
-            logging.error(f"Error getting client IP: {e}")
-            return '127.0.0.1'
+        return socket.gethostbyname(socket.gethostname())
 
     def get_tcp_port(self):
         while True:
             try:
                 port = int(input("Enter client TCP port (1024-65535): ").strip())
                 if 1024 <= port <= 65535:
-                    test_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                    try:
-                        test_socket.bind(('', port))
-                        test_socket.close()
-                        return port
-                    except OSError:
-                        print("Port is already in use. Please choose another port.")
-                    finally:
-                        test_socket.close()
+                    return port
                 else:
                     print("Port must be between 1024 and 65535.")
             except ValueError:
-                print("Please enter a valid port number.")
+                print("Invalid port number. Please enter a valid integer.")
 
     def get_user_details(self):
-        while True:
-            first_name = input("Enter your first name: ").strip()
-            last_name = input("Enter your last name: ").strip()
-            if first_name and last_name:
-                return f"{first_name} {last_name}"
-            print("Both first and last names are required.")
+        first_name = input("Enter your first name: ").strip()
+        last_name = input("Enter your last name: ").strip()
+        return f"{first_name} {last_name}"
 
-    def save_items(self):
+    def setup_tcp_server(self):
         try:
-            items_file = os.path.join(os.path.dirname(__file__), f'items_{self.name}.json')
-            with self.items_lock:
-                items_data = {
-                    name: {"price": item.price, "reserved": item.reserved}
-                    for name, item in self.items_for_sale.items()
-                }
-            with open(items_file, 'w') as f:
-                json.dump(items_data, f, indent=4)
+            self.tcp_server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.tcp_server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.tcp_server_socket.bind(('', self.client_tcp_port))
+            self.tcp_server_socket.listen(5)
+            self.tcp_server_socket.settimeout(1)
+            threading.Thread(target=self.accept_tcp_connections, daemon=True).start()
+            logging.info(f"TCP server listening on port {self.client_tcp_port}")
         except Exception as e:
-            logging.error(f"Error saving items: {e}")
+            logging.error(f"Error setting up TCP server: {e}")
+            print(f"Error setting up TCP server: {e}")
 
-    def load_items(self):
+    def accept_tcp_connections(self):
+        while self.running:
+            try:
+                client_socket, client_address = self.tcp_server_socket.accept()
+                threading.Thread(target=self.handle_tcp_client, args=(client_socket, client_address), daemon=True).start()
+            except socket.timeout:
+                continue
+            except Exception as e:
+                if self.running:
+                    logging.error(f"Error accepting TCP connection: {e}")
+
+    def handle_tcp_client(self, client_socket: socket.socket, client_address: tuple):
         try:
-            items_file = os.path.join(os.path.dirname(__file__), f'items_{self.name}.json')
-            if os.path.exists(items_file):
-                with open(items_file, 'r') as f:
-                    items_data = json.load(f)
-                with self.items_lock:
-                    self.items_for_sale = {
-                        name: ItemForSale(name=name, price=data["price"], reserved=data["reserved"])
-                        for name, data in items_data.items()
-                    }
+            # Handle TCP connection from server
+            data = client_socket.recv(1024).decode()
+            msg = self.message_handler.parse_message(data)
+            if msg and msg.command == MessageType.INFORM_REQ:
+                # Send INFORM_RES with required information
+                name = self.name
+                cc_number = input("Enter your credit card number: ").strip()
+                cc_exp_date = input("Enter your credit card expiration date (MM/YY): ").strip()
+                address = input("Enter your address: ").strip()
+                inform_res = self.message_handler.create_message(
+                    MessageType.INFORM_RES,
+                    msg.rq_number,
+                    name=name,
+                    cc_number=cc_number,
+                    cc_exp_date=cc_exp_date,
+                    address=address
+                )
+                client_socket.sendall(inform_res.encode())
+                logging.info("Sent INFORM_RES to server")
+                # Wait for transaction result
+                response = client_socket.recv(1024).decode()
+                msg = self.message_handler.parse_message(response)
+                if msg and msg.command == MessageType.TRANSACTION_SUCCESS:
+                    print("Transaction successful!")
+                elif msg and msg.command == MessageType.TRANSACTION_FAILED:
+                    print(f"Transaction failed: {msg.params['reason']}")
+                elif msg and msg.command == MessageType.SHIPPING_INFO:
+                    # As seller, receive buyer's shipping info
+                    print(f"Ship item to {msg.params['name']} at address: {msg.params['address']}")
+                client_socket.close()
+            else:
+                logging.error(f"Unexpected TCP message: {data}")
+                client_socket.close()
         except Exception as e:
-            logging.error(f"Error loading items: {e}")
+            logging.error(f"Error handling TCP client: {e}")
+            client_socket.close()
 
     def register(self):
         try:
@@ -233,20 +247,7 @@ class ClientUDP_TCP:
                     return True
                 elif msg and msg.command == MessageType.REGISTER_DENIED:
                     reason = msg.params.get('reason', '')
-                    if "already registered" in reason:
-                        # Send DE-REGISTER message
-                        print("Name already registered. Updating registration with new ports.")
-                        dereg_rq = str(random.randint(1000, 9999))
-                        dereg_message = self.message_handler.create_message(
-                            MessageType.DE_REGISTER,
-                            dereg_rq,
-                            name=self.name
-                        )
-                        dereg_response = self.send_udp_message(dereg_message)
-                        # Attempt to register again
-                        return self.register()
-                    else:
-                        print(f"Registration denied: {reason}")
+                    print(f"Registration denied: {reason}")
                 else:
                     print(f"Unexpected registration response: {response}")
             return self.registered
@@ -258,13 +259,8 @@ class ClientUDP_TCP:
     def deregister(self):
         try:
             if not self.registered:
-                print("Not registered!")
-                return
-
-            confirm = input("Are you sure you want to deregister? (yes/no): ").lower()
-            if confirm != "yes":
-                print("Deregistration cancelled.")
-                return
+                print("You are not registered.")
+                return False
 
             rq = str(random.randint(1000, 9999))
             message = self.message_handler.create_message(
@@ -274,76 +270,69 @@ class ClientUDP_TCP:
             )
 
             response = self.send_udp_message(message)
-            if response and response.startswith(MessageType.DE_REGISTERED.value):
-                self.registered = False
-                print("Successfully deregistered!")
-            else:
-                print(f"Deregistration failed: {response}")
+            if response:
+                msg = self.message_handler.parse_message(response)
+                if msg and msg.command == MessageType.DE_REGISTERED:
+                    self.registered = False
+                    print("Successfully de-registered!")
+                    return True
+                else:
+                    print(f"Unexpected de-registration response: {response}")
+            return not self.registered
 
         except Exception as e:
-            logging.error(f"Deregistration error: {e}")
-            print(f"Error during deregistration: {e}")
+            logging.error(f"De-registration error: {e}")
+            print(f"Error during de-registration: {e}")
 
     def add_item_for_sale(self):
-        if not self.registered:
-            print("You must register first!")
-            return
-
         try:
-            item_name = input("Enter item name: ").strip()
-            while True:
-                try:
-                    price = float(input("Enter item price: ").strip())
-                    if price > 0:
-                        break
-                    print("Price must be greater than 0")
-                except ValueError:
-                    print("Please enter a valid number")
-
-            with self.items_lock:
-                self.items_for_sale[item_name] = ItemForSale(
-                    name=item_name,
-                    price=price
-                )
-            print(f"Item '{item_name}' added successfully")
-            self.save_items()
-            logging.info(f"Added item for sale: {item_name} at price {price}")
-
-        except Exception as e:
-            logging.error(f"Error adding item: {e}")
-            print(f"Error adding item: {e}")
-
-    def list_items_for_sale(self):
-        with self.items_lock:
-            if not self.items_for_sale:
-                print("No items listed for sale")
+            if not self.registered:
+                print("You must register first!")
                 return
 
-            print("\nYour items for sale:")
-            print("--------------------")
-            for item_name, item in self.items_for_sale.items():
-                status = "Reserved" if item.reserved else "Available"
-                print(f"Item: {item_name}")
-                print(f"Price: ${item.price:.2f}")
-                print(f"Status: {status}")
-                print("--------------------")
+            item_name = input("Enter item name: ").strip()
+            price = float(input("Enter item price: ").strip())
+
+            with self.items_lock:
+                if item_name in self.items_for_sale:
+                    print("Item already exists in your inventory.")
+                    return
+                self.items_for_sale[item_name] = ItemForSale(name=item_name, price=price)
+                self.save_items()
+                print(f"Item '{item_name}' added successfully")
+                logging.info(f"Added item for sale: {item_name} at price {price}")
+
+        except Exception as e:
+            logging.error(f"Error adding item for sale: {e}")
+            print(f"Error: {e}")
+
+    def list_items_for_sale(self):
+        try:
+            with self.items_lock:
+                if not self.items_for_sale:
+                    print("You have no items for sale.")
+                    return
+                print("\nYour items for sale:")
+                print("-" * 20)
+                for item in self.items_for_sale.values():
+                    print(f"Item: {item.name}")
+                    print(f"Price: ${item.price:.2f}")
+                    status = "Reserved" if item.reserved else "Available"
+                    print(f"Status: {status}")
+                    print("-" * 20)
+        except Exception as e:
+            logging.error(f"Error listing items: {e}")
+            print(f"Error: {e}")
 
     def search_for_item(self):
-        """Updated search implementation"""
-        if not self.registered:
-            print("You must register first!")
-            return
-
         try:
+            if not self.registered:
+                print("You must register first!")
+                return
+
             item_name = input("Enter item name to search for: ").strip()
-            while True:
-                try:
-                    max_price = float(input("Enter maximum price: ").strip())
-                    if max_price > 0:
-                        break
-                    print("Price must be greater than 0")
-                except ValueError:
-                    print("Please enter a valid number")
+            item_description = ""  # Adjust if needed
+            max_price = float(input("Enter maximum price: ").strip())
 
             rq = str(random.randint(1000, 9999))
             message = self.message_handler.create_message(
@@ -351,211 +340,72 @@ class ClientUDP_TCP:
                 rq,
                 name=self.name,
                 item_name=item_name,
+                item_description=item_description,
                 max_price=max_price
             )
 
-            # Create active search record
-            with self.search_lock:
-                self.active_searches[rq] = ActiveSearch(
-                    item_name=item_name,
-                    max_price=max_price
-                )
-
-            # Send search request
             response = self.send_udp_message(message)
             if response:
                 msg = self.message_handler.parse_message(response)
                 if msg and msg.command == MessageType.SEARCH_ACK:
                     print(f"Search request for {item_name} acknowledged. Waiting for results...")
                     logging.info(f"Search request {rq} acknowledged by server")
-                elif msg and msg.command == MessageType.ERROR:
-                    print(f"Search error: {msg.params.get('message', 'Unknown error')}")
+                    # Add to active searches
                     with self.search_lock:
-                        if rq in self.active_searches:
-                            del self.active_searches[rq]
+                        self.active_searches[rq] = ActiveSearch(
+                            item_name=item_name,
+                            max_price=max_price,
+                            rq_number=rq
+                        )
                 else:
-                    print(f"Unexpected response: {response}")
+                    print(f"Unexpected search response: {response}")
 
         except Exception as e:
             logging.error(f"Error searching for item: {e}")
-            print(f"Error during search: {e}")
+            print(f"Error: {e}")
 
-    def handle_search_request(self, msg: Message):
-        """Updated handler for incoming search requests (as seller)"""
+    def send_udp_message(self, message: str) -> Optional[str]:
         try:
-            item_name = msg.params["item_name"]
-
-            with self.items_lock:
-                matching_items = []
-                for name, item in self.items_for_sale.items():
-                    if (item_name.lower() in name.lower() or
-                        name.lower() in item_name.lower()) and not item.reserved:
-                        matching_items.append((name, item))
-
-                for name, item in matching_items:
-                    offer_message = self.message_handler.create_message(
-                        MessageType.OFFER,
-                        msg.rq_number,
-                        name=self.name,
-                        item_name=name,
-                        price=item.price
-                    )
-                    self.send_udp_message_no_response(offer_message)
-                    logging.info(f"Sent offer for {name} at price {item.price}")
-
+            for attempt in range(3):
+                logging.info(f"Sending message to server (attempt {attempt + 1}): {message}")
+                self.client_udp_socket_send.sendto(message.encode(), (self.server_ip, self.server_udp_port))
+                logging.info(f"Sending UDP message (attempt {attempt + 1}): {message}")
+                try:
+                    self.client_udp_socket_send.settimeout(5)
+                    response, _ = self.client_udp_socket_send.recvfrom(1024)
+                    response = response.decode()
+                    logging.info(f"Server response: {response}")
+                    return response
+                except socket.timeout:
+                    logging.warning(f"No response from server on attempt {attempt + 1}")
+                    continue
+            print("Failed to receive response from server.")
+            return None
         except Exception as e:
-            logging.error(f"Error handling search request: {e}")
+            logging.error(f"Error sending UDP message: {e}")
+            return None
 
-
-    def handle_negotiate_request(self, msg: Message):
-        """Updated handler for price negotiation requests"""
+    def send_udp_message_no_response(self, message: str):
         try:
-            item_name = msg.params["item_name"]
-            max_price = msg.params["max_price"]
-
-            with self.items_lock:
-                if item_name not in self.items_for_sale:
-                    logging.warning(f"Negotiation requested for non-existent item: {item_name}")
-                    return
-
-                item = self.items_for_sale[item_name]
-                if item.reserved:
-                    logging.warning(f"Negotiation requested for reserved item: {item_name}")
-                    return
-
-                print(f"\nNegotiation request received for '{item_name}'")
-                print(f"Buyer's maximum price: ${max_price:.2f}")
-                print(f"Your current price: ${item.price:.2f}")
-
-                while True:
-                    response = input("Accept buyer's price? (yes/no): ").lower()
-                    if response in ['yes', 'no']:
-                        break
-                    print("Please answer 'yes' or 'no'")
-
-                if response == 'yes':
-                    # Accept the negotiated price
-                    item.price = max_price
-                    item.reserved = True
-                    self.save_items()
-
-                    accept_message = self.message_handler.create_message(
-                        MessageType.ACCEPT,
-                        msg.rq_number,
-                        name=self.name,
-                        item_name=item_name,
-                        price=max_price
-                    )
-                    self.send_udp_message_no_response(accept_message)
-                    logging.info(f"Accepted negotiation for {item_name} at {max_price}")
-                    print(f"Item price updated and reserved at ${max_price:.2f}")
-                else:
-                    # Reject the negotiation
-                    refuse_message = self.message_handler.create_message(
-                        MessageType.REFUSE,
-                        msg.rq_number,
-                        item_name=item_name,
-                        max_price=max_price
-                    )
-                    self.send_udp_message_no_response(refuse_message)
-                    logging.info(f"Refused negotiation for {item_name} at {max_price}")
-                    print("Negotiation refused")
-
+            self.client_udp_socket_send.sendto(message.encode(), (self.server_ip, self.server_udp_port))
+            logging.info(f"Sending UDP message: {message}")
         except Exception as e:
-            logging.error(f"Error handling negotiate request: {e}")
+            logging.error(f"Error sending UDP message: {e}")
 
-    def handle_reserve_request(self, msg: Message):
-        """Updated handler for item reservation"""
-        try:
-            item_name = msg.params["item_name"]
-            price = msg.params["price"]
-
-            with self.items_lock:
-                if item_name not in self.items_for_sale:
-                    logging.warning(f"Reserve request for non-existent item: {item_name}")
-                    return
-
-                item = self.items_for_sale[item_name]
-                if item.reserved:
-                    logging.warning(f"Reserve request for already reserved item: {item_name}")
-                    return
-
-                item.reserved = True
-                item.price = price
-                self.save_items()
-
-                print(f"\nItem '{item_name}' has been reserved at price ${price:.2f}")
-                logging.info(f"Item {item_name} reserved at price {price}")
-
-        except Exception as e:
-            logging.error(f"Error handling reserve request: {e}")
-
-    def handle_found_notification(self, msg: Message):
-        """Handle notifications about found items"""
-        try:
-            item_name = msg.params["item_name"]
-            price = msg.params["price"]
-
-            with self.search_lock:
-                # Update active search status
-                search_entry = next(
-                    (search for search in self.active_searches.values()
-                     if search.item_name == item_name),
-                    None
-                )
-                if search_entry:
-                    search_entry.status = "found"
-                    search_entry.found_price = price
-
-            print(f"\nItem found: {item_name} at price ${price:.2f}")
-            print("You can proceed with the purchase through TCP connection.")
-            logging.info(f"Found notification received for {item_name} at {price}")
-
-        except Exception as e:
-            logging.error(f"Error handling found notification: {e}")
-
-    def handle_not_found_notification(self, msg: Message):
-        """Handle notifications about items not found"""
-        try:
-            item_name = msg.params["item_name"]
-            max_price = msg.params["max_price"]
-
-            with self.search_lock:
-                # Update active search status
-                search_entry = next(
-                    (search for search in self.active_searches.values()
-                     if search.item_name == item_name),
-                    None
-                )
-                if search_entry:
-                    search_entry.status = "not_found"
-
-            print(f"\nItem '{item_name}' not found at or below ${max_price:.2f}")
-            logging.info(f"Not found notification received for {item_name}")
-
-        except Exception as e:
-            logging.error(f"Error handling not found notification: {e}")
-
-    def handle_not_available_notification(self, msg: Message):
-        """Handle notifications about unavailable items"""
-        try:
-            item_name = msg.params["item_name"]
-
-            with self.search_lock:
-                # Update active search status
-                search_entry = next(
-                    (search for search in self.active_searches.values()
-                     if search.item_name == item_name),
-                    None
-                )
-                if search_entry:
-                    search_entry.status = "expired"
-
-            print(f"\nItem '{item_name}' is not available from any seller")
-            logging.info(f"Not available notification received for {item_name}")
-
-        except Exception as e:
-            logging.error(f"Error handling not available notification: {e}")
+    def listen_for_messages(self):
+        while self.running:
+            try:
+                data, _ = self.client_udp_socket_listen.recvfrom(1024)
+                message = data.decode()
+                logging.info(f"Received message: {message}")
+                msg = self.message_handler.parse_message(message)
+                if msg:
+                    self.handle_incoming_message(msg)
+            except socket.timeout:
+                continue
+            except Exception as e:
+                if self.running:
+                    logging.error(f"Error receiving message: {e}")
 
     def handle_incoming_message(self, msg: Message):
         try:
@@ -571,65 +421,328 @@ class ClientUDP_TCP:
                 self.handle_not_found_notification(msg)
             elif msg.command == MessageType.NOT_AVAILABLE:
                 self.handle_not_available_notification(msg)
+            elif msg.command == MessageType.BUY_ACK:
+                self.handle_buy_ack(msg)
             else:
                 logging.info(f"Unhandled message type: {msg.command}")
         except Exception as e:
             logging.error(f"Error handling incoming message: {e}")
 
-    def listen_for_messages(self):
-        self.client_udp_socket_listen.settimeout(1)
-        while self.running:
-            try:
-                data, _ = self.client_udp_socket_listen.recvfrom(1024)
-                message = data.decode()
-                logging.info(f"Received message: {message}")
-
-                msg = self.message_handler.parse_message(message)
-                if msg:
-                    self.handle_incoming_message(msg)
-            except socket.timeout:
-                continue
-            except Exception as e:
-                if self.running:
-                    logging.error(f"Error in message listener: {e}")
-
-    def send_udp_message(self, message: str, max_retries=3, retry_delay=1):
-        for attempt in range(max_retries):
-            try:
-                print(f"Sending message to server (attempt {attempt + 1}): {message}")
-                logging.info(f"Sending UDP message (attempt {attempt + 1}): {message}")
-                self.client_udp_socket_send.sendto(message.encode(), (self.server_ip, self.server_udp_port))
-                print("Waiting for response from server...")
-                response, _ = self.client_udp_socket_send.recvfrom(1024)
-                response_text = response.decode()
-                print(f"Received response from server: {response_text}")
-                logging.info(f"Server response: {response_text}")
-                return response_text
-
-            except socket.timeout:
-                if attempt < max_retries - 1:
-                    logging.warning(f"Timeout, retrying in {retry_delay} seconds...")
-                    print(f"No response, retrying in {retry_delay} seconds...")
-                    time.sleep(retry_delay)
-                else:
-                    logging.error("Server not responding after multiple attempts")
-                    print("Server not responding after multiple attempts")
-            except Exception as e:
-                logging.error(f"Error sending UDP message: {e}")
-                print(f"Error sending message: {e}")
-                break
-        return None
-
-    def send_udp_message_no_response(self, message: str):
+    def handle_search_request(self, msg: Message):
+        """Handle incoming SEARCH messages as a seller"""
         try:
-            logging.info(f"Sending UDP message: {message}")
-            self.client_udp_socket_send.sendto(message.encode(), (self.server_ip, self.server_udp_port))
+            item_name = msg.params["item_name"]
+            rq_number = msg.rq_number  # Use this RQ# in OFFER
+
+            with self.items_lock:
+                matching_items = [
+                    item for item in self.items_for_sale.values()
+                    if (item_name.lower() in item.name.lower() or
+                        item.name.lower() in item_name.lower()) and not item.reserved
+                ]
+
+            if matching_items:
+                for item in matching_items:
+                    offer_message = self.message_handler.create_message(
+                        MessageType.OFFER,
+                        rq_number,  # Use RQ# from SEARCH message
+                        name=self.name,
+                        item_name=item.name,
+                        price=item.price
+                    )
+                    self.send_udp_message_no_response(offer_message)
+                    logging.info(f"Sent offer for {item.name} at price {item.price}")
+            else:
+                # Do not respond if no matching items
+                pass
+
         except Exception as e:
-            logging.error(f"Error sending UDP message: {e}")
+            logging.error(f"Error handling search request: {e}")
+
+    def handle_found_notification(self, msg: Message):
+        """Handle notifications about found items"""
+        try:
+            item_name = msg.params["item_name"]
+            price = msg.params["price"]
+            rq_number = msg.rq_number
+
+            with self.search_lock:
+                # Update active search status
+                search_entry = self.active_searches.get(rq_number)
+                if search_entry:
+                    search_entry.status = "found"
+                    search_entry.found_price = price
+                else:
+                    # Create a new search entry if not present
+                    search_entry = ActiveSearch(
+                        item_name=item_name,
+                        max_price=price,
+                        status="found",
+                        rq_number=rq_number
+                    )
+                    self.active_searches[rq_number] = search_entry
+
+            print(f"\nItem found: {item_name} at price ${price:.2f}")
+            logging.info(f"Found notification received for {item_name} at {price}")
+
+            # Prompt the buyer to decide
+            self.prompt_purchase_decision(rq_number, item_name, price)
+
+        except Exception as e:
+            logging.error(f"Error handling found notification: {e}")
+
+    def prompt_purchase_decision(self, rq_number: str, item_name: str, price: float):
+        """Prompt the buyer to decide whether to buy the item or cancel"""
+        try:
+            while True:
+                decision = input(f"Do you want to buy '{item_name}' at ${price:.2f}? (yes/no): ").strip().lower()
+                if decision in ['yes', 'no']:
+                    break
+                print("Please answer 'yes' or 'no'")
+
+            if decision == 'yes':
+                # Send BUY message to server
+                buy_message = self.message_handler.create_message(
+                    MessageType.BUY,
+                    rq_number,
+                    item_name=item_name,
+                    price=price
+                )
+                response = self.send_udp_message(buy_message)
+                logging.info(f"Sent BUY message for {item_name} at {price}")
+
+                # Wait for BUY_ACK from server
+                if response:
+                    msg = self.message_handler.parse_message(response)
+                    if msg and msg.command == MessageType.BUY_ACK:
+                        seller_ip = msg.params["seller_ip"]
+                        seller_tcp_port = msg.params["seller_tcp_port"]
+                        print(f"Finalizing purchase with server...")
+                        self.connect_to_server_for_purchase(seller_ip, seller_tcp_port, rq_number, item_name, price)
+                    else:
+                        print(f"Unexpected response from server: {response}")
+                else:
+                    print("Failed to receive BUY_ACK from server.")
+            else:
+                # Send CANCEL message to server
+                cancel_message = self.message_handler.create_message(
+                    MessageType.CANCEL,
+                    rq_number,
+                    item_name=item_name,
+                    price=price
+                )
+                self.send_udp_message_no_response(cancel_message)
+                logging.info(f"Sent CANCEL message for {item_name}")
+                print("Purchase cancelled.")
+
+        except Exception as e:
+            logging.error(f"Error prompting purchase decision: {e}")
+
+    def handle_reserve_request(self, msg: Message):
+        """Handle RESERVE message as a seller"""
+        try:
+            item_name = msg.params["item_name"]
+            price = msg.params["price"]
+            rq_number = msg.rq_number
+
+            with self.items_lock:
+                if item_name not in self.items_for_sale:
+                    logging.warning(f"Reserve request for non-existent item: {item_name}")
+                    return
+
+                item = self.items_for_sale[item_name]
+                if item.reserved:
+                    logging.warning(f"Item {item_name} is already reserved")
+                    return
+
+                item.reserved = True
+                self.save_items()
+                print(f"\nItem '{item_name}' has been reserved at price ${price:.2f}")
+                logging.info(f"Item {item_name} reserved at price {price}")
+
+        except Exception as e:
+            logging.error(f"Error handling reserve request: {e}")
+
+    def handle_not_found_notification(self, msg: Message):
+        """Handle NOT_FOUND message as a buyer"""
+        try:
+            item_name = msg.params["item_name"]
+            max_price = msg.params["max_price"]
+            rq_number = msg.rq_number
+
+            with self.search_lock:
+                search_entry = self.active_searches.get(rq_number)
+                if search_entry:
+                    search_entry.status = "not_found"
+
+            print(f"\nItem '{item_name}' not found at or below ${max_price:.2f}")
+            logging.info(f"Not found notification received for {item_name}")
+
+        except Exception as e:
+            logging.error(f"Error handling not found notification: {e}")
+
+    def handle_not_available_notification(self, msg: Message):
+        """Handle NOT_AVAILABLE message as a buyer"""
+        try:
+            item_name = msg.params["item_name"]
+            rq_number = msg.rq_number
+
+            with self.search_lock:
+                search_entry = self.active_searches.get(rq_number)
+                if search_entry:
+                    search_entry.status = "not_available"
+
+            print(f"\nItem '{item_name}' is not available from any seller")
+            logging.info(f"Not available notification received for {item_name}")
+
+        except Exception as e:
+            logging.error(f"Error handling not available notification: {e}")
+
+    def handle_negotiate_request(self, msg: Message):
+        """Handle NEGOTIATE message as a seller"""
+        try:
+            item_name = msg.params["item_name"]
+            max_price = msg.params["max_price"]
+            rq_number = msg.rq_number
+
+            with self.items_lock:
+                if item_name not in self.items_for_sale:
+                    logging.warning(f"Negotiate request for non-existent item: {item_name}")
+                    return
+
+                item = self.items_for_sale[item_name]
+
+            # Decide whether to accept the negotiation
+            decision = input(f"Server requests to sell '{item_name}' at ${max_price:.2f}. Accept? (yes/no): ").strip().lower()
+            if decision == 'yes':
+                # Send ACCEPT message to server
+                accept_message = self.message_handler.create_message(
+                    MessageType.ACCEPT,
+                    rq_number,
+                    name=self.name,
+                    item_name=item_name,
+                    max_price=max_price
+                )
+                self.send_udp_message_no_response(accept_message)
+                logging.info(f"Sent ACCEPT message for {item_name} at {max_price}")
+            else:
+                # Send REFUSE message to server
+                refuse_message = self.message_handler.create_message(
+                    MessageType.REFUSE,
+                    rq_number,
+                    name=self.name,
+                    item_name=item_name,
+                    max_price=max_price
+                )
+                self.send_udp_message_no_response(refuse_message)
+                logging.info(f"Sent REFUSE message for {item_name} at {max_price}")
+
+        except Exception as e:
+            logging.error(f"Error handling negotiate request: {e}")
+
+    def handle_buy_ack(self, msg: Message):
+        """Handle BUY_ACK message as a buyer to proceed with TCP connection"""
+        try:
+            seller_ip = msg.params["seller_ip"]
+            seller_tcp_port = msg.params["seller_tcp_port"]
+            rq_number = msg.rq_number
+            item_name = None
+            price = None
+            with self.search_lock:
+                search_entry = self.active_searches.get(rq_number)
+                if search_entry:
+                    item_name = search_entry.item_name
+                    price = search_entry.found_price
+
+            if item_name and price is not None:
+                print(f"Finalizing purchase with server...")
+                self.connect_to_server_for_purchase(seller_ip, seller_tcp_port, rq_number, item_name, price)
+            else:
+                logging.error("Active search not found for BUY_ACK")
+
+        except Exception as e:
+            logging.error(f"Error handling BUY_ACK: {e}")
+
+    def connect_to_server_for_purchase(self, server_ip: str, server_tcp_port: int, rq_number: str, item_name: str, price: float):
+        try:
+            # Establish TCP connection to server
+            with socket.create_connection((self.server_ip, self.server_tcp_port), timeout=5) as sock:
+                # Send INFORM_REQ
+                inform_req = self.message_handler.create_message(
+                    MessageType.INFORM_REQ,
+                    rq_number,
+                    item_name=item_name,
+                    price=price
+                )
+                sock.sendall(inform_req.encode())
+                logging.info("Sent INFORM_REQ to server")
+
+                # Receive INFORM_RES from server
+                data = sock.recv(1024).decode()
+                msg = self.message_handler.parse_message(data)
+                if msg and msg.command == MessageType.INFORM_RES:
+                    # Send INFORM_RES with required information
+                    name = self.name
+                    cc_number = input("Enter your credit card number: ").strip()
+                    cc_exp_date = input("Enter your credit card expiration date (MM/YY): ").strip()
+                    address = input("Enter your address: ").strip()
+                    inform_res = self.message_handler.create_message(
+                        MessageType.INFORM_RES,
+                        rq_number,
+                        name=name,
+                        cc_number=cc_number,
+                        cc_exp_date=cc_exp_date,
+                        address=address
+                    )
+                    sock.sendall(inform_res.encode())
+                    logging.info("Sent INFORM_RES to server")
+                    # Wait for transaction result
+                    response = sock.recv(1024).decode()
+                    msg = self.message_handler.parse_message(response)
+                    if msg and msg.command == MessageType.TRANSACTION_SUCCESS:
+                        print("Transaction successful!")
+                    elif msg and msg.command == MessageType.TRANSACTION_FAILED:
+                        print(f"Transaction failed: {msg.params['reason']}")
+                else:
+                    logging.error(f"Unexpected TCP message: {data}")
+
+        except Exception as e:
+            logging.error(f"Error connecting to server for purchase: {e}")
+            print(f"Failed to finalize purchase: {e}")
+
+    def save_items(self):
+        try:
+            items_file = os.path.join(os.path.dirname(__file__), f'{self.name}_items.json')
+            items_data = {}
+            for item in self.items_for_sale.values():
+                item_data = item.__dict__.copy()
+                item_data['timestamp'] = item_data['timestamp'].isoformat()
+                items_data[item.name] = item_data
+            with open(items_file, 'w') as file:
+                json.dump(items_data, file, indent=4)
+            logging.info("Items saved successfully")
+        except Exception as e:
+            logging.error(f"Error saving items: {e}")
+
+    def load_items(self):
+        try:
+            items_file = os.path.join(os.path.dirname(__file__), f'{self.name}_items.json')
+            if os.path.exists(items_file):
+                with open(items_file, 'r') as file:
+                    items_data = json.load(file)
+                    self.items_for_sale = {}
+                    for name, data in items_data.items():
+                        data['timestamp'] = datetime.fromisoformat(data['timestamp'])
+                        self.items_for_sale[name] = ItemForSale(**data)
+                logging.info("Items loaded successfully")
+        except Exception as e:
+            logging.error(f"Error loading items: {e}")
 
     def cleanup(self):
         try:
             self.running = False
+            if hasattr(self, 'listener_thread') and self.listener_thread.is_alive():
+                self.listener_thread.join(timeout=1)
             self.save_items()
             if hasattr(self, 'client_udp_socket_send'):
                 try:
@@ -639,6 +752,11 @@ class ClientUDP_TCP:
             if hasattr(self, 'client_udp_socket_listen'):
                 try:
                     self.client_udp_socket_listen.close()
+                except:
+                    pass
+            if hasattr(self, 'tcp_server_socket'):
+                try:
+                    self.tcp_server_socket.close()
                 except:
                     pass
             logging.info("Client cleaned up successfully")
@@ -707,3 +825,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

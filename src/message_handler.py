@@ -1,6 +1,5 @@
-import json
-import logging
 import shlex
+import logging
 from dataclasses import dataclass
 from typing import Optional, Dict, Any
 from enum import Enum
@@ -46,31 +45,7 @@ class MessageHandler:
     def validate_request_number(rq: str) -> bool:
         """Validate request number format."""
         try:
-            return len(rq) == 4 and rq.isdigit()
-        except:
-            return False
-
-    @staticmethod
-    def validate_credit_card(cc_number: str, cc_exp_date: str) -> bool:
-        """Basic credit card validation."""
-        try:
-            # Check credit card number
-            if not cc_number.isdigit() or len(cc_number) < 13 or len(cc_number) > 19:
-                return False
-
-            # Validate expiration date format (MM/YY)
-            if not cc_exp_date.count('/') == 1:
-                return False
-
-            month, year = cc_exp_date.split('/')
-            if not (month.isdigit() and year.isdigit()):
-                return False
-
-            month_num = int(month)
-            if not (1 <= month_num <= 12):
-                return False
-
-            return True
+            return len(rq) > 0 and rq.isdigit()
         except:
             return False
 
@@ -95,189 +70,89 @@ class MessageHandler:
                 return None
 
             params = {}
-            if len(parts) > 2:
-                params = self.parse_params(command, parts[2:])
-                if params is None:  # Invalid parameters
-                    return None
+            if command == MessageType.REGISTER:
+                params["name"] = parts[2]
+                params["ip"] = parts[3]
+                params["udp_port"] = int(parts[4])
+                params["tcp_port"] = int(parts[5])
+            elif command == MessageType.REGISTERED:
+                pass
+            elif command == MessageType.REGISTER_DENIED:
+                params["reason"] = parts[2]
+            elif command == MessageType.DE_REGISTER:
+                params["name"] = parts[2]
+            elif command == MessageType.DE_REGISTERED:
+                params["name"] = parts[2]
+            elif command == MessageType.LOOKING_FOR:
+                params["name"] = parts[2]
+                params["item_name"] = parts[3]
+                params["item_description"] = parts[4]
+                params["max_price"] = float(parts[5])
+            elif command == MessageType.SEARCH:
+                params["item_name"] = parts[2]
+                params["item_description"] = parts[3]
+            elif command == MessageType.SEARCH_ACK:
+                params["item_name"] = parts[2]
+            elif command == MessageType.OFFER:
+                params["name"] = parts[2]
+                params["item_name"] = parts[3]
+                params["price"] = float(parts[4])
+            elif command == MessageType.NEGOTIATE:
+                params["item_name"] = parts[2]
+                params["max_price"] = float(parts[3])
+            elif command == MessageType.ACCEPT:
+                params["name"] = parts[2]
+                params["item_name"] = parts[3]
+                params["max_price"] = float(parts[4])
+            elif command == MessageType.REFUSE:
+                params["name"] = parts[2]
+                params["item_name"] = parts[3]
+                params["max_price"] = float(parts[4])
+            elif command == MessageType.FOUND:
+                params["item_name"] = parts[2]
+                params["price"] = float(parts[3])
+            elif command == MessageType.NOT_FOUND:
+                params["item_name"] = parts[2]
+                params["max_price"] = float(parts[3])
+            elif command == MessageType.NOT_AVAILABLE:
+                params["item_name"] = parts[2]
+            elif command == MessageType.RESERVE:
+                params["item_name"] = parts[2]
+                params["price"] = float(parts[3])
+            elif command == MessageType.BUY:
+                params["item_name"] = parts[2]
+                params["price"] = float(parts[3])
+            elif command == MessageType.BUY_ACK:
+                params["seller_ip"] = parts[2]
+                params["seller_tcp_port"] = int(parts[3])
+            elif command == MessageType.INFORM_REQ:
+                params["item_name"] = parts[2]
+                params["price"] = float(parts[3])
+            elif command == MessageType.INFORM_RES:
+                params["name"] = parts[2]
+                params["cc_number"] = parts[3]
+                params["cc_exp_date"] = parts[4]
+                params["address"] = parts[5]
+            elif command == MessageType.SHIPPING_INFO:
+                params["name"] = parts[2]
+                params["address"] = parts[3]
+            elif command == MessageType.TRANSACTION_SUCCESS:
+                pass
+            elif command == MessageType.TRANSACTION_FAILED:
+                params["reason"] = parts[2]
+            elif command == MessageType.CANCEL:
+                params["item_name"] = parts[2]
+                params["price"] = float(parts[3])
+            elif command == MessageType.ERROR:
+                params["message"] = parts[2]
+            else:
+                # Handle other message types as needed
+                pass
 
             return Message(command=command, rq_number=rq, params=params)
 
         except Exception as e:
             logging.error(f"Error parsing message: {e}")
-            return None
-
-    def parse_params(self, command: MessageType, param_parts: list) -> Optional[Dict[str, Any]]:
-        """Parse command parameters based on message type."""
-        try:
-            params = {}
-
-            if command == MessageType.REGISTER:
-                if len(param_parts) < 4:
-                    logging.error("Insufficient parameters for REGISTER")
-                    return None
-                params = {
-                    "name": param_parts[0].strip('"'),
-                    "ip": param_parts[1],
-                    "udp_port": int(param_parts[2]),
-                    "tcp_port": int(param_parts[3])
-                }
-
-            elif command == MessageType.DE_REGISTER:
-                params = {"name": param_parts[0].strip('"')}
-
-            elif command == MessageType.REGISTER_DENIED:
-                params = {"reason": " ".join(param_parts)}
-
-            elif command == MessageType.LOOKING_FOR:
-                if len(param_parts) < 4:
-                    logging.error("Insufficient parameters for LOOKING_FOR")
-                    return None
-                params = {
-                    "name": param_parts[0].strip('"'),
-                    "item_name": param_parts[1].strip('"'),
-                    "item_description": param_parts[2].strip('"'),
-                    "max_price": float(param_parts[3])
-                }
-
-            elif command == MessageType.SEARCH:
-                if len(param_parts) < 2:
-                    logging.error("Insufficient parameters for SEARCH")
-                    return None
-                params = {
-                    "item_name": param_parts[0].strip('"'),
-                    "item_description": param_parts[1].strip('"')
-                }
-
-            elif command == MessageType.SEARCH_ACK:
-                params = {"item_name": param_parts[0].strip('"')}
-
-            elif command == MessageType.OFFER:
-                if len(param_parts) < 3:
-                    logging.error("Insufficient parameters for OFFER")
-                    return None
-                params = {
-                    "name": param_parts[0].strip('"'),
-                    "item_name": param_parts[1].strip('"'),
-                    "price": float(param_parts[2])
-                }
-
-            elif command == MessageType.NEGOTIATE:
-                if len(param_parts) < 2:
-                    logging.error("Insufficient parameters for NEGOTIATE")
-                    return None
-                params = {
-                    "item_name": param_parts[0].strip('"'),
-                    "max_price": float(param_parts[1])
-                }
-
-            elif command == MessageType.ACCEPT:
-                if len(param_parts) < 3:
-                    logging.error("Insufficient parameters for ACCEPT")
-                    return None
-                params = {
-                    "name": param_parts[0].strip('"'),
-                    "item_name": param_parts[1].strip('"'),
-                    "price": float(param_parts[2])
-                }
-
-            elif command == MessageType.REFUSE:
-                if len(param_parts) < 2:
-                    logging.error("Insufficient parameters for REFUSE")
-                    return None
-                params = {
-                    "item_name": param_parts[0].strip('"'),
-                    "max_price": float(param_parts[1])
-                }
-
-            elif command == MessageType.FOUND:
-                if len(param_parts) < 2:
-                    logging.error("Insufficient parameters for FOUND")
-                    return None
-                params = {
-                    "item_name": param_parts[0].strip('"'),
-                    "price": float(param_parts[1])
-                }
-
-            elif command == MessageType.NOT_FOUND:
-                if len(param_parts) < 2:
-                    logging.error("Insufficient parameters for NOT_FOUND")
-                    return None
-                params = {
-                    "item_name": param_parts[0].strip('"'),
-                    "max_price": float(param_parts[1])
-                }
-
-            elif command == MessageType.NOT_AVAILABLE:
-                params = {"item_name": param_parts[0].strip('"')}
-
-            elif command == MessageType.RESERVE:
-                if len(param_parts) < 2:
-                    logging.error("Insufficient parameters for RESERVE")
-                    return None
-                params = {
-                    "item_name": param_parts[0].strip('"'),
-                    "price": float(param_parts[1])
-                }
-
-            elif command == MessageType.ERROR:
-                params = {"message": " ".join(param_parts)}
-
-            elif command == MessageType.CANCEL:
-                if len(param_parts) >= 1:
-                    params = {"reason": " ".join(param_parts)}
-                else:
-                    params = {"item_name": param_parts[0].strip('"')}
-
-            elif command == MessageType.BUY:
-                if len(param_parts) < 2:
-                    logging.error("Insufficient parameters for BUY")
-                    return None
-                params = {
-                    "item_name": param_parts[0].strip('"'),
-                    "price": float(param_parts[1])
-                }
-
-            elif command == MessageType.INFORM_REQ:
-                if len(param_parts) < 2:
-                    logging.error("Insufficient parameters for INFORM_REQ")
-                    return None
-                params = {
-                    "item_name": param_parts[0].strip('"'),
-                    "price": float(param_parts[1])
-                }
-
-            elif command == MessageType.INFORM_RES:
-                if len(param_parts) < 4:
-                    logging.error("Insufficient parameters for INFORM_RES")
-                    return None
-                name = param_parts[0].strip('"')
-                cc_number = param_parts[1]
-                cc_exp_date = param_parts[2]
-
-                if not self.validate_credit_card(cc_number, cc_exp_date):
-                    logging.error("Invalid credit card information")
-                    return None
-
-                params = {
-                    "name": name,
-                    "cc_number": cc_number,
-                    "cc_exp_date": cc_exp_date,
-                    "address": " ".join(param_parts[3:]).strip('"')
-                }
-
-            elif command == MessageType.SHIPPING_INFO:
-                if len(param_parts) < 2:
-                    logging.error("Insufficient parameters for SHIPPING_INFO")
-                    return None
-                params = {
-                    "name": param_parts[0].strip('"'),
-                    "address": " ".join(param_parts[1:]).strip('"')
-                }
-
-            return params
-
-        except Exception as e:
-            logging.error(f"Error parsing parameters for {command}: {e}")
             return None
 
     def create_message(self, command: MessageType, rq_number: str, **params) -> str:
@@ -287,122 +162,126 @@ class MessageHandler:
 
             if command == MessageType.REGISTER:
                 msg_parts.extend([
-                    f'"{params["name"]}"',
+                    params["name"],
                     params["ip"],
                     str(params["udp_port"]),
                     str(params["tcp_port"])
                 ])
-
-            elif command == MessageType.DE_REGISTER:
-                msg_parts.append(f'"{params["name"]}"')
-
-            elif command == MessageType.LOOKING_FOR:
-                msg_parts.extend([
-                    f'"{params["name"]}"',
-                    f'"{params["item_name"]}"',
-                    f'"{params.get("item_description", "")}"',
-                    str(params["max_price"])
-                ])
-
-            elif command == MessageType.SEARCH:
-                msg_parts.extend([
-                    f'"{params["item_name"]}"',
-                    f'"{params.get("item_description", "")}"'
-                ])
-
-            elif command == MessageType.SEARCH_ACK:
-                msg_parts.append(f'"{params["item_name"]}"')
-
-            elif command == MessageType.OFFER:
-                msg_parts.extend([
-                    f'"{params["name"]}"',
-                    f'"{params["item_name"]}"',
-                    str(params["price"])
-                ])
-
-            elif command == MessageType.NEGOTIATE:
-                msg_parts.extend([
-                    f'"{params["item_name"]}"',
-                    str(params["max_price"])
-                ])
-
-            elif command == MessageType.ACCEPT:
-                msg_parts.extend([
-                    f'"{params["name"]}"',
-                    f'"{params["item_name"]}"',
-                    str(params["price"])
-                ])
-
-            elif command == MessageType.REFUSE:
-                msg_parts.extend([
-                    f'"{params["item_name"]}"',
-                    str(params["max_price"])
-                ])
-
-            elif command == MessageType.FOUND:
-                msg_parts.extend([
-                    f'"{params["item_name"]}"',
-                    str(params["price"])
-                ])
-
-            elif command == MessageType.NOT_FOUND:
-                msg_parts.extend([
-                    f'"{params["item_name"]}"',
-                    str(params["max_price"])
-                ])
-
-            elif command == MessageType.NOT_AVAILABLE:
-                msg_parts.append(f'"{params["item_name"]}"')
-
-            elif command == MessageType.RESERVE:
-                msg_parts.extend([
-                    f'"{params["item_name"]}"',
-                    str(params["price"])
-                ])
-
+            elif command == MessageType.REGISTERED:
+                pass
             elif command == MessageType.REGISTER_DENIED:
                 msg_parts.append(params["reason"])
-
-            elif command == MessageType.ERROR:
-                msg_parts.append(params["message"])
-
-            elif command == MessageType.CANCEL:
-                if "reason" in params:
-                    msg_parts.append(params["reason"])
-                else:
-                    msg_parts.extend([
-                        f'"{params["item_name"]}"',
-                        str(params["price"])
-                    ])
-
+            elif command == MessageType.DE_REGISTER:
+                msg_parts.append(params["name"])
+            elif command == MessageType.DE_REGISTERED:
+                msg_parts.append(params["name"])
+            elif command == MessageType.LOOKING_FOR:
+                msg_parts.extend([
+                    params["name"],
+                    params["item_name"],
+                    params.get("item_description", ""),
+                    str(params["max_price"])
+                ])
+            elif command == MessageType.SEARCH:
+                msg_parts.extend([
+                    params["item_name"],
+                    params.get("item_description", "")
+                ])
+            elif command == MessageType.SEARCH_ACK:
+                msg_parts.append(params["item_name"])
+            elif command == MessageType.OFFER:
+                msg_parts.extend([
+                    params["name"],
+                    params["item_name"],
+                    str(params["price"])
+                ])
+            elif command == MessageType.NEGOTIATE:
+                msg_parts.extend([
+                    params["item_name"],
+                    str(params["max_price"])
+                ])
+            elif command == MessageType.ACCEPT:
+                msg_parts.extend([
+                    params["name"],
+                    params["item_name"],
+                    str(params["max_price"])
+                ])
+            elif command == MessageType.REFUSE:
+                msg_parts.extend([
+                    params["name"],
+                    params["item_name"],
+                    str(params["max_price"])
+                ])
+            elif command == MessageType.FOUND:
+                msg_parts.extend([
+                    params["item_name"],
+                    str(params["price"])
+                ])
+            elif command == MessageType.NOT_FOUND:
+                msg_parts.extend([
+                    params["item_name"],
+                    str(params["max_price"])
+                ])
+            elif command == MessageType.NOT_AVAILABLE:
+                msg_parts.append(params["item_name"])
+            elif command == MessageType.RESERVE:
+                msg_parts.extend([
+                    params["item_name"],
+                    str(params["price"])
+                ])
             elif command == MessageType.BUY:
                 msg_parts.extend([
-                    f'"{params["item_name"]}"',
+                    params["item_name"],
                     str(params["price"])
                 ])
-
+            elif command == MessageType.BUY_ACK:
+                msg_parts.extend([
+                    params["seller_ip"],
+                    str(params["seller_tcp_port"])
+                ])
             elif command == MessageType.INFORM_REQ:
                 msg_parts.extend([
-                    f'"{params["item_name"]}"',
+                    params["item_name"],
                     str(params["price"])
                 ])
-
             elif command == MessageType.INFORM_RES:
                 msg_parts.extend([
-                    f'"{params["name"]}"',
+                    params["name"],
                     params["cc_number"],
                     params["cc_exp_date"],
-                    f'"{params["address"]}"'
+                    params["address"]
                 ])
-
             elif command == MessageType.SHIPPING_INFO:
                 msg_parts.extend([
-                    f'"{params["name"]}"',
-                    f'"{params["address"]}"'
+                    params["name"],
+                    params["address"]
                 ])
+            elif command == MessageType.TRANSACTION_SUCCESS:
+                pass
+            elif command == MessageType.TRANSACTION_FAILED:
+                msg_parts.append(params["reason"])
+            elif command == MessageType.CANCEL:
+                msg_parts.extend([
+                    params["item_name"],
+                    str(params["price"])
+                ])
+            elif command == MessageType.ERROR:
+                msg_parts.append(params.get("message", ""))
+            else:
+                # Handle other message types as needed
+                pass
 
-            return " ".join(msg_parts)
+            # Quote all string parameters (excluding numbers)
+            message_parts = [str(msg_parts[0]), str(msg_parts[1])]
+            for part in msg_parts[2:]:
+                if isinstance(part, (int, float)):
+                    message_parts.append(str(part))
+                else:
+                    message_parts.append(f'"{str(part)}"')
+            message = " ".join(message_parts)
+            return message
 
         except Exception as e:
             logging.error(f"Error creating message: {e}")
             raise
+

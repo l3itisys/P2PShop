@@ -1,3 +1,14 @@
 {
-    "users": {}
+    "users": {
+        "seller one": {
+            "ip": "127.0.1.1",
+            "udp_port": 38221,
+            "tcp_port": 4857
+        },
+        "buyer one": {
+            "ip": "127.0.1.1",
+            "udp_port": 38484,
+            "tcp_port": 4655
+        }
+    }
 }

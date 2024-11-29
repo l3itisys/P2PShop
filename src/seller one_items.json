@@ -1,0 +1,14 @@
+{
+    "computer1": {
+        "name": "computer1",
+        "price": 877.0,
+        "reserved": false,
+        "timestamp": "2024-11-28T19:36:42.740539"
+    },
+    "computer2": {
+        "name": "computer2",
+        "price": 1000.0,
+        "reserved": false,
+        "timestamp": "2024-11-28T19:36:50.428465"
+    }
+}
