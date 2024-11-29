@@ -139,7 +139,10 @@ class MessageHandler:
             elif command == MessageType.TRANSACTION_SUCCESS:
                 pass
             elif command == MessageType.TRANSACTION_FAILED:
-                params["reason"] = parts[2]
+                if len(parts) >= 3:
+                    params["reason"] = parts[2]
+                else:
+                    params["reason"] = "No reason provided"
             elif command == MessageType.CANCEL:
                 params["item_name"] = parts[2]
                 params["price"] = float(parts[3])

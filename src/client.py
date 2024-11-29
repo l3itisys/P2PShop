@@ -571,7 +571,7 @@ class ClientUDP_TCP:
         """Handle RESERVE message as a seller"""
         try:
             item_name = msg.params["item_name"]
-            price = msg.params["price"]
+            price = float(msg.params["price"])
             rq_number = msg.rq_number
 
             with self.items_lock:
@@ -608,6 +608,12 @@ class ClientUDP_TCP:
                 print("Connected to server for transaction...")
                 logging.info(f"TCP connection established for transaction {rq_number}")
 
+                # Send identeification message
+                identification_message = f"HELLO {rq_number} seller"
+                transaction_socket.sendall(identification_message.encode())
+                logging.info("Sent identification message to server from seller")
+
+
                 # Wait for INFORM_REQ
                 data = transaction_socket.recv(1024).decode()
                 msg = self.message_handler.parse_message(data)
@@ -639,7 +645,7 @@ class ClientUDP_TCP:
                         print(f"Address: {result_msg.params['address']}")
                     elif result_msg.command == MessageType.TRANSACTION_SUCCESS:
                         print("\nTransaction completed successfully!")
-                        # Update local item status if seller
+                        # Update local item status
                         with self.items_lock:
                             if item_name in self.items_for_sale:
                                 del self.items_for_sale[item_name]
@@ -745,8 +751,6 @@ class ClientUDP_TCP:
     def handle_buy_ack(self, msg: Message):
         """Handle BUY_ACK message as a buyer to proceed with TCP connection"""
         try:
-            seller_ip = msg.params["seller_ip"]
-            seller_tcp_port = msg.params["seller_tcp_port"]
             rq_number = msg.rq_number
 
             # Get item details from active searches
@@ -762,7 +766,7 @@ class ClientUDP_TCP:
                     return
 
             if item_name and price is not None:
-                self.initiate_tcp_purchase(seller_ip, seller_tcp_port, rq_number, item_name, price)
+                self.initiate_tcp_purchase(self.seller_ip, self.seller_tcp_port, rq_number, item_name, price)
             else:
                 logging.error("Missing item details for purchase")
 
@@ -829,6 +833,11 @@ class ClientUDP_TCP:
                 print("Connected to server. Processing transaction...")
                 logging.info(f"TCP connection established for purchase {rq_number}")
 
+                # Send identification message
+                identification_message = f"HELLO {rq_number} buyer"
+                purchase_socket.sendall(identification_message.encode())
+                logging.info("Sent identification message to server from buyer")
+
                 # wait for INFORM_REQ
                 data = purchase_socket.recv(1024).decode()
                 msg = self.message_handler.parse_message(data)
@@ -838,9 +847,32 @@ class ClientUDP_TCP:
 
                 # Get user info
                 print("\nPlease provide transaction details:")
-                cc_number = input("Enter credit card number: ").strip()
-                cc_exp_date = input("Enter credit card expiration date (MM/YY): ").strip()
-                address = input("Enter shipping address: ").strip()
+                while True:
+                    try:
+                        cc_number = input("Credit card number: ").strip()
+                        if cc_number and len(cc_number) >= 13:
+                            break
+                        print("Please enter a valid credit card number")
+                    except Exception:
+                        continue
+
+                while True:
+                    try:
+                        cc_exp_date = input("Credit card expiration date (MM/YY): ").strip()
+                        if cc_exp_date and len(cc_exp_date.split('/')) == 2:
+                            break
+                        print("Please enter date in MM/YY format")
+                    except Exception:
+                        continue
+
+                while True:
+                    try:
+                        address = input("Shipping address: ").strip()
+                        if address:
+                            break
+                        print("Please enter a valid address")
+                    except Exception:
+                        continue
 
                 # Send INFORM_REQ
                 inform_res = self.message_handler.create_message(
@@ -861,22 +893,8 @@ class ClientUDP_TCP:
                 if result_msg:
                     if result_msg.command == MessageType.TRANSACTION_SUCCESS:
                         print("\nTransaction completed successfully!")
-                        # Update local item status if seller
-                        with self.items_lock:
-                            if item_name in self.items_for_sale:
-                                del self.items_for_sale[item_name]
-                                self.save_items()
-                    elif result_msg.command == MessageType.SHIPPING_INFO:
-                        print("\nTransaction completed. Please ship the item to:")
-                        print(f"Name: {result_msg.params['name']}")
-                        print(f"Address: {result_msg.params['address']}")
                     elif result_msg.command == MessageType.TRANSACTION_FAILED:
                         print(f"\nTransaction failed: {result_msg.params.get('reason', 'Unknown error')}")
-                        # Release item if seller
-                        with self.items_lock:
-                            if item_name in self.items_for_sale:
-                                self.items_for_sale[item_name].reserved = False
-                                self.save_items()
                 else:
                     print("Invalid response from server")
 
